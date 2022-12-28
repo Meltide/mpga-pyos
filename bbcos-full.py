@@ -2,7 +2,8 @@ import time as tm
 import getpass
 import datetime
 import calendar
-print("BBC OS (R) Core Open Source System 1.1")
+import os
+print("BBC OS (R) Core Open Source System 1.2")
 print("Avaliable update! Visit bbc.com to update")
 count = 0
 stpasswd = "114514"
@@ -18,7 +19,7 @@ while count < 3:
                     if cmd == "ls":
                         print("Downloads  Documents  Music  Pictures")
                     elif cmd == "version":
-                        print("BBC OS (R) Core Open Source System 1.1 ")
+                        print("BBC OS (R) Core Open Source System 1.2 ")
                     elif cmd == "coverter":
                         print("File Covert\nCovert .lpap/.lpcu/.bbc to .umm")
                         input("Input file's path:\n")
@@ -50,6 +51,7 @@ while count < 3:
                         print("time        Show the time and date")
                         print("calendar    Show a calendar")
                         print("calc        A simple calculator")
+                        print("clear       Clean the screen")
                         print("passwd      Change your password")
                         print("exit        Log out")
                     elif cmd == "calc":
@@ -58,6 +60,8 @@ while count < 3:
                             print(formula + "=", eval(formula))
                         except Exception as e:
                             print("Input error.")
+                    elif cmd == "clear":
+                        i = os.system("cls")
                     elif cmd == "exit":
                         break
                     else:
