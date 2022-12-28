@@ -1,4 +1,3 @@
-# bbcos_core
 # BBCOS Core
 ### 基于Python制作的“操作系统”
 ----
