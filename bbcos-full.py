@@ -56,6 +56,8 @@ while count < 3:
                             print(formula + "=", eval(formula))
                         except Exception as e:
                             print("Input error.")
+                    elif cmd == "":
+                        space = "0"
                     elif cmd == "clear":
                         i = os.system("cls")
                     elif cmd == "exit":
