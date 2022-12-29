@@ -4,7 +4,7 @@ import datetime
 import calendar
 import os
 import sys
-print("BBC OS (R) Core Open Source System 1.2")
+print("BBC OS (R) Core Open Source System 1.2.1")
 print("Avaliable update! Visit bbc.com to update")
 count = 0
 stpasswd = "114514"
@@ -20,7 +20,7 @@ while count < 3:
                     if cmd == "ls":
                         print("Downloads  Documents  Music  Pictures")
                     elif cmd == "version":
-                        print("BBC OS (R) Core Open Source System 1.2 ")
+                        print("BBC OS (R) Core Open Source System 1.2.1 ")
                     elif cmd == "coverter":
                         print("File Covert\nCovert .lpap/.lpcu/.bbc to .umm")
                         input("Input file's path:\n")
