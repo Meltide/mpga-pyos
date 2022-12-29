@@ -3,6 +3,7 @@ import getpass
 import datetime
 import calendar
 import os
+import sys
 print("BBC OS (R) Core Open Source System 1.2")
 print("Avaliable update! Visit bbc.com to update")
 count = 0
@@ -23,16 +24,11 @@ while count < 3:
                     elif cmd == "coverter":
                         print("File Covert\nCovert .lpap/.lpcu/.bbc to .umm")
                         input("Input file's path:\n")
-                        print("Coverting [____________________] 0%")
-                        tm.sleep(0.3)
-                        print("Coverting [######______________] 30%")
-                        tm.sleep(0.3)
-                        print("Coverting [############________] 60%")
-                        tm.sleep(0.3)
-                        print("Coverting [################____] 80%")
-                        tm.sleep(0.3)
-                        print("Coverting [####################] 100%")
-                        tm.sleep(0.09)
+                        for i in range(1, 101):
+                            print("\r", end="")
+                            print("Progress: {}%: ".format(i), "▓" * (i // 2), end="")
+                            sys.stdout.flush()
+                            tm.sleep(0.05)
                         print("Covert Complete.")
                     elif cmd == "time":
                         now = datetime.datetime.now()
