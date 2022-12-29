@@ -26,10 +26,10 @@ while count < 3:
                         input("Input file's path:\n")
                         for i in range(1, 101):
                             print("\r", end="")
-                            print("Progress: {}%: ".format(i), "▓" * (i // 2), end="")
+                            print("Progress: {}%: ".format(i), "=" * (i // 2), end="")
                             sys.stdout.flush()
                             tm.sleep(0.05)
-                        print("Covert Complete.")
+                        print("\nCovert Complete.")
                     elif cmd == "time":
                         now = datetime.datetime.now()
                         other_StyleTime = now.strftime("%Y-%m-%d %H:%M:%S")
