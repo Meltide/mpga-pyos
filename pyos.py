@@ -9,7 +9,7 @@ import random
 from colorama import init, Fore, Back, Style
 init(autoreset = True)
 clsn = 0
-version = "2.0.1"
+version = "2.0"
 tips = ["You can find the default password in the source code", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
 while clsn != 1:
     print("Which is your host system?\n[1]Windows   [2]Other")
@@ -45,17 +45,12 @@ random.shuffle(tips)
 random_item = tips[0]
 print("Tip: " + random_item)
 tm.sleep(0.15)
-print(Fore.MAGENTA + "\nAuthor: AMDISYES\nAuthor's QQ: 3480656548\nAuthor's Github: AMDISYES")
+print(Fore.MAGENTA + "\nAuther: AMDISYES\nAuther's QQ: 3480656548\nAuthor's Github: AMDISYES")
 tm.sleep(0.15)
-print(Fore.CYAN + "\nVisit this project in Github: github.com/AMDISYES/pyos_core\nAlso try PyOS's improved version by minqwq and bibimingming!\n")
+print(Fore.CYAN + "\nVisit this project in github: github.com/AMDISYES/pyos_core\nAlso try PyOS's improved version by minqwq and bibimingming!\n")
 tm.sleep(0.5)                   
 count = 0
-stpwdpath = "pwd"
-if os.path.exists(stpwdpath):
-    with open(stpwdpath, 'r') as file:
-        stpasswd = file.read().strip()
-else:
-    stpasswd = '1234'
+stpasswd = "114514"
 while count < 3:
     user = input("Login: ")
     if user == "root":
@@ -67,8 +62,6 @@ while count < 3:
                     cmd = input("~ $ ")
                     if cmd == "ls":
                         print("Downloads  Documents  Music  Pictures")
-                    elif cmd == "dir":
-                        print("Downloads  4KB\nDocuments  4KB\nMusic  4KB\nPictures  4KB")
                     elif cmd == "version":
                         print("PY OS (R) Core Open Source System " + version)
                     elif cmd == "coverter":
@@ -86,9 +79,6 @@ while count < 3:
                         print(other_StyleTime)
                     elif cmd == "passwd":
                         stpasswd = input("Input new password: ")
-                        stpwdpath = "pwd"
-                        with open(stpwdpath, 'w') as file:
-                            file.write(stpasswd)
                     elif cmd == "calendar":
                         today = datetime.datetime.today()
                         yy = str(today.year)#int(input("Year: "))
@@ -147,7 +137,7 @@ while count < 3:
                         print("Unknown command.")
             else:
                 print("Error password! Please retry")
-                print(Style.DIM + "Tip: The default password is 1234. You can use command 'passwd' to set password. Remove file 'pwd' can reset password")
+                print(Style.DIM + "Tip: You can find the default password in the source code.")
     else:
         print("Invalid user! Please retry")
         print(Style.DIM + "Tip: 'Root' is the default user.")
