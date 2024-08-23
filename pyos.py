@@ -6,13 +6,14 @@ import os
 import sys
 import colorama
 import random
+import base64
 from colorama import init, Fore, Back, Style
 init(autoreset = True)
 clsn = 0
 error = 0
 version = "2.0"
 pkg = "8 (sys)"
-tips = ["You can find the default password in the source code", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
+tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
 while clsn != 1:
     print("Which is your host system?\n[1]Windows   [2]Other")
     print(Fore.RED + "Note: The wrong option will cause errors in PyOS.")
@@ -47,13 +48,14 @@ random.shuffle(tips)
 random_item = tips[0]
 print("Tip: " + random_item)
 tm.sleep(0.1)
-print(Fore.MAGENTA + "\nAuther: AMDISYES\nAuther's QQ: 3480656548\nAuthor's Github: AMDISYES")
+print(Fore.MAGENTA + "\nAuthor: AMDISYES\nAuthor's QQ: 3480656548\nAuthor's Github: AMDISYES")
 tm.sleep(0.1)
 print(Fore.CYAN + "\nVisit this project in github: github.com/AMDISYES/pyos_core\nAlso try PyOS's improved version by minqwq and bibimingming!\n")
 tm.sleep(0.25)                   
 count = 0
 file = "~"
-stpasswd = "114514"
+passwd = open("passwd", "r")
+stpasswd = base64.b64decode(passwd.read()).decode("utf-8")
 times = datetime.datetime.now()
 while count < 3:
     user = input("Login: ")
@@ -95,7 +97,7 @@ while count < 3:
                         input("Input file's path:\n")
                         for i in range(1, 101):
                             print("\r", end="")
-                            print("Progress: {}%: ".format(i), "=" * (i // 2), end="")
+                            print("Progress: {}%: ".format(i), "=" * (i // 8), end="")
                             sys.stdout.flush()
                             tm.sleep(0.05)
                         print("\nCovert Complete.")
@@ -105,7 +107,12 @@ while count < 3:
                         print(other_StyleTime)
                     elif cmd == "passwd":
                         error = 0
-                        stpasswd = input("Input new password: ")
+                        npassword = input("Input new password: ")
+                        with open("passwd", "r+") as pswd:
+                            bs64 = str(base64.b64encode(npassword.encode("utf-8")))
+                            pswd.truncate()
+                            pswd.write(bs64.strip("b'"))
+                        print("The password takes effect after the restart.")
                     elif cmd == "calendar":
                         error = 0
                         today = datetime.datetime.today()
@@ -133,17 +140,76 @@ while count < 3:
                         print(calendar.month(int(y), int(m)))
                     elif cmd == "help":
                         error = 0
+                        print(Fore.BLUE + "=====[System]=====")
                         print("ls          View the path")
                         print("version     Show the system's version")
+                        print("clear       Clean the screen")
+                        print("passwd      Change your password")
+                        print("neofetch    List all hardware and system version")
+                        print(Fore.BLUE + "=====[Tools]=====")
                         print("coverter    A tool to covert .lpap/.lpcu/.bbc to .umm")
                         print("time        Show the time and date")
                         print("calendar    Show a calendar")
                         print("calc        A simple calculator")
-                        print("clear       Clean the screen")
-                        print("passwd      Change your password")
-                        print("neofetch    List all hardware and system version")
+                        print("asciier     Converts characters to ASCII")
+                        print(Fore.BLUE + "=====[Games]=====")
+                        print("numgame     Number guessing game")
+                        print(Fore.BLUE + "=====[Power]=====")
                         print("exit        Log out")
                         print("shutdown    Shutdown the system")
+                    elif cmd == "asciier":
+                        error = 0
+                        ascount = 0
+                        while ascount == 0:
+                            print("Enter the character you want to convert to ASCII")
+                            print(Style.DIM + "Press 'exit' to exit.")
+                            ascii = input("> ")
+                            length = len(ascii)
+                            if ascii == "exit":
+                                break
+                            elif ascii == "":
+                                space = 0
+                            else:
+                                if length == 1:
+                                    print("Result: " + Fore.BLUE + str(ord(ascii)))
+                                else:
+                                    print(Fore.RED + "Only a single character is supported.")
+                    elif cmd == "numgame":
+                        error = 0
+                        randnum = random.randint(100, 1000)
+                        running = 0
+                        runnin = 0
+                        print(Fore.BLUE + "NUMBER GUESSING GAME")
+                        print("Numerical Range: 100-1000")
+                        print("Difficulty: Normal")
+                        print("The answer is an integer.\n")
+                        while running == 0:
+                            print("Press 'start' to start, 'exit' to exit.")
+                            numcmd = input("> ")
+                            if numcmd == "start":
+                                print(Fore.BLUE + "GAME START")
+                                while runnin == 0:
+                                    guess = int(input("Enter the number of guesses: "))
+                                    if guess == randnum:
+                                        print(Fore.GREEN + "YOU WIN!")
+                                        runnin = 1
+                                    elif guess < randnum:
+                                        print(Fore.RED + "Less.")
+                                    else:
+                                        print(Fore.RED + "Large.")
+                            if numcmd == "exit":
+                                break
+                            if numcmd == "":
+                                space = 0
+                            else:
+                                print("Unknown value.")
+                    elif cmd == "exit":
+                        error = 0
+                        if cls == "1":
+                            i = os.system("cls")
+                        elif cls == "2":
+                            i = os.system("clear")
+                        break
                     elif cmd == "calc":
                         error = 0
                         s1 = 0
@@ -191,19 +257,27 @@ while count < 3:
                             i = os.system("cls")
                         elif cls == "2":
                             i = os.system("clear")
-                    elif cmd == "exit":
-                        error = 0
-                        break
                     elif cmd == "shutdown":
                         error = 0
+                        print(Fore.BLUE + "Shutting down")
+                        for i in range(5):
+                            tm.sleep(0.5)
+                            print(".", end="")
+                        tm.sleep(0.15)
+                        if cls == "1":
+                            i = os.system("cls")
+                        elif cls == "2":
+                            i = os.system("clear")
                         count = 4
                     else:
                         print("Unknown command.")
                         error = 1
                         errcode = str(random.randint(100, 999))
+            elif passwd == "":
+                print(Style.DIM + "Tip: You can find the default password in the passwd file.")
             else:
                 print("Error password! Please retry")
-                print(Style.DIM + "Tip: You can find the default password in the source code.")
+                print(Style.DIM + "Tip: You can find the default password in the passwd file.")
     else:
         print("Invalid user! Please retry")
         print(Style.DIM + "Tip: 'Root' is the default user.")
