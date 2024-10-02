@@ -1,3 +1,4 @@
+<center>
 # MPGA PyOS
 ![GitHub repo size](https://img.shields.io/github/repo-size/Meltide/pyos_core)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Meltide/pyos_core?style=flat)
@@ -10,22 +11,23 @@
 **M**ake **P**yOS **G**reat **A**gain
 
 让 PyOS 再次伟大！
+</center>
 
-**注意** 请在运行前输入以下命令安装依赖
+## 使用方法
+0. 确保已经安装了 Python 3
+1. 输入以下命令安装依赖
 ```
 pip install colorama
-pip install pythondialog
 ```
-----
-### 使用方法
+2. 转到 PyOS 所在的目录
+3. 输入 `python pyos.py` 来启动
 
 用户名：**root**
-
 初始密码：**114514**
 
-输入 ```help``` 获取帮助
+输入 `help` 获取帮助
 
 ![1000066121](https://github.com/user-attachments/assets/9bb17444-5d15-4e62-b976-1e61a6156a62)
 
-----
+
 ###### 注意：2.0版本开始不在提供已编译exe文件，请直接下载源码
