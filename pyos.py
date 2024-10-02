@@ -6,12 +6,11 @@ import os
 import sys
 import random
 import base64
-from dialog import Dialog
 from colorama import init, Fore, Back, Style
 init(autoreset = True)
 clsn = 0
 error = 0
-version = "2.1"
+version = "2.2"
 pkg = "8 (sys)"
 tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
 while clsn != 1:
@@ -48,9 +47,9 @@ random.shuffle(tips)
 random_item = tips[0]
 print("Tip: " + random_item)
 tm.sleep(0.1)
-print(Fore.MAGENTA + "\nAuthor: AMDISYES\nAuthor's QQ: 3480656548\nAuthor's Github: AMDISYES")
+print(Fore.MAGENTA + "\nAuthor: MeltIce\nAuthor's QQ: 3480656548\nAuthor's Github: Meltide")
 tm.sleep(0.1)
-print(Fore.CYAN + "\nVisit this project in github: github.com/AMDISYES/pyos_core\nAlso try PyOS's improved version by minqwq and bibimingming!\n")
+print(Fore.CYAN + "\nVisit this project in github: github.com/Meltide/pyos_core\nAlso try PyOS's improved version by minqwq and bibimingming!\n")
 tm.sleep(0.25)                   
 count = 0
 file = "~"
@@ -235,7 +234,7 @@ while count < 3:
                             host = "UNIX Shell"
                         tm.sleep(0.05)
                         print(Fore.BLUE + "Host" + Fore.RESET + ": " + host)
-                        print(Fore.BLUE + "Kernel" + Fore.RESET + ": PTCORE-V20240824-aarch64")
+                        print(Fore.BLUE + "Kernel" + Fore.RESET + ": PTCORE-V20241002-aarch64")
                         tm.sleep(0.05)
                         print(Fore.BLUE + "Uptime" + Fore.RESET + ": 9d, 4h, 19m, 27s")
                         tm.sleep(0.05)
@@ -259,17 +258,10 @@ while count < 3:
                             i = os.system("clear")
                     elif cmd == "shutdown":
                         error = 0
-                        d = Dialog(dialog = "dialog")
-                        d.set_background_title("MPGA PyOS V2.1 Build 20240824")
-                        d.infobox("Shutting down", width = 0, height = 0, title = "PyOS Power Manager")
-                        tm.sleep(0.5)
-                        d.infobox("Shutting down.", width = 0, height = 0, title = "PyOS Power Manager")
-                        tm.sleep(1)
-                        d.infobox("Shutting down..", width = 0, height = 0, title = "PyOS Power Manager")
-                        tm.sleep(1)
-                        d.infobox("Shutting down...", width = 0, height = 0, title = "PyOS Power Manager")
-                        tm.sleep(0.5)
-                        d.msgbox("You can now safely shut down PyOS.", width = 0, height = 0, title = "PyOS Power Manager")
+                        print(Fore.BLUE + "Shutting down")
+                        for i in range(5):
+                            print(".", end="")
+                            tm.sleep(0.5)
                         if cls == "1":
                             i = os.system("cls")
                         elif cls == "2":
