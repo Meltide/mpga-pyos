@@ -1,4 +1,4 @@
-<center>
+<div align="center">
 
 # MPGA PyOS
 ![GitHub repo size](https://img.shields.io/github/repo-size/Meltide/pyos_core)
@@ -13,7 +13,7 @@
 
 让 PyOS 再次伟大！
 
-</center>
+</div>
 
 ## 使用方法
 0. 确保已经安装了 Python 3
