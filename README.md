@@ -25,11 +25,12 @@ pip install colorama
 3. 输入 `python pyos.py` 来启动
 
 - 用户名：**root** 
-
 - 初始密码：**114514**
 
 - 输入 `help` 获取帮助
 
+## 界面截图
+![img](https://www.freeimg.cn/i/2024/09/14/66e59d203e97d.webp)
 ![1000066121](https://github.com/user-attachments/assets/9bb17444-5d15-4e62-b976-1e61a6156a62)
 
 
