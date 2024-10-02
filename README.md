@@ -1,4 +1,5 @@
 <center>
+
 # MPGA PyOS
 ![GitHub repo size](https://img.shields.io/github/repo-size/Meltide/pyos_core)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Meltide/pyos_core?style=flat)
@@ -11,6 +12,7 @@
 **M**ake **P**yOS **G**reat **A**gain
 
 让 PyOS 再次伟大！
+
 </center>
 
 ## 使用方法
@@ -22,10 +24,11 @@ pip install colorama
 2. 转到 PyOS 所在的目录
 3. 输入 `python pyos.py` 来启动
 
-用户名：**root**
-初始密码：**114514**
+- 用户名：**root** 
 
-输入 `help` 获取帮助
+- 初始密码：**114514**
+
+- 输入 `help` 获取帮助
 
 ![1000066121](https://github.com/user-attachments/assets/9bb17444-5d15-4e62-b976-1e61a6156a62)
 
