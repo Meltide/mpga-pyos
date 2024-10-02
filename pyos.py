@@ -49,7 +49,7 @@ print("Tip: " + random_item)
 tm.sleep(0.1)
 print(Fore.MAGENTA + "\nAuthor: MeltIce\nAuthor's QQ: 3480656548\nAuthor's Github: Meltide")
 tm.sleep(0.1)
-print(Fore.CYAN + "\nVisit this project in github: github.com/Meltide/pyos_core\nAlso try PyOS's improved version by minqwq and bibimingming!\n")
+print(Fore.CYAN + "\nVisit this project in github: github.com/Meltide/mpga-pyos\nAlso try PyOS's improved version by minqwq and bibimingming!\n")
 tm.sleep(0.25)                   
 count = 0
 file = "~"
