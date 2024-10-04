@@ -11,7 +11,7 @@
 ### 唯一的不同，是处处不同
 
 **M**ake **P**yOS **G**reat **A**gain
-
+<br>
 让 PyOS 再次伟大！
 
 </div>
@@ -25,8 +25,9 @@ pip install colorama
 2. 转到 PyOS 所在的目录
 3. 输入 `python pyos.py` 来启动
 
-- 用户名：**root** 
-- 初始密码：**114514**
+用户名：**root**
+<br>
+初始密码：**114514**
 
 - 输入 `help` 获取帮助
 
