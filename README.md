@@ -25,11 +25,11 @@
 2. 转到 PyOS 所在的目录
 3. 输入 `python pyos.py` 来启动
 
-    用户名：**root**
+用户名：**root**
 <br>
-    初始密码：**114514**
+初始密码：**114514**
 
-    输入 `help` 获取帮助
+输入 `help` 获取帮助
 
 ## 界面截图
 ![img](https://www.freeimg.cn/i/2024/09/14/66e59d203e97d.webp)
