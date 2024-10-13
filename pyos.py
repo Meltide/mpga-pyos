@@ -10,7 +10,7 @@ from colorama import init, Fore, Back, Style
 init(autoreset = True)
 clsn = 0
 error = 0
-version = "2.2"
+version = "2.3"
 pkg = "8 (sys)"
 tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
 while clsn != 1:
@@ -260,7 +260,7 @@ while count < 3:
                             host = "UNIX Shell"
                         tm.sleep(0.05)
                         print(Fore.BLUE + "Host" + Fore.RESET + ": " + host)
-                        print(Fore.BLUE + "Kernel" + Fore.RESET + ": PTCORE-V20241002-aarch64")
+                        print(Fore.BLUE + "Kernel" + Fore.RESET + ": PTCORE-V20241013-aarch64")
                         tm.sleep(0.05)
                         print(Fore.BLUE + "Uptime" + Fore.RESET + ": 9d, 4h, 19m, 27s")
                         tm.sleep(0.05)
