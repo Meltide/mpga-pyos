@@ -10,7 +10,7 @@ from colorama import init, Fore, Back, Style
 init(autoreset = True)
 clsn = 0
 error = 0
-version = "2.3"
+version = "2.4"
 pkg = "8 (sys)"
 tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
 while clsn != 1:
@@ -66,9 +66,9 @@ while count < 3:
                 tm.sleep(0.75)
                 print("")
                 while count < 3:
-                    zshp9k_time_prepare = datetime.datetime.now()
-                    zshp9k_time = lsh_time = zshp9k_time_prepare.strftime(" %m/%d %H:%M:%S ")
-                    zshp9k = print(Back.WHITE + Fore.BLACK + zshp9k_time, end="")
+                    zshp9k_time_prepare = datetime.datetime.now() # 定义
+                    zshp9k_time = lsh_time = zshp9k_time_prepare.strftime(" %m/%d %H:%M:%S ") # 获取时间
+                    zshp9k = print(Back.WHITE + Fore.BLACK + zshp9k_time, end="") # 打印时间(不换行)
                     if error == 1:
                         cmd = input(Back.RED + Fore.WHITE + " ✘ " + errcode + " " + Back.YELLOW + " root@localhost " + Back.BLUE + Fore.WHITE + " " + file + " " + Back.RESET + "> ")
                     else:
@@ -267,7 +267,7 @@ while count < 3:
                         print(Fore.BLUE + "Uptime" + Fore.RESET + ": 9d, 4h, 19m, 27s")
                         tm.sleep(0.05)
                         print(Fore.BLUE + "Packages" + Fore.RESET + ": " + pkg)
-                        print(Fore.BLUE + "Shell" + Fore.RESET + ": pysh 1.0.0")
+                        print(Fore.BLUE + "Shell" + Fore.RESET + ": pysh 1.1.0")
                         tm.sleep(0.05)
                         print(Fore.BLUE + "CPU" + Fore.RESET + ": (8) @ 2.035Ghz")
                         tm.sleep(0.05)
