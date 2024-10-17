@@ -66,11 +66,13 @@ while count < 3:
                 tm.sleep(0.75)
                 print("")
                 while count < 3:
-                    zshp9k = print(times.strftime(" %m/%d %H:%M:%S "), end="")
+                    zshp9k_time_prepare = datetime.datetime.now()
+                    zshp9k_time = lsh_time = zshp9k_time_prepare.strftime(" %m/%d %H:%M:%S ")
+                    zshp9k = print(Back.WHITE + Fore.BLACK + zshp9k_time, end="")
                     if error == 1:
-                        cmd = input(Back.RED + Fore.WHITE + " ✘ " + errcode + " " + Back.WHITE + Fore.BLACK + zshp9k + Back.YELLOW + " root@localhost " + Back.BLUE + Fore.WHITE + " " + file + " " + Back.RESET + "> ")
+                        cmd = input(Back.RED + Fore.WHITE + " ✘ " + errcode + " " + Back.YELLOW + " root@localhost " + Back.BLUE + Fore.WHITE + " " + file + " " + Back.RESET + "> ")
                     else:
-                        cmd = input(Back.WHITE + Fore.BLACK + zshp9k + Back.YELLOW + " root@localhost " + Back.BLUE + Fore.WHITE + " " + file + " " + Back.RESET + "> ")
+                        cmd = input(Back.YELLOW + " root@localhost " + Back.BLUE + Fore.WHITE + " " + file + " " + Back.RESET + "> ")
                     if cmd == "ls":
                         error = 0
                         if file == "~":
