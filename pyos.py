@@ -66,7 +66,7 @@ while count < 3:
                 tm.sleep(0.75)
                 print("")
                 while count < 3:
-                    zshp9k = times.strftime(" %m/%d %H:%M:%S ")
+                    zshp9k = print(times.strftime(" %m/%d %H:%M:%S "), end="")
                     if error == 1:
                         cmd = input(Back.RED + Fore.WHITE + " ✘ " + errcode + " " + Back.WHITE + Fore.BLACK + zshp9k + Back.YELLOW + " root@localhost " + Back.BLUE + Fore.WHITE + " " + file + " " + Back.RESET + "> ")
                     else:
