@@ -99,9 +99,9 @@ class PyOS(Init):
                                 case "time":
                                     other_StyleTime = times.strftime("%Y-%m-%d %H:%M:%S")
                                     print(other_StyleTime)
-                                case "passwd":
+                                case "pwd":
                                     npassword = input("Input new password: ")
-                                    with open("passwd", "r+") as pswd:
+                                    with open("pwd", "r+") as pswd:
                                         bs64 = str(base64.b64encode(npassword.encode("utf-8")))
                                         pswd.truncate()
                                         pswd.write(bs64.strip("b'"))
@@ -156,7 +156,7 @@ class PyOS(Init):
                                         print(Style.DIM + "Press 'exit' to exit.")
                                         asciic = input("> ")
                                         if asciic == "1":
-                                            while ascount == 0:
+                                            #while ascount == 0:
                                                 print("Enter the character you want to convert to ASCII")
                                                 print(Style.DIM + "Press 'exit' to exit.")
                                                 ascii = input("> ")
@@ -171,7 +171,7 @@ class PyOS(Init):
                                                     else:
                                                         print(Fore.RED + "Only a single character is supported.")
                                         elif asciic == "2":
-                                            while ascount == 0:
+                                            #while ascount == 0:
                                                 print("Enter the ASCII code you want to convert to character")
                                                 print(Style.DIM + "Press 'exit' to exit.")
                                                 aschx = input("> ")
