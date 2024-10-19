@@ -2,6 +2,7 @@ import time
 import getpass
 import datetime,calendar
 import os,sys
+import psutil as ps
 import random
 import base64
 from colorama import init, Fore, Back, Style
@@ -243,6 +244,8 @@ class PyOS(Init):
                                         host = "Windows CMD"
                                     elif self.cls == "2":
                                         host = "UNIX Shell"
+                                    else:
+                                        host='Unknown'
                                     time.sleep(0.05)
                                     print(Fore.BLUE + "Host" + Fore.RESET + ": " + host)
                                     print(Fore.BLUE + "Kernel" + Fore.RESET + ": PTCORE-V20241013-aarch64")
@@ -252,7 +255,7 @@ class PyOS(Init):
                                     print(Fore.BLUE + "Packages" + Fore.RESET + ": " + self.pkg)
                                     print(Fore.BLUE + "Shell" + Fore.RESET + ": pysh 1.0.0")
                                     time.sleep(0.05)
-                                    print(Fore.BLUE + "CPU" + Fore.RESET + ": (8) @ 2.035Ghz")
+                                    print(Fore.BLUE + "CPU" + Fore.RESET + ": ("+ps.cpu_count(logical=False)+") @ "+ps.cpu_freq()/1000+"Ghz")
                                     time.sleep(0.05)
                                     print(Fore.BLUE + "Memory" + Fore.RESET + ": " + str(random.randint(1024, 15364)) + "MiB" + "/15364MiB")
                                     time.sleep(0.05)
