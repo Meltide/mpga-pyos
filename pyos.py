@@ -4,7 +4,6 @@ import datetime,calendar
 import os,sys
 import random
 import base64
-from dialog import Dialog
 from colorama import init, Fore, Back, Style
 
 class Init:
@@ -12,7 +11,7 @@ class Init:
         init(autoreset = True)
         self.clsn = 0
         self.error = 0
-        self.ver = "2.1"
+        self.ver = "2.3"
         self.pkg = "8 (sys)"
         self.tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
         while self.clsn != 1:
@@ -36,8 +35,8 @@ class Init:
             Fore.BLUE+"  __  __ ___  ___   _   \n |  \/  | _ \/ __| /_\  \n | |\/| |  _/ (_ |/ _ \ \n |_|  |_|_|  \___/_/ \_\\\n                        ",
             Fore.YELLOW+"Make PyOS Great Again!\n",
             "Tip: "+random.choice(self.tips),
-            Fore.MAGENTA+"\nAuthor: AMDISYES\nAuthor's QQ: 3480656548\nAuthor's Github: AMDISYES",
-            Fore.CYAN+"\nVisit this project in github: github.com/AMDISYES/pyos_core\nAlso try PyOS's improved version by minqwq and bibimingming!\n"]
+            Fore.MAGENTA+"\nAuthor: MeltIce\nAuthor's QQ: 3480656548\nAuthor's Github: MeltIce",
+            Fore.CYAN+"\nVisit this project in github: github.com/Meltide/mpga-pyos\nAlso try PyOS's improved version by minqwq and bibimingming!\n"]
         for i in self.printlist:
             print(i)
             time.sleep(0.1)                  
@@ -152,19 +151,45 @@ class PyOS(Init):
                                 case "asciier":
                                     ascount = 0
                                     while ascount == 0:
-                                        print("Enter the character you want to convert to ASCII")
+                                        print(Fore.BLUE + "ASCII Dic")
+                                        print("Choose the mode\n(1) Chr to ASCII\n(2) ASCII to Chr")
                                         print(Style.DIM + "Press 'exit' to exit.")
-                                        ascii = input("> ")
-                                        length = len(ascii)
-                                        if ascii == "exit":
+                                        asciic = input("> ")
+                                        if asciic == "1":
+                                            while ascount == 0:
+                                                print("Enter the character you want to convert to ASCII")
+                                                print(Style.DIM + "Press 'exit' to exit.")
+                                                ascii = input("> ")
+                                                length = len(ascii)
+                                                if ascii == "exit":
+                                                    break
+                                                elif ascii == "":
+                                                    space = 0
+                                                else:
+                                                    if length == 1:
+                                                        print("Result: " + Fore.BLUE + str(ord(ascii)))
+                                                    else:
+                                                        print(Fore.RED + "Only a single character is supported.")
+                                        elif asciic == "2":
+                                            while ascount == 0:
+                                                print("Enter the ASCII code you want to convert to character")
+                                                print(Style.DIM + "Press 'exit' to exit.")
+                                                aschx = input("> ")
+                                                if aschx == "exit":
+                                                    break
+                                                elif aschx == "":
+                                                    space = 0
+                                                else:
+                                                    try:
+                                                        print("Result: " + Fore.BLUE + chr(int(aschx)))
+                                                    except:
+                                                        print(Fore.RED + "Invalid value.")
+                                        elif asciic == "exit":
                                             break
-                                        elif ascii == "":
+                                        elif asciic == "":
                                             space = 0
                                         else:
-                                            if length == 1:
-                                                print("Result: " + Fore.BLUE + str(ord(ascii)))
-                                            else:
-                                                print(Fore.RED + "Only a single character is supported.")
+                                            print(Fore.RED + "Unknown command.")              
                                 case "numgame":
                                     randnum = random.randint(100, 1000)
                                     running = 0
@@ -220,7 +245,7 @@ class PyOS(Init):
                                         host = "UNIX Shell"
                                     time.sleep(0.05)
                                     print(Fore.BLUE + "Host" + Fore.RESET + ": " + host)
-                                    print(Fore.BLUE + "Kernel" + Fore.RESET + ": PTCORE-V20240824-aarch64")
+                                    print(Fore.BLUE + "Kernel" + Fore.RESET + ": PTCORE-V20241013-aarch64")
                                     time.sleep(0.05)
                                     print(Fore.BLUE + "Uptime" + Fore.RESET + ": 9d, 4h, 19m, 27s")
                                     time.sleep(0.05)
@@ -239,17 +264,10 @@ class PyOS(Init):
                                 case "clear":
                                     self.clear()
                                 case "shutdown":
-                                    d = Dialog(dialog = "dialog")
-                                    d.set_background_title("MPGA PyOS V2.1 Build 20240824")
-                                    d.infobox("Shutting down", width = 0, height = 0, title = "PyOS Power Manager")
-                                    time.sleep(0.5)
-                                    d.infobox("Shutting down.", width = 0, height = 0, title = "PyOS Power Manager")
-                                    time.sleep(1)
-                                    d.infobox("Shutting down..", width = 0, height = 0, title = "PyOS Power Manager")
-                                    time.sleep(1)
-                                    d.infobox("Shutting down...", width = 0, height = 0, title = "PyOS Power Manager")
-                                    time.sleep(0.5)
-                                    d.msgbox("You can now safely shut down PyOS.", width = 0, height = 0, title = "PyOS Power Manager")
+                                    print(Fore.BLUE + "Shutting down")
+                                    for i in range(5):
+                                        print(".", end="")
+                                        time.sleep(0.5)
                                     self.clear()
                                     count = 4
                                 case _:
