@@ -33,7 +33,7 @@ class Init:
         self.clear()
         self.printlist=[
             Style.DIM+"\nPY OS (R) Core Open Source System "+self.ver,
-            Fore.BLUE+"  __  __ ___  ___   _   \n |  \/  | _ \/ __| /_\  \n | |\/| |  _/ (_ |/ _ \ \n |_|  |_|_|  \___/_/ \_\\\n                        ",
+            Fore.BLUE+"  __  __ ___  ___   _   \n |  \\/  | _ \\/ __| /_\\  \n | |\\/| |  _/ (_ |/ _ \\ \n |_|  |_|_|  \\___/_/ \\_\\\n                        ",
             Fore.YELLOW+"Make PyOS Great Again!\n",
             "Tip: "+random.choice(self.tips),
             Fore.MAGENTA+"\nAuthor: MeltIce\nAuthor's QQ: 3480656548\nAuthor's Github: MeltIce",
@@ -237,7 +237,7 @@ class PyOS(Init):
                                         except Exception as e:
                                             print("Input error.")
                                 case "neofetch":
-                                    print(Fore.BLUE + "  __  __ ____   ____    _    \n |  \/  |  _ \ / ___|  / \   \n | |\/| | |_) | |  _  / _ \  \n | |  | |  __/| |_| |/ ___ \ \n |_|  |_|_|    \____/_/   \_\\\n                             ")
+                                    print(Fore.BLUE + "  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
                                     print(Fore.BLUE + "root" + Fore.RESET + "@" + Fore.BLUE + "localhost")
                                     print("-----------------")
                                     time.sleep(0.05)
