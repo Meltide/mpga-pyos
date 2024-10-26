@@ -65,7 +65,9 @@ class PyOS(Init):
                         time.sleep(0.75)
                         print("")
                         while self.count < 3:
-                            zshp9k = times.strftime(" %m/%d %H:%M:%S ")
+                            zshp9k_tm = datetime.datetime.now()
+                            zshp9k_pre = zshp9k_tm.strftime(" %m/%d %H:%M:%S ")
+                            zshp9k = zshp9k_pre
                             if self.error == 1:
                                 cmd = input(Back.RED + Fore.WHITE + " ✘ " + errcode + " " + Back.WHITE + Fore.BLACK + zshp9k + Back.YELLOW + " root@localhost " + Back.BLUE + Fore.WHITE + " " + self.file + " " + Back.RESET + "> ")
                             else:
