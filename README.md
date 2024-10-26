@@ -20,7 +20,7 @@
 0. 确保已经安装了 Python 3
 1. 输入以下命令安装依赖
     ```
-    pip install colorama
+    pip install colorama psutil
     ```
 2. 转到 PyOS 所在的目录
 3. 输入 `python pyos.py` 来启动
@@ -35,5 +35,5 @@
 ![img](https://www.freeimg.cn/i/2024/09/14/66e59d203e97d.webp)
 ![1000066121](https://github.com/user-attachments/assets/9bb17444-5d15-4e62-b976-1e61a6156a62)
 
-
-###### 注意：2.0版本开始不在提供已编译exe文件，请直接下载源码
+----
+###### 注意：2.0版本开始不在提供已编译exe文件，请直接下载源码； **本版本实现可能不支持旧版本Python！** 
