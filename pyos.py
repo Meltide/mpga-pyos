@@ -2,7 +2,8 @@ import time
 import getpass
 import datetime,calendar
 import os,sys
-import psutil as ps
+# import psutil as ps
+# 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
 import random
 import base64
 from colorama import init, Fore, Back, Style
@@ -12,28 +13,34 @@ class Init:
         init(autoreset = True)
         self.clsn = 0
         self.error = 0
-        self.ver = "2.3"
+        self.ver = "2.4"
         self.pkg = "8 (sys)"
         self.tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
-        while self.clsn != 1:
-            print("Which is your host system?\n[1]Windows   [2]Other")
-            print(Fore.RED + "Note: The wrong option will cause errors in PyOS.")
-            self.cls = input("Input: ")
-            if self.cls in ("1","2"):
-                self.clsn = 1
+        with open("init", "r+") as conf:
+            initing = conf.read()
+            if initing == "":
+                while self.clsn != 1:
+                    print("Which is your host system?\n[1]Windows   [2]Other")
+                    print(Fore.RED + "Note: The wrong option will cause errors in PyOS.")
+                    self.cls = input("Input: ")
+                    if self.cls in ("1","2"):
+                        conf.write(self.cls)
+                        self.clsn = 1
+                    else:
+                        print("Invalid value! Please retry")
             else:
-                print("Invalid value! Please retry")
+                self.cls = initing
         time.sleep(0.5)
         self.clear()
         for i in range(1, 101):
             print("\r", end="")
             print("Starting: {}%: ".format(i), "=" * (i // 8), end="",flush=True)
-            #sys.stdout.flush()
+            # sys.stdout.flush()
             time.sleep(0.005)
         self.clear()
         self.printlist=[
             Style.DIM+"\nPY OS (R) Core Open Source System "+self.ver,
-            Fore.BLUE+"  __  __ ___  ___   _   \n |  \/  | _ \/ __| /_\  \n | |\/| |  _/ (_ |/ _ \ \n |_|  |_|_|  \___/_/ \_\\\n                        ",
+            Fore.BLUE+"  __  __ ___  ___   _   \n |  \\/  | _ \\/ __| /_\\  \n | |\\/| |  _/ (_ |/ _ \\ \n |_|  |_|_|  \\___/_/ \\_\\\n                        ",
             Fore.YELLOW+"Make PyOS Great Again!\n",
             "Tip: "+random.choice(self.tips),
             Fore.MAGENTA+"\nAuthor: MeltIce\nAuthor's QQ: 3480656548\nAuthor's Github: MeltIce",
@@ -52,8 +59,8 @@ class Init:
 class PyOS(Init):
     def __init__(self):
         super().__init__()
-        with open('./pwd','r',encoding='utf-8') as pwd:
-            stpasswd = base64.b64decode(pwd.read()).decode("utf-8")
+        with open('pwd','r',encoding='utf-8') as pwd:
+            stpasswd = base64.b64decode(pwd.readline().strip()).decode("utf-8")
         times = datetime.datetime.now()
         while self.count < 3:
             user = input("Login: ")
@@ -90,19 +97,10 @@ class PyOS(Init):
                                     self.file = "~"
                                 case "version":
                                     print("PY OS (R) Core Open Source System " + self.ver)
-                                case "coverter":
-                                    print("File Covert\nCovert .lpap/.lpcu/.bbc to .umm")
-                                    input("Input file's path:\n")
-                                    for i in range(1, 101):
-                                        print("\r", end="")
-                                        print("Progress: {}%: ".format(i), "=" * (i // 8), end="")
-                                        sys.stdout.flush()
-                                        time.sleep(0.05)
-                                    print("\nCovert Complete.")
                                 case "time":
                                     other_StyleTime = times.strftime("%Y-%m-%d %H:%M:%S")
                                     print(other_StyleTime)
-                                case "pwd":
+                                case "passwd":
                                     npassword = input("Input new password: ")
                                     with open("pwd", "r+") as pswd:
                                         bs64 = str(base64.b64encode(npassword.encode("utf-8")))
@@ -141,7 +139,6 @@ class PyOS(Init):
                                     print("passwd      Change your password")
                                     print("neofetch    List all hardware and system version")
                                     print(Fore.BLUE + "=====[Tools]=====")
-                                    print("coverter    A tool to covert .lpap/.lpcu/.bbc to .umm")
                                     print("time        Show the time and date")
                                     print("calendar    Show a calendar")
                                     print("calc        A simple calculator")
@@ -159,7 +156,7 @@ class PyOS(Init):
                                         print(Style.DIM + "Press 'exit' to exit.")
                                         asciic = input("> ")
                                         if asciic == "1":
-                                            #while ascount == 0:
+                                            while ascount == 0:
                                                 print("Enter the character you want to convert to ASCII")
                                                 print(Style.DIM + "Press 'exit' to exit.")
                                                 ascii = input("> ")
@@ -174,7 +171,7 @@ class PyOS(Init):
                                                     else:
                                                         print(Fore.RED + "Only a single character is supported.")
                                         elif asciic == "2":
-                                            #while ascount == 0:
+                                            while ascount == 0:
                                                 print("Enter the ASCII code you want to convert to character")
                                                 print(Style.DIM + "Press 'exit' to exit.")
                                                 aschx = input("> ")
@@ -237,7 +234,7 @@ class PyOS(Init):
                                         except Exception as e:
                                             print("Input error.")
                                 case "neofetch":
-                                    print(Fore.BLUE + "  __  __ ____   ____    _    \n |  \/  |  _ \ / ___|  / \   \n | |\/| | |_) | |  _  / _ \  \n | |  | |  __/| |_| |/ ___ \ \n |_|  |_|_|    \____/_/   \_\\\n                             ")
+                                    print(Fore.BLUE + "  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
                                     print(Fore.BLUE + "root" + Fore.RESET + "@" + Fore.BLUE + "localhost")
                                     print("-----------------")
                                     time.sleep(0.05)
@@ -257,7 +254,9 @@ class PyOS(Init):
                                     print(Fore.BLUE + "Packages" + Fore.RESET + ": " + self.pkg)
                                     print(Fore.BLUE + "Shell" + Fore.RESET + ": pysh 1.0.0")
                                     time.sleep(0.05)
-                                    print(Fore.BLUE + "CPU" + Fore.RESET + ": ("+ps.cpu_count(logical=False)+") @ "+ps.cpu_freq()/1000+"Ghz")
+                                    # print(Fore.BLUE + "CPU" + Fore.RESET + ": ("+ps.cpu_count(logical=False)+") @ "+ps.cpu_freq()/1000+"Ghz")
+                                    # 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
+                                    print(Fore.BLUE + "CPU" + Fore.RESET + ": (8) @ 2.035Ghz")
                                     time.sleep(0.05)
                                     print(Fore.BLUE + "Memory" + Fore.RESET + ": " + str(random.randint(1024, 15364)) + "MiB" + "/15364MiB")
                                     time.sleep(0.05)
@@ -274,7 +273,7 @@ class PyOS(Init):
                                         print(".", end="")
                                         time.sleep(0.5)
                                     self.clear()
-                                    count = 4
+                                    raise Exception("这不是一个错误，这是被强行抛出的异常，用于关闭PY OS")
                                 case _:
                                     print("Unknown command.")
                                     self.error = 1
