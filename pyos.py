@@ -2,7 +2,8 @@ import time
 import getpass
 import datetime,calendar
 import os,sys
-import psutil as ps
+# import psutil as ps
+# 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
 import random
 import base64
 from colorama import init, Fore, Back, Style
@@ -257,7 +258,9 @@ class PyOS(Init):
                                     print(Fore.BLUE + "Packages" + Fore.RESET + ": " + self.pkg)
                                     print(Fore.BLUE + "Shell" + Fore.RESET + ": pysh 1.0.0")
                                     time.sleep(0.05)
-                                    print(Fore.BLUE + "CPU" + Fore.RESET + ": ("+ps.cpu_count(logical=False)+") @ "+ps.cpu_freq()/1000+"Ghz")
+                                    # print(Fore.BLUE + "CPU" + Fore.RESET + ": ("+ps.cpu_count(logical=False)+") @ "+ps.cpu_freq()/1000+"Ghz")
+                                    # 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
+                                    print(Fore.BLUE + "CPU" + Fore.RESET + ": (8) @ 2.035Ghz")
                                     time.sleep(0.05)
                                     print(Fore.BLUE + "Memory" + Fore.RESET + ": " + str(random.randint(1024, 15364)) + "MiB" + "/15364MiB")
                                     time.sleep(0.05)
