@@ -63,7 +63,7 @@ class PyOS(Init):
             stpasswd = base64.b64decode(pwd.readline().strip()).decode("utf-8")
         times = datetime.datetime.now()
         while self.count < 3:
-            user = input("Login: ")
+            user = input("localhost login: ")
             if user == "root":
                 while self.count < 3:
                     passwd = getpass.getpass("Password: ")
@@ -85,7 +85,7 @@ class PyOS(Init):
                                 case 'ls':
                                     if self.file == "~":
                                         print("Downloads  Documents  Music  Pictures")
-                                    if self.file == "/":
+                                    elif self.file == "/":
                                         print("home")
                                 case "cd"|"cd ~":
                                     self.file = "~"
@@ -287,5 +287,5 @@ class PyOS(Init):
                 print("Invalid user! Please retry")
                 print(Style.DIM + "Tip: 'Root' is the default user.")
 
-if __name__=='__main__':
+if __name__ == '__main__':
     PyOS()
