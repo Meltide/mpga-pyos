@@ -17,7 +17,7 @@ class Init:
         self.pkg = "8 (sys)"
         self.tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
         with open("init", "r+") as conf:
-            initing = conf.read()
+            initing = conf.readline().strip()
             if initing == "":
                 while self.clsn != 1:
                     print("Which is your host system?\n[1]Windows   [2]Other")
@@ -29,7 +29,7 @@ class Init:
                     else:
                         print("Invalid value! Please retry")
             else:
-                self.cls = initing
+                self.cls = str(initing)
         time.sleep(0.5)
         self.clear()
         for i in range(1, 101):
