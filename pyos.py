@@ -1,14 +1,14 @@
-import time
-import getpass
-import datetime,calendar
-import os,sys
+import time,datetime,calendar #时间日期库
+import pwinput #密码隐藏库
+import os,sys #系统底层库
 # import psutil as ps
 # 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
-import random
-import base64
-from colorama import init, Fore, Back, Style
+import random #随机库
+import base64 #加解密库
+from colorama import init, Fore, Back, Style #彩色文字库
+import json #解析和保存json配置文件
 
-class Init:
+class Init: #初始化
     def __init__(self):
         init(autoreset = True)
         self.clsn = 0
@@ -34,7 +34,7 @@ class Init:
         self.clear()
         for i in range(1, 101):
             print("\r", end="")
-            print("Starting: {}%: ".format(i), "=" * (i // 8), end="",flush=True)
+            print(f"Starting: {i}%: ", "=" * (i // 8), end="",flush=True)
             # sys.stdout.flush()
             time.sleep(0.005)
         self.clear()
@@ -66,7 +66,7 @@ class PyOS(Init):
             user = input("localhost login: ")
             if user == "root":
                 while self.count < 3:
-                    passwd = getpass.getpass("Password: ")
+                    passwd = pwinput.pwinput()
                     if passwd == stpasswd:
                         print("Last login: " + Fore.CYAN + times.strftime("%y/%m/%d %H:%M:%S"))
                         time.sleep(0.75)
@@ -82,11 +82,8 @@ class PyOS(Init):
                             
                             self.error=0
                             match cmd:
-                                case 'ls':
-                                    if self.file == "~":
-                                        print("Downloads  Documents  Music  Pictures")
-                                    elif self.file == "/":
-                                        print("home")
+                                case 'ls': #列出当前目录下的文件和子目录
+                                    print(*os.listdir())
                                 case "cd"|"cd ~":
                                     self.file = "~"
                                 case "cd ..":

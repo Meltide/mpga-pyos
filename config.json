@@ -1,0 +1,10 @@
+{
+    "version":"2.4",
+    "system":"",
+    "accounts":[
+        {
+            "name":"root",
+            "password":"MTE0NTE0"
+        }
+    ]
+}
