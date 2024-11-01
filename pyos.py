@@ -7,6 +7,7 @@ import random #随机库
 import base64 #加解密库
 from colorama import init, Fore, Back, Style #彩色文字库
 import json #解析和保存json配置文件
+from sympy import sympify as sp#数学运算库
 
 class Init: #初始化
     def __init__(self):
@@ -44,7 +45,7 @@ class Init: #初始化
             Fore.YELLOW+"Make PyOS Great Again!\n",
             "Tip: "+random.choice(self.tips),
             Fore.MAGENTA+"\nAuthor: MeltIce\nAuthor's QQ: 3480656548\nAuthor's Github: MeltIce",
-            Fore.CYAN+"\nVisit this project in github: github.com/Meltide/mpga-pyos\nAlso try PyOS's improved version by minqwq and bibimingming!\n"]
+            Fore.CYAN+"\nVisit this project in github: github.com/Meltide/mpga-pyos\nAlso try PyOS's improved version by minqwq,EricDing618 and bibimingming!\n"]
         for i in self.printlist:
             print(i)
             time.sleep(0.1)                  
@@ -168,12 +169,13 @@ class PyOS(Init):
                                                     else:
                                                         print(Fore.RED + "Only a single character is supported.")
                                         elif asciic == "2":
-                                            while ascount == 0:
+                                            #while ascount == 0:
                                                 print("Enter the ASCII code you want to convert to character")
                                                 print(Style.DIM + "Press 'exit' to exit.")
                                                 aschx = input("> ")
                                                 if aschx == "exit":
-                                                    break
+                                                    #break
+                                                    continue
                                                 elif aschx == "":
                                                     space = 0
                                                 else:
@@ -214,7 +216,7 @@ class PyOS(Init):
                                         if numcmd == "":
                                             space = 0
                                         else:
-                                            print("Unknown value.")
+                                            print(Fore.RED+"Unknown value.")
                                 case "exit":
                                     self.clear()
                                     sys.exit(0)
@@ -226,10 +228,12 @@ class PyOS(Init):
                                             formula = input("Enter the formula to be calculated (Type 'exit' to exit):\n> ")
                                             if formula == "exit":
                                                 s1 = 1
+                                            elif not all(char in '0123456789+-*/' for char in formula):
+                                                print(Fore.RED+'Input error.')
                                             else:
-                                                print("Result: " + Fore.BLUE + str(eval(formula)))
+                                                print("Result: " + Fore.BLUE + str(sp(formula)))
                                         except Exception as e:
-                                            print("Input error.")
+                                            print(Fore.RED+"Input error.")
                                 case "neofetch":
                                     print(Fore.BLUE + "  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
                                     print(Fore.BLUE + "root" + Fore.RESET + "@" + Fore.BLUE + "localhost")
