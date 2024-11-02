@@ -7,28 +7,32 @@ import random #随机库
 import base64 #加解密库
 from colorama import init, Fore, Back, Style #彩色文字库
 import json #解析和保存json配置文件
-from sympy import sympify as sp#数学运算库
 
 class Init: #初始化
     def __init__(self):
         init(autoreset = True)
         self.clsn = 0
         self.error = 0
-        self.ver = "2.4"
         self.pkg = "8 (sys)"
-        self.tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
-        with open("configs/init", "r+") as conf:
-            initing = conf.readline().strip()
+        self.tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'root' is the default user.", "Is this file system real?", "Columns make the calculator work."]      
+        with open('config.json','r',encoding='utf-8') as f: #读取配置
+            self.cfg=json.load(f)
+            self.names=self.cfg["accounts"].keys()
+            initing=self.cfg["system"]
+            self.ver = self.cfg["version"]
+
+        with open('config.json','w',encoding='utf-8') as f: #写入配置
             if initing == "":
                 while self.clsn != 1:
                     print("Which is your host system?\n[1]Windows   [2]Other")
                     print(Fore.RED + "Note: The wrong option will cause errors in PyOS.")
                     self.cls = input("Input: ")
                     if self.cls in ("1","2"):
-                        conf.write(self.cls)
+                        self.cfg["system"]=self.cls
+                        f.write(json.dumps(self.cfg,indent=4,ensure_ascii=False))
                         self.clsn = 1
                     else:
-                        print("Invalid value! Please retry")
+                        print(f"{Fore.RED}Invalid value! Please retry")
             else:
                 self.cls = str(initing)
         time.sleep(0.5)
@@ -60,13 +64,12 @@ class Init: #初始化
 class PyOS(Init):
     def __init__(self):
         super().__init__()
-        with open('configs/pwd','r',encoding='utf-8') as pwd:
-            stpasswd = base64.b64decode(pwd.readline().strip()).decode("utf-8")
         times = datetime.datetime.now()
         while self.count < 3:
             user = input("localhost login: ")
-            if user == "root":
+            if user in self.names:
                 while self.count < 3:
+                    stpasswd = base64.b64decode(self.cfg["accounts"][user].strip()).decode("utf-8")
                     passwd = pwinput.pwinput()
                     if passwd == stpasswd:
                         print("Last login: " + Fore.CYAN + times.strftime("%y/%m/%d %H:%M:%S"))
@@ -228,10 +231,10 @@ class PyOS(Init):
                                             formula = input("Enter the formula to be calculated (Type 'exit' to exit):\n> ")
                                             if formula == "exit":
                                                 s1 = 1
-                                            elif not all(char in '0123456789+-*/' for char in formula):
+                                            elif not all(char in '0123456789+-*/' for char in formula): #防止恶意运行Python其他代码
                                                 print(Fore.RED+'Input error.')
                                             else:
-                                                print("Result: " + Fore.BLUE + str(sp(formula)))
+                                                print(f"Result: {Fore.BLUE}{str(eval(formula))}")
                                         except Exception as e:
                                             print(Fore.RED+"Input error.")
                                 case "neofetch":
@@ -284,6 +287,15 @@ class PyOS(Init):
                     else:
                         print("Error password! Please retry")
                         print(Style.DIM + "Tip: You can find the default password in the passwd file.")
+            elif user=="create": #可新建账户
+                newname=input('Name: ')
+                newpwd=pwinput.pwinput()
+                if newname in self.names:
+                    print(f"{Fore.YELLOW}WARNING: The name was created!")
+                self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+                with open("config.json","w",encoding="utf-8") as f:
+                    json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                print(f'{Fore.GREEN}Created successfully.')
             else:
                 print("Invalid user! Please retry")
                 print(Style.DIM + "Tip: 'Root' is the default user.")

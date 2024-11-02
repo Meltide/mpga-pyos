@@ -1,10 +1,8 @@
 {
-    "version":"2.4",
-    "system":"",
-    "accounts":[
-        {
-            "name":"root",
-            "password":"MTE0NTE0"
-        }
-    ]
+    "version": "2.4",
+    "system": "",
+    "accounts": {
+        "root": "MTE0NTE0",
+        "test1": "MTIzNDU2"
+    }
 }
