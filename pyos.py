@@ -16,7 +16,7 @@ class Init:
         self.ver = "2.4"
         self.pkg = "8 (sys)"
         self.tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'Root' is the default user.", "Is this file system real?", "Columns make the calculator work."]
-        with open("configs/init", "r+") as conf:
+        with open("init", "r+") as conf:
             initing = conf.readline().strip()
             if initing == "":
                 while self.clsn != 1:
@@ -59,7 +59,7 @@ class Init:
 class PyOS(Init):
     def __init__(self):
         super().__init__()
-        with open('configs/pwd','r',encoding='utf-8') as pwd:
+        with open('pwd','r',encoding='utf-8') as pwd:
             stpasswd = base64.b64decode(pwd.readline().strip()).decode("utf-8")
         times = datetime.datetime.now()
         while self.count < 3:
@@ -102,7 +102,7 @@ class PyOS(Init):
                                     print(other_StyleTime)
                                 case "passwd":
                                     npassword = input("Input new password: ")
-                                    with open("configs/pwd", "r+") as pswd:
+                                    with open("pwd", "r+") as pswd:
                                         bs64 = str(base64.b64encode(npassword.encode("utf-8")))
                                         pswd.truncate()
                                         pswd.write(bs64.strip("b'"))
