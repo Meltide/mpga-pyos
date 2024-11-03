@@ -75,7 +75,16 @@ class PyOS(Init):
         times = datetime.datetime.now()
         while self.count < 3:
             user = input("localhost login: ")
-            if user in self.names:
+            if user=="create": #可新建账户
+                newname=input('Name: ')
+                newpwd=pwinput.pwinput()
+                if newname in self.names:
+                    print(f"{Fore.YELLOW}WARNING: The name was created!")
+                self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+                with open("config.json","w",encoding="utf-8") as f:
+                    json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                print(f'{Fore.GREEN}Created successfully.')
+            elif user in self.names:
                 while self.count < 3:
                     stpasswd = base64.b64decode(self.cfg["accounts"][user].strip()).decode("utf-8")
                     passwd = pwinput.pwinput()
@@ -445,15 +454,7 @@ class PyOS(Init):
                     else:
                         print("Error password! Please retry")
                         print(f"{Style.DIM}Tip: You can find the default password in the passwd file.")
-            elif user=="create": #可新建账户
-                newname=input('Name: ')
-                newpwd=pwinput.pwinput()
-                if newname in self.names:
-                    print(f"{Fore.YELLOW}WARNING: The name was created!")
-                self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
-                with open("config.json","w",encoding="utf-8") as f:
-                    json.dump(self.cfg,f,ensure_ascii=False,indent=4)
-                print(f'{Fore.GREEN}Created successfully.')
+            
             else:
                 print("Invalid user! Please retry")
                 print(Style.DIM + "Tip: 'Root' is the default user.")
