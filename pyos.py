@@ -22,7 +22,7 @@ class Init:
             "Maybe the coverter is useless :)",
             "'Root' is the default user.",
             "Is this file system real?",
-            "Columns make the calculator work.",
+            "Columns make the calculator work."
         ]
         with open("init", "r+") as conf:
             initing = conf.readline().strip()
