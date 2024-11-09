@@ -95,7 +95,7 @@ class PyOS(Init):
                             + Fore.CYAN
                             + times.strftime("%y/%m/%d %H:%M:%S")
                         )
-                        time.sleep(0.75)
+                        time.sleep(0.45)
                         print("")
                         while self.count < 3:
                             zshp9k_tm = datetime.datetime.now()
@@ -213,19 +213,18 @@ class PyOS(Init):
                                                     Style.DIM + "Press 'exit' to exit."
                                                 )
                                                 ascii = input("> ")
-                                                length = len(ascii)
                                                 if ascii == "exit":
                                                     break
                                                 elif ascii == "":
                                                     space = 0
                                                 else:
-                                                    if length == 1:
+                                                    try:
                                                         print(
                                                             "Result: "
                                                             + Fore.BLUE
                                                             + str(ord(ascii))
                                                         )
-                                                    else:
+                                                    except:
                                                         print(
                                                             Fore.RED
                                                             + "Only a single character is supported."
@@ -275,24 +274,28 @@ class PyOS(Init):
                                         if numcmd == "start":
                                             print(Fore.BLUE + "GAME START")
                                             while runnin == 0:
-                                                guess = int(
-                                                    input(
-                                                        "Enter the number of guesses: "
-                                                    )
-                                                )
-                                                if guess == randnum:
-                                                    print(Fore.GREEN + "YOU WIN!")
-                                                    runnin = 1
-                                                elif guess < randnum:
-                                                    print(Fore.RED + "Less.")
+                                                guess = input(f"Enter the number of guesses {Style.DIM}(Press 'exit' to exit)\n{Style.RESET_ALL}> ")
+                                                if guess == "exit":
+                                                    break
                                                 else:
-                                                    print(Fore.RED + "Large.")
+                                                    try:
+                                                        if int(guess) == randnum:
+                                                            print(Fore.GREEN + "YOU WIN!")
+                                                            runnin = 1
+                                                        elif int(guess) < randnum:
+                                                            print(Fore.RED + "Less.")
+                                                        elif int(guess) > randnum:
+                                                            print(Fore.RED + "Large.")
+                                                        else:
+                                                            print("Unknown value.")
+                                                    except:
+                                                        print("Unknown value.")
                                         if numcmd == "exit":
                                             break
                                         if numcmd == "":
                                             space = 0
                                         else:
-                                            print(Fore.RED+"Unknown value.")
+                                            print("")
                                 case "exit":
                                     self.clear()
                                     sys.exit(0)
