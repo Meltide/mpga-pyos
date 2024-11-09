@@ -21,22 +21,23 @@ class Init: #初始化
             initing=self.cfg["system"]
             self.ver = self.cfg["version"]
 
-        with open('config.json','w',encoding='utf-8') as f: #写入配置
-            if initing == "":
-                while self.clsn != 1:
-                    print("Which is your host system?\n[1]Windows   [2]Other")
-                    print(
-                        Fore.RED + "Note: The wrong option will cause errors in PyOS."
-                    )
-                    self.cls = input("Input: ")
-                    if self.cls in ("1","2"):
-                        self.cfg["system"]=self.cls
+        
+        if initing == "":
+            while self.clsn != 1:
+                print("Which is your host system?\n[1]Windows   [2]Other")
+                print(
+                    Fore.RED + "Note: The wrong option will cause errors in PyOS."
+                )
+                self.cls = input("Input: ")
+                if self.cls in ("1","2"):
+                    self.cfg["system"]=self.cls
+                    with open('config.json','r+',encoding='utf-8') as f: #写入配置
                         f.write(json.dumps(self.cfg,indent=4,ensure_ascii=False))
-                        self.clsn = 1
-                    else:
-                        print(f"{Fore.RED}Invalid value! Please retry")
-            else:
-                self.cls = str(initing)
+                    self.clsn = 1
+                else:
+                    print(f"{Fore.RED}Invalid value! Please retry")
+        else:
+            self.cls = str(initing)
         time.sleep(0.5)
         self.clear()
         for i in range(1, 101):
