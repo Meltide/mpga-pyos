@@ -20,7 +20,7 @@
 0. 确保已经安装了 Python 3
 1. 输入以下命令安装依赖
     ```
-    pip install colorama pwinput
+    pip install -r requirements.txt
     ```
 2. 转到 PyOS 所在的目录
 3. 输入 `python pyos.py` 来启动
