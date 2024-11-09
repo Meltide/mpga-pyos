@@ -102,40 +102,9 @@ class PyOS(Init):
                             zshp9k_pre = zshp9k_tm.strftime(" %m/%d %H:%M:%S ")
                             zshp9k = zshp9k_pre
                             if self.error == 1:
-                                cmd = input(
-                                    Back.RED
-                                    + Fore.WHITE
-                                    + " ✘ "
-                                    + errcode
-                                    + " "
-                                    + Back.WHITE
-                                    + Fore.BLACK
-                                    + zshp9k
-                                    + Back.YELLOW
-                                    + " root@localhost "
-                                    + Back.BLUE
-                                    + Fore.WHITE
-                                    + " "
-                                    + self.file
-                                    + " "
-                                    + Back.RESET
-                                    + "> "
-                                )
+                                cmd = input(Back.RED+ Fore.WHITE+ " ✘ "+ errcode+ " "+ Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " root@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
                             else:
-                                cmd = input(
-                                    Back.WHITE
-                                    + Fore.BLACK
-                                    + zshp9k
-                                    + Back.YELLOW
-                                    + " root@localhost "
-                                    + Back.BLUE
-                                    + Fore.WHITE
-                                    + " "
-                                    + self.file
-                                    + " "
-                                    + Back.RESET
-                                    + "> "
-                                )
+                                cmd = input(Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " root@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
 
                             self.error = 0
                             match cmd:
