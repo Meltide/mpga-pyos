@@ -132,3 +132,4 @@ test.py
 pull.sh
 push.sh
 init
+config.json
