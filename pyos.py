@@ -102,9 +102,9 @@ class PyOS(Init):
                             zshp9k_pre = zshp9k_tm.strftime(" %m/%d %H:%M:%S ")
                             zshp9k = zshp9k_pre
                             if self.error == 1:
-                                cmd = input(Back.RED+ Fore.WHITE+ " ✘ "+ errcode+ " "+ Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " root@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
+                                cmd = input(Back.RED+ Fore.WHITE+ " ✘ "+ errcode+ " "+ Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " " + user + "@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
                             else:
-                                cmd = input(Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " root@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
+                                cmd = input(Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " " + user + "@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
 
                             self.error = 0
                             match cmd:
@@ -125,6 +125,15 @@ class PyOS(Init):
                                     print(
                                         "PY OS (R) Core Open Source System " + self.ver
                                     )
+                                case "newuser":
+                                    newname=input('Name: ')
+                                    newpwd=pwinput.pwinput()
+                                    if newname in self.names:
+                                        print(f"{Fore.YELLOW}WARNING: The name was created!")
+                                    self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+                                    with open("config.json","w",encoding="utf-8") as f:
+                                        json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                                    print(f'{Fore.GREEN}Created successfully.')
                                 case "time":
                                     other_StyleTime = times.strftime(
                                         "%Y-%m-%d %H:%M:%S"
