@@ -20,8 +20,6 @@ class Init: #初始化
             self.names=self.cfg["accounts"].keys()
             initing=self.cfg["system"]
             self.ver = self.cfg["version"]
-
-        
         if initing == "":
             while self.clsn != 1:
                 print("Which is your host system?\n[1]Windows   [2]Other")
@@ -81,20 +79,40 @@ class PyOS(Init):
                 newpwd=pwinput.pwinput()
                 if newname in self.names:
                     print(f"{Fore.YELLOW}WARNING: The name was created!")
-                self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
-                with open("config.json","w",encoding="utf-8") as f:
-                    json.dump(self.cfg,f,ensure_ascii=False,indent=4)
-                print(f'{Fore.GREEN}Created successfully.')
-            elif user in self.names:
+                elif newname in ("create","reset name","reset pwd"): #防止卡出bug
+                    print(f"{Fore.RED}Invalid username!")
+                else:
+                    self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+                    with open("config.json","r+",encoding="utf-8") as f:
+                        json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                    print(f'{Fore.GREEN}Created successfully.')
+            elif user=="reset name": #重置用户名
+                oldname=input('OldName: ')
+                stpasswd = base64.b64decode(self.cfg["accounts"][oldname].strip()).decode("utf-8")
+                pwd=pwinput.pwinput()
+                if pwd==stpasswd:
+                    newname=input("NewName: ")
+                    del self.cfg["accounts"][oldname]
+                    self.cfg["accounts"][newname]=base64.b64encode(pwd.encode("utf-8")).decode("utf-8")
+                    with open("config.json","r+",encoding="utf-8") as f:
+                        json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                    print(f'{Fore.GREEN}Resetted successfully.')
+            elif user=="reset pwd": #重置密码
+                name=input('Name: ')
+                stpasswd = base64.b64decode(self.cfg["accounts"][name].strip()).decode("utf-8")
+                oldpwd=pwinput.pwinput("OldPassword: ")
+                if oldpwd==stpasswd:
+                    newpwd=pwinput.pwinput("NewPassword: ")
+                    self.cfg["accounts"][name]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+                    with open("config.json","r+",encoding="utf-8") as f:
+                        json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                    print(f'{Fore.GREEN}Resetted successfully.')
+            elif user in self.names: #正常登录
+                stpasswd = base64.b64decode(self.cfg["accounts"][user].strip()).decode("utf-8")
                 while self.count < 3:
-                    stpasswd = base64.b64decode(self.cfg["accounts"][user].strip()).decode("utf-8")
                     passwd = pwinput.pwinput()
                     if passwd == stpasswd:
-                        print(
-                            "Last login: "
-                            + Fore.CYAN
-                            + times.strftime("%y/%m/%d %H:%M:%S")
-                        )
+                        print("Last login: "+ Fore.CYAN+ times.strftime("%y/%m/%d %H:%M:%S"))
                         time.sleep(0.45)
                         print("")
                         while self.count < 3:
@@ -271,31 +289,33 @@ class PyOS(Init):
                                     while running == 0:
                                         print("Press 'start' to start, 'exit' to exit.")
                                         numcmd = input("> ")
-                                        if numcmd == "start":
-                                            print(Fore.BLUE + "GAME START")
-                                            while runnin == 0:
-                                                guess = input(f"Enter the number of guesses {Style.DIM}(Press 'exit' to exit)\n{Style.RESET_ALL}> ")
-                                                if guess == "exit":
-                                                    break
-                                                else:
-                                                    try:
-                                                        if int(guess) == randnum:
-                                                            print(Fore.GREEN + "YOU WIN!")
-                                                            runnin = 1
-                                                        elif int(guess) < randnum:
-                                                            print(Fore.RED + "Less.")
-                                                        elif int(guess) > randnum:
-                                                            print(Fore.RED + "Large.")
-                                                        else:
+                                        match numcmd:
+                                            case "start":
+                                                print(Fore.BLUE + "GAME START")
+                                                while runnin == 0:
+                                                    guess = input(f"Enter the number of guesses {Style.DIM}(Press 'exit' to exit)\n{Style.RESET_ALL}> ")
+                                                    if guess == "exit":
+                                                        break
+                                                    else:
+                                                        try:
+                                                            match int(guess):
+                                                                case x if x < randnum:
+                                                                    print(Fore.RED + "Less.")
+                                                                case x if x > randnum:
+                                                                    print(Fore.RED + "Large.")
+                                                                case x if x == randnum:
+                                                                    print(Fore.GREEN + "YOU WIN!")
+                                                                    runnin = 1
+                                                                case _:
+                                                                    print("Unknown value.")
+                                                        except:
                                                             print("Unknown value.")
-                                                    except:
-                                                        print("Unknown value.")
-                                        if numcmd == "exit":
-                                            break
-                                        if numcmd == "":
-                                            space = 0
-                                        else:
-                                            print("")
+                                            case "exit":
+                                                break
+                                            case "":
+                                                space = 0
+                                            case _:
+                                                print("")
                                 case "exit":
                                     self.clear()
                                     sys.exit(0)
@@ -304,9 +324,7 @@ class PyOS(Init):
                                     s1 = 0
                                     while s1 == 0:
                                         try:
-                                            formula = input(
-                                                "Enter the formula to be calculated (Type 'exit' to exit):\n> "
-                                            )
+                                            formula = input("Enter the formula to be calculated (Type 'exit' to exit):\n> ")
                                             if formula == "exit":
                                                 s1 = 1
                                             elif not all(char in '0123456789+-*/' for char in formula): #防止恶意运行Python其他代码
@@ -316,27 +334,11 @@ class PyOS(Init):
                                         except Exception as e:
                                             print(Fore.RED+"Input error.")
                                 case "neofetch":
-                                    print(
-                                        Fore.BLUE
-                                        + "  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             "
-                                    )
-                                    print(
-                                        Fore.BLUE
-                                        + "root"
-                                        + Fore.RESET
-                                        + "@"
-                                        + Fore.BLUE
-                                        + "localhost"
-                                    )
+                                    print(Fore.BLUE+ "  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
+                                    print(Fore.BLUE+ "root"+ Fore.RESET+ "@"+ Fore.BLUE+ "localhost")
                                     print("-----------------")
                                     time.sleep(0.05)
-                                    print(
-                                        Fore.BLUE
-                                        + "OS"
-                                        + Fore.RESET
-                                        + ": MPGA PyOS V"
-                                        + self.ver
-                                        + " aarch64"
+                                    print(Fore.BLUE+ "OS"+ Fore.RESET+ ": MPGA PyOS V"+ self.ver+ " aarch64"
                                     )
                                     if self.cls == "1":
                                         host = "Windows CMD"
@@ -346,19 +348,9 @@ class PyOS(Init):
                                         host = "Unknown"
                                     time.sleep(0.05)
                                     print(Fore.BLUE + "Host" + Fore.RESET + ": " + host)
-                                    print(
-                                        Fore.BLUE
-                                        + "Kernel"
-                                        + Fore.RESET
-                                        + ": PTCORE-V20241013-aarch64"
-                                    )
+                                    print(Fore.BLUE+ "Kernel"+ Fore.RESET+ ": PTCORE-V20241013-aarch64")
                                     time.sleep(0.05)
-                                    print(
-                                        Fore.BLUE
-                                        + "Uptime"
-                                        + Fore.RESET
-                                        + ": 9d, 4h, 19m, 27s"
-                                    )
+                                    print(Fore.BLUE+ "Uptime"+ Fore.RESET+ ": 9d, 4h, 19m, 27s")
                                     time.sleep(0.05)
                                     print(
                                         Fore.BLUE
@@ -424,6 +416,9 @@ class PyOS(Init):
                                         time.sleep(0.5)
                                     self.clear()
                                     sys.exit(0)
+                                case "restart":
+                                    self.clear()
+                                    PyOS()
                                 case _:
                                     print("Unknown command.")
                                     self.error = 1
