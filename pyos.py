@@ -21,19 +21,14 @@ class Init: #初始化
             initing=self.cfg["system"]
             self.ver = self.cfg["version"]
         if initing == "":
-            while self.clsn != 1:
-                print("Which is your host system?\n[1]Windows   [2]Other")
-                print(
-                    Fore.RED + "Note: The wrong option will cause errors in PyOS."
-                )
-                self.cls = input("Input: ")
-                if self.cls in ("1","2"):
-                    self.cfg["system"]=self.cls
-                    with open('config.json','r+',encoding='utf-8') as f: #写入配置
-                        f.write(json.dumps(self.cfg,indent=4,ensure_ascii=False))
-                    self.clsn = 1
-                else:
-                    print(f"{Fore.RED}Invalid value! Please retry")
+            if os.name=="nt": #Windows系统
+                self.cls=1
+            else: #其他系统
+                self.cls=2 
+            self.cfg["system"]=self.cls
+            with open('config.json','r+',encoding='utf-8') as f: #写入配置
+                f.write(json.dumps(self.cfg,indent=4,ensure_ascii=False))
+            self.clsn = 1
         else:
             self.cls = str(initing)
         time.sleep(0.5)
@@ -71,6 +66,7 @@ class Init: #初始化
 class login(Init):
     def __init__(self):
         super().__init__()
+        errcode = str(random.randint(100, 999))
         times = datetime.datetime.now()
         while self.count < 3:
             user = input("localhost login: ")
@@ -138,16 +134,13 @@ class login(Init):
                         print(f"{Style.DIM}Tip: You can find the default password in the passwd file.")
             else:
                 print("Invalid user! Please retry")
-                print(Style.DIM + "Tip: 'Root' is the default user.")
+                print(Style.DIM + "Tip: 'root' is the default user.")
 
 class PyOS(login):
     def run(self,cmd):
         match cmd:
             case "ls": #列出当前目录下的文件和子目录
-                if self.file == "~":
-                    print("Downloads  Documents  Music  Pictures")
-                elif self.file == "/":
-                    print("home")
+                print(*os.listdir(os.getcwd()))
             case "cd" | "cd ~":
                 self.file = "~"
             case "cd ..":
@@ -170,7 +163,7 @@ class PyOS(login):
                     json.dump(self.cfg,f,ensure_ascii=False,indent=4)
                 print(f'{Fore.GREEN}Created successfully.')
             case "time":
-                other_StyleTime = times.strftime(
+                other_StyleTime = time.strftime(
                     "%Y-%m-%d %H:%M:%S"
                 )
                 print(other_StyleTime)
@@ -444,4 +437,7 @@ class PyOS(login):
 
 
 if __name__ == "__main__":
-    PyOS()
+    try:
+        PyOS()
+    except KeyboardInterrupt:
+        print(f"\n{Fore.RED}You exited PyOS just now!")
