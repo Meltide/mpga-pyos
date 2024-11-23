@@ -19,13 +19,13 @@ class Init: #初始化
             self.cfg=json.load(f)
             self.names=self.cfg["accounts"].keys()
             initing=self.cfg["system"]
-            self.ver = self.cfg["version"]
+            self.ver = "2.5"
         if initing == "":
-            if os.name=="nt": #Windows系统
-                self.cls=1
+            if os.name == "nt": #Windows系统
+                self.cls = "1"
             else: #其他系统
-                self.cls=2 
-            self.cfg["system"]=self.cls
+                self.cls = "2" 
+            self.cfg["system"] = self.cls
             with open('config.json','r+',encoding='utf-8') as f: #写入配置
                 f.write(json.dumps(self.cfg,indent=4,ensure_ascii=False))
             self.clsn = 1
