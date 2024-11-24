@@ -19,7 +19,8 @@ class Init: #初始化
             self.cfg=json.load(f)
             self.names=self.cfg["accounts"].keys()
             initing=self.cfg["system"]
-            self.ver = "2.5"
+            self.ver = "2.6"
+            self.core = "20241124"
         if initing == "":
             if os.name == "nt": #Windows系统
                 self.cls = "1"
@@ -353,12 +354,12 @@ class PyOS(login):
                 if self.cls == "1":
                     host = "Windows CMD"
                 elif self.cls == "2":
-                    host = "UNIX Shell"
+                    host = "POSIX Shell"
                 else:
                     host = "Unknown"
                 time.sleep(0.05)
                 print(Fore.BLUE + "Host" + Fore.RESET + ": " + host)
-                print(Fore.BLUE+ "Kernel"+ Fore.RESET+ ": PTCORE-V20241013-aarch64")
+                print(Fore.BLUE+ "Kernel"+ Fore.RESET+ ": PTCORE-V" + self.core + "-aarch64")
                 time.sleep(0.05)
                 print(Fore.BLUE+ "Uptime"+ Fore.RESET+ ": 9d, 4h, 19m, 27s")
                 time.sleep(0.05)
