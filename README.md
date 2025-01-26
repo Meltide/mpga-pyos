@@ -32,8 +32,8 @@
 输入 `help` 获取帮助
 
 ## 界面截图
-![img](https://www.freeimg.cn/i/2024/09/14/66e59d203e97d.webp)
-![1000066121](https://github.com/user-attachments/assets/9bb17444-5d15-4e62-b976-1e61a6156a62)
+![img](https://pic1.imgdb.cn/item/679621f1d0e0a243d4f8171a.jpg)
+![1000066121](https://pic1.imgdb.cn/item/67962212d0e0a243d4f8172e.jpg)
 
 ----
 ###### 注意：2.0版本开始不在提供已编译exe文件，请直接下载源码 <br><br> 本版本实现不支持 `Python < 3.10` ！

@@ -338,6 +338,7 @@ class PyOS(login):
                         with open("config.json", "r+", encoding="utf-8") as f:
                             self.cfg["hostname"] = self.hostname
                             json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                        print(f"{Fore.GREEN}Hostname change successfully.")
                     elif self.hostcho == "2":
                         break
                     else:
