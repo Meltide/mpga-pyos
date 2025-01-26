@@ -32,8 +32,10 @@
 输入 `help` 获取帮助
 
 ## 界面截图
-![img](https://pic1.imgdb.cn/item/679621f1d0e0a243d4f8171a.jpg)
-![1000066121](https://pic1.imgdb.cn/item/67962212d0e0a243d4f8172e.jpg)
+![1000082216](https://github.com/user-attachments/assets/735dfbaa-40f8-4072-8dd9-74f740f921b5)
+![1000082218](https://github.com/user-attachments/assets/c553ce1f-9d22-48db-9fd5-9d8d11bfa4e3)
+
+
 
 ----
 ###### 注意：2.0版本开始不在提供已编译exe文件，请直接下载源码 <br><br> 本版本实现不支持 `Python < 3.10` ！
