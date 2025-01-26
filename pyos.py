@@ -1,8 +1,7 @@
 import time,datetime,calendar #时间日期库
 import pwinput #密码隐藏库
 import os,sys #系统底层库
-# import psutil as ps
-# 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
+import psutil
 import random #随机库
 import base64 #加解密库
 from colorama import init, Fore, Back, Style #彩色文字库
@@ -374,16 +373,11 @@ class PyOS(login):
                 print(f"{Fore.BLUE}Host{Fore.RESET}: {host}")
                 print(f"{Fore.BLUE}Kernel{Fore.RESET}: PTCORE-V{self.core}-aarch64")
                 time.sleep(0.05)
-                print(f"{Fore.BLUE}Uptime{Fore.RESET}: 9d, 4h, 19m, 27s")
-                time.sleep(0.05)
-                print(f"{Fore.BLUE}Packages{Fore.RESET}: {self.pkg}")
                 print(f"{Fore.BLUE}Shell{Fore.RESET}: pysh {self.pyshver}")
                 time.sleep(0.05)
-                # print(Fore.BLUE + "CPU" + Fore.RESET + ": ("+ps.cpu_count(logical=False)+") @ "+ps.cpu_freq()/1000+"Ghz")
-                # 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
-                print(f"{Fore.BLUE}CPU{Fore.RESET}: (8) @ 2.035Ghz")
+                print(f"{Fore.BLUE}CPU{Fore.RESET}: ({psutil.cpu_count()}) @ {psutil.cpu_freq().max  / (1024):.2f}Ghz")
                 time.sleep(0.05)
-                print(f"{Fore.BLUE}Memory{Fore.RESET}: {str(random.randint(1024, 15364))}MiB/15364MiB")
+                print(f"{Fore.BLUE}Memory{Fore.RESET}: {psutil.virtual_memory().used / (1048576):.2f}MiB/{psutil.virtual_memory().total / (1048576):.2f}MiB")
                 time.sleep(0.05)
                 print("")
                 print(
