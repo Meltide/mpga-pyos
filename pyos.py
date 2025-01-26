@@ -18,20 +18,14 @@ class Init: #初始化
         with open('config.json','r',encoding='utf-8') as f: #读取配置
             self.cfg=json.load(f)
             self.names=self.cfg["accounts"].keys()
-            initing=self.cfg["system"]
-            self.ver = "2.6"
-            self.core = "20241124"
-        if initing == "":
-            if os.name == "nt": #Windows系统
-                self.cls = "1"
-            else: #其他系统
-                self.cls = "2" 
-            self.cfg["system"] = self.cls
-            with open('config.json','r+',encoding='utf-8') as f: #写入配置
-                f.write(json.dumps(self.cfg,indent=4,ensure_ascii=False))
-            self.clsn = 1
-        else:
-            self.cls = str(initing)
+            self.hostname = self.cfg["hostname"]
+            self.ver = "2.7"
+            self.pyshver = "1.2.0"
+            self.core = "20250126"
+        if os.name == "nt": #Windows系统
+            self.cls = 1
+        else: #其他系统
+            self.cls = 2
         time.sleep(0.5)
         self.clear()
         for i in range(1, 101):
@@ -58,9 +52,9 @@ class Init: #初始化
         self.file = "~"
 
     def clear(self):
-        if self.cls == "1":
+        if self.cls == 1:
             i = os.system("cls")
-        elif self.cls == "2":
+        elif self.cls == 2:
             i = os.system("clear")
 
 
@@ -70,8 +64,8 @@ class login(Init):
         errcode = str(random.randint(100, 999))
         times = datetime.datetime.now()
         while self.count < 3:
-            user = input("localhost login: ")
-            if user=="create": #可新建账户
+            self.user = input(f"{self.hostname} login: ")
+            if self.user=="create": #可新建账户
                 newname=input('Name: ')
                 newpwd=pwinput.pwinput()
                 if newname in self.names:
@@ -83,7 +77,7 @@ class login(Init):
                     with open("config.json","r+",encoding="utf-8") as f:
                         json.dump(self.cfg,f,ensure_ascii=False,indent=4)
                     print(f'{Fore.GREEN}Created successfully.')
-            elif user=="reset name": #重置用户名
+            elif self.user=="reset name": #重置用户名
                 oldname=input('OldName: ')
                 stpasswd = base64.b64decode(self.cfg["accounts"][oldname].strip()).decode("utf-8")
                 pwd=pwinput.pwinput()
@@ -96,7 +90,7 @@ class login(Init):
                     print(f'{Fore.GREEN}Resetted successfully.')
                 else:
                     print(f"{Fore.RED}ERROR: Invalid username or password!")
-            elif user=="reset pwd": #重置密码
+            elif self.user=="reset pwd": #重置密码
                 name=input('Name: ')
                 stpasswd = base64.b64decode(self.cfg["accounts"][name].strip()).decode("utf-8")
                 oldpwd=pwinput.pwinput("OldPassword: ")
@@ -108,8 +102,8 @@ class login(Init):
                     print(f'{Fore.GREEN}Resetted successfully.')
                 else:
                     print(f"{Fore.RED}ERROR: Invalid username or password!")
-            elif user in self.names: #正常登录
-                stpasswd = base64.b64decode(self.cfg["accounts"][user].strip()).decode("utf-8")
+            elif self.user in self.names: #正常登录
+                stpasswd = base64.b64decode(self.cfg["accounts"][self.user].strip()).decode("utf-8")
                 while self.count < 3:
                     passwd = pwinput.pwinput()
                     if passwd == stpasswd:
@@ -121,9 +115,9 @@ class login(Init):
                             zshp9k_pre = zshp9k_tm.strftime(" %m/%d %H:%M:%S ")
                             zshp9k = zshp9k_pre
                             if self.error == 1:
-                                self.cmd = input(Back.RED+ Fore.WHITE+ " ✘ "+ errcode+ " "+ Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " " + user + "@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
+                                self.cmd = input(f"{Back.RED}{Fore.WHITE} ✘ {errcode} {Back.WHITE}{Fore.BLACK}{zshp9k}{Back.YELLOW} {self.user}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.file} {Back.RESET}> ")
                             else:
-                                self.cmd = input(Back.WHITE+ Fore.BLACK+ zshp9k+ Back.YELLOW+ " " + user + "@localhost "+ Back.BLUE+ Fore.WHITE+ " "+ self.file+ " "+ Back.RESET+ "> ")
+                                self.cmd = input(f"{Back.WHITE}{Fore.BLACK}{zshp9k}{Back.YELLOW} {self.user}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.file} {Back.RESET}> ")
                             self.run(self.cmd)
                     elif passwd == "":
                         print(
@@ -206,22 +200,21 @@ class PyOS(login):
                         print("Invalid value! Please retype.")
                 print(calendar.month(int(y), int(m)))
             case "help":
-                print(Fore.BLUE + "=====[System]=====")
+                print(f"{Back.BLUE} System ")
                 print("ls          View the path")
                 print("version     Show the system's version")
                 print("clear       Clean the screen")
                 print("passwd      Change your password")
-                print(
-                    "neofetch    List all hardware and system version"
-                )
-                print(Fore.BLUE + "=====[Tools]=====")
+                print("neofetch    List all hardware and system version")
+                print("hostman     PyOS Host Manager")
+                print(f"{Back.BLUE} Tools ")
                 print("time        Show the time and date")
                 print("calendar    Show a calendar")
                 print("calc        A simple calculator")
                 print("asciier     Converts characters to ASCII")
-                print(Fore.BLUE + "=====[Games]=====")
+                print(f"{Back.BLUE} Games ")
                 print("numgame     Number guessing game")
-                print(Fore.BLUE + "=====[Power]=====")
+                print(f"{Back.BLUE} Power ")
                 print("exit        Log out")
                 print("shutdown    Shutdown the system")
             case "asciier":
@@ -290,6 +283,7 @@ class PyOS(login):
                     else:
                         print(Fore.RED + "Unknown command.")
             case "numgame":
+                self.error = 0
                 randnum = random.randint(100, 1000)
                 running = 0
                 runnin = 0
@@ -328,10 +322,28 @@ class PyOS(login):
                         case _:
                             print("")
             case "exit":
+                self.error = 0
                 self.clear()
                 sys.exit(0)
                 # break
+            case "hostman":
+                self.error = 0
+                print(f"{Fore.BLUE}PyOS Host Manager")
+                print(f"Your hostname: {Fore.GREEN}{self.hostname}")
+                print("Options:\n(1) Change your hostname\n(2) Exit")
+                while True:
+                    self.hostcho = input("> ")
+                    if self.hostcho == "1":
+                        self.hostname = input("Type new hostname: ")
+                        with open("config.json", "r+", encoding="utf-8") as f:
+                            self.cfg["hostname"] = self.hostname
+                            json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                    elif self.hostcho == "2":
+                        break
+                    else:
+                        print(f"{Fore.RED}Unknown command.")
             case "calc":
+                self.error = 0
                 s1 = 0
                 while s1 == 0:
                     try:
@@ -339,62 +351,38 @@ class PyOS(login):
                         if formula == "exit":
                             s1 = 1
                         elif not all(char in '0123456789+-*/' for char in formula): #防止恶意运行Python其他代码
-                            print(Fore.RED+'Input error.')
+                            print(f"{Fore.RED}Input error.")
                         else:
                             print(f"Result: {Fore.BLUE}{str(eval(formula))}")
                     except Exception as e:
-                        print(Fore.RED+"Input error.")
+                        print(f"{Fore.RED}Input error.")
             case "neofetch":
-                print(Fore.BLUE+ "  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
-                print(Fore.BLUE+ "root"+ Fore.RESET+ "@"+ Fore.BLUE+ "localhost")
+                self.error = 0
+                print(f"{Fore.BLUE}  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
+                print(f"{Fore.BLUE}root{Fore.RESET}@{Fore.BLUE}{self.hostname}")
                 print("-----------------")
                 time.sleep(0.05)
-                print(Fore.BLUE+ "OS"+ Fore.RESET+ ": MPGA PyOS V"+ self.ver+ " aarch64"
-                )
-                if self.cls == "1":
+                print(f"{Fore.BLUE}OS{Fore.RESET}: MPGA PyOS V{self.ver} aarch64")
+                if self.cls == 1:
                     host = "Windows CMD"
-                elif self.cls == "2":
+                elif self.cls == 2:
                     host = "POSIX Shell"
                 else:
                     host = "Unknown"
                 time.sleep(0.05)
-                print(Fore.BLUE + "Host" + Fore.RESET + ": " + host)
-                print(Fore.BLUE+ "Kernel"+ Fore.RESET+ ": PTCORE-V" + self.core + "-aarch64")
+                print(f"{Fore.BLUE}Host{Fore.RESET}: {host}")
+                print(f"{Fore.BLUE}Kernel{Fore.RESET}: PTCORE-V{self.core}-aarch64")
                 time.sleep(0.05)
-                print(Fore.BLUE+ "Uptime"+ Fore.RESET+ ": 9d, 4h, 19m, 27s")
+                print(f"{Fore.BLUE}Uptime{Fore.RESET}: 9d, 4h, 19m, 27s")
                 time.sleep(0.05)
-                print(
-                    Fore.BLUE
-                    + "Packages"
-                    + Fore.RESET
-                    + ": "
-                    + self.pkg
-                )
-                print(
-                    Fore.BLUE
-                    + "Shell"
-                    + Fore.RESET
-                    + ": pysh 1.0.0"
-                )
+                print(f"{Fore.BLUE}Packages{Fore.RESET}: {self.pkg}")
+                print(f"{Fore.BLUE}Shell{Fore.RESET}: pysh {self.pyshver}")
                 time.sleep(0.05)
                 # print(Fore.BLUE + "CPU" + Fore.RESET + ": ("+ps.cpu_count(logical=False)+") @ "+ps.cpu_freq()/1000+"Ghz")
                 # 由于 psutil 在实际运行的时候有一些问题，所以暂时禁用
-                print(
-                    Fore.BLUE
-                    + "CPU"
-                    + Fore.RESET
-                    + ": (8) @ 2.035Ghz"
-                )
+                print(f"{Fore.BLUE}CPU{Fore.RESET}: (8) @ 2.035Ghz")
                 time.sleep(0.05)
-                print(
-                    Fore.BLUE
-                    + "Memory"
-                    + Fore.RESET
-                    + ": "
-                    + str(random.randint(1024, 15364))
-                    + "MiB"
-                    + "/15364MiB"
-                )
+                print(f"{Fore.BLUE}Memory{Fore.RESET}: {str(random.randint(1024, 15364))}MiB/15364MiB")
                 time.sleep(0.05)
                 print("")
                 print(
@@ -419,8 +407,10 @@ class PyOS(login):
             case "":
                 space = 0
             case "clear":
+                self.error = 0
                 self.clear()
             case "shutdown":
+                self.error = 0
                 print(Fore.BLUE + "Shutting down")
                 for i in range(5):
                     print(".", end="")
@@ -428,6 +418,7 @@ class PyOS(login):
                 self.clear()
                 sys.exit(0)
             case "restart":
+                self.error = 0
                 self.clear()
                 PyOS()
             case _:
