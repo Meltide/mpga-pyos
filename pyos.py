@@ -20,7 +20,7 @@ class Init: #初始化
             self.hostname = self.cfg["hostname"]
             self.ver = "2.7"
             self.pyshver = "1.2.0"
-            self.core = "20250126"
+            self.core = "20250127"
         if os.name == "nt": #Windows系统
             self.cls = 1
         else: #其他系统
