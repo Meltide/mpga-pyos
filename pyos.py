@@ -12,15 +12,14 @@ class Init: #初始化
         init(autoreset=True)
         self.clsn = 0
         self.error = 0
-        self.pkg = "8 (sys)"
         self.tips = ["You can find the default password in the passwd file.", "Maybe the coverter is useless :)", "'root' is the default user.", "Is this file system real?", "Columns make the calculator work."]      
         with open('config.json','r',encoding='utf-8') as f: #读取配置
             self.cfg=json.load(f)
             self.names=self.cfg["accounts"].keys()
             self.hostname = self.cfg["hostname"]
-            self.ver = "2.7"
+            self.ver = "2.7.1"
             self.pyshver = "1.2.0"
-            self.core = "20250127"
+            self.core = "20250202"
         if os.name == "nt": #Windows系统
             self.cls = 1
         else: #其他系统
@@ -40,7 +39,7 @@ class Init: #初始化
             Fore.YELLOW + "Make PyOS Great Again!\n",
             "Tip: " + random.choice(self.tips),
             Fore.MAGENTA
-            + "\nContributors: MeltIce, Yukari2024, EricDing618\nVisit this project in github: github.com/Meltide/mpga-pyos",
+            + "\nContributors: MeltIce, Yukari2024, EricDing618\nVisit this project in github: github.com/Meltide/mpga-pyos\nLifeinvader Studio Telegram Group: @MeetLifeinvader",
             Fore.CYAN
             + "\nAlso try PyOS's improved version by minqwq and bibimingming!\n",
         ]
