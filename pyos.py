@@ -118,10 +118,7 @@ class login(Init):
                                 self.cmd = input(f"{Back.WHITE}{Fore.BLACK}{zshp9k}{Back.YELLOW} {self.user}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.file} {Back.RESET}> ")
                             self.run(self.cmd)
                     elif passwd == "":
-                        print(
-                            Style.DIM
-                            + "Tip: You can find the default password in the passwd file."
-                        )
+                        print(f"{Style.DIM}Tip: You can find the default password in the passwd file.")
                     else:
                         print("Error password! Please retry")
                         print(f"{Style.DIM}Tip: You can find the default password in the passwd file.")
@@ -133,52 +130,111 @@ class PyOS(login):
     def run(self,cmd):
         match cmd:
             case "ls": #列出当前目录下的文件和子目录
+                self.error = 0
                 print(*os.listdir(os.getcwd()))
             case "cd" | "cd ~":
+                self.error = 0
                 self.file = "~"
             case "cd ..":
+                self.error = 0
                 self.file = "/"
             case "cd /":
+                self.error = 0
                 self.file = "/"
             case "cd home":
+                self.error = 0
                 self.file = "~"
             case "version":
-                print(
-                    "PY OS (R) Core Open Source System " + self.ver
-                )
-            case "newuser":
-                newname=input('Name: ')
-                newpwd=pwinput.pwinput()
-                if newname in self.names:
-                    print(f"{Fore.YELLOW}WARNING: The name was created!")
-                self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
-                with open("config.json","w",encoding="utf-8") as f:
-                    json.dump(self.cfg,f,ensure_ascii=False,indent=4)
-                print(f'{Fore.GREEN}Created successfully.')
+                self.error = 0
+                print(f"PY OS (R) Core Open Source System {self.ver}")
+
+            # 用户账户设定 开始
+            case "userman":
+                self.error = 0
+                def usermenu():
+                    print(f"{Fore.BLUE}PyOS User Manager")
+                    print(f"Now login: {Fore.GREEN}{self.user}")
+                    print("Options:\n",
+                          "(1) Create a new user\n",
+                          "(2) Change my password\n",
+                          "(3) Exit")
+                usermenu()
+                while True:
+                    self.usercho = input("> ")
+                    if self.usercho == "1":
+                        newname=input('Name: ')
+                        newpwd=pwinput.pwinput()
+                        if newname in self.names:
+                            print(f"{Fore.YELLOW}WARNING: The name was created!")
+                        self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+                        with open("config.json","w",encoding="utf-8") as f:
+                            json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                        print(f'{Fore.GREEN}Created successfully.')
+                        usermenu()
+                    # elif self.usercho == "3":
+                        # oldname=input('OldName: ')
+                        # stpasswd = base64.b64decode(self.cfg["accounts"][oldname].strip()).decode("utf-8")
+                        # pwd=pwinput.pwinput()
+                        # if pwd==stpasswd and oldname in self.cfg["accounts"].keys() and oldname!="root":
+                            # newname=input("NewName: ")
+                            # del self.cfg["accounts"][oldname]
+                            # self.cfg["accounts"][newname]=base64.b64encode(pwd.encode("utf-8")).decode("utf-8")
+                            # with open("config.json","r+",encoding="utf-8") as f:
+                                # json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                            # print(f'{Fore.GREEN}Resetted successfully.')
+                        # else:
+                            # print(f"{Fore.RED}ERROR: Invalid username or password!")
+                        # usermenu()
+                    elif self.usercho == "2":
+                        npassword = input("Input new password: ")
+                        with open("pwd", "r+") as pswd:
+                            bs64 = str(base64.b64encode(npassword.encode("utf-8")))
+                            pswd.truncate()
+                            pswd.write(bs64.strip("b'"))
+                        print("The password takes effect after the restart.")
+                        usermenu()
+                    elif self.usercho == "3":
+                        break
+                    else:
+                        print(f"{Fore.RED}Unknown command.")
+            case "hostman":
+                self.error = 0
+                print(f"{Fore.BLUE}PyOS Host Manager")
+                print(f"Your hostname: {Fore.GREEN}{self.hostname}")
+                print("Options:\n",
+                      "(1) Change your hostname\n",
+                      "(2) Exit")
+                while True:
+                    self.hostcho = input("> ")
+                    if self.hostcho == "1":
+                        self.hostname = input("Type new hostname: ")
+                        with open("config.json", "r+", encoding="utf-8") as f:
+                            self.cfg["hostname"] = self.hostname
+                            json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                        print(f"{Fore.GREEN}Hostname change successfully.")
+                    elif self.hostcho == "2":
+                        break
+                    else:
+                        print(f"{Fore.RED}Unknown command.")
             case "time":
-                other_StyleTime = time.strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+                self.error = 0
+                other_StyleTime = time.strftime("%Y-%m-%d %H:%M:%S")
                 print(other_StyleTime)
             case "passwd":
+                self.error = 0
                 npassword = input("Input new password: ")
                 with open("pwd", "r+") as pswd:
-                    bs64 = str(
-                        base64.b64encode(npassword.encode("utf-8"))
-                    )
+                    bs64 = str(base64.b64encode(npassword.encode("utf-8")))
                     pswd.truncate()
                     pswd.write(bs64.strip("b'"))
-                print(
-                    "The password takes effect after the restart."
-                )
+                print("The password takes effect after the restart.")
             case "calendar":
+                self.error = 0
                 today = datetime.datetime.today()
                 yy = str(today.year)  # int(input("Year: "))
                 mm = str(today.month)  # int(input("Month: "))
                 dd = str(today.day)
-                print(
-                    Fore.BLUE + "Now: " + yy + "-" + mm + "-" + dd
-                )
+                print(f"Now: {Fore.BLUE}{yy}-{mm}-{dd}")
                 c1 = 0
                 c2 = 0
                 while c1 == 0:
@@ -198,13 +254,13 @@ class PyOS(login):
                         print("Invalid value! Please retype.")
                 print(calendar.month(int(y), int(m)))
             case "help":
+                self.error = 0
                 print(f"{Back.BLUE} System ")
                 print("ls          View the path")
                 print("version     Show the system's version")
                 print("clear       Clean the screen")
-                print("passwd      Change your password")
                 print("neofetch    List all hardware and system version")
-                print("newuser     Create a new user")
+                print("userman     PyOS User Manager")
                 print("hostman     PyOS Host Manager")
                 print(f"{Back.BLUE} Tools ")
                 print("time        Show the time and date")
@@ -217,6 +273,7 @@ class PyOS(login):
                 print("exit        Log out")
                 print("shutdown    Shutdown the system")
             case "asciier":
+                self.error = 0
                 ascount = 0
                 while ascount == 0:
                     print(Fore.BLUE + "ASCII Dic")
@@ -325,23 +382,6 @@ class PyOS(login):
                 self.clear()
                 sys.exit(0)
                 # break
-            case "hostman":
-                self.error = 0
-                print(f"{Fore.BLUE}PyOS Host Manager")
-                print(f"Your hostname: {Fore.GREEN}{self.hostname}")
-                print("Options:\n(1) Change your hostname\n(2) Exit")
-                while True:
-                    self.hostcho = input("> ")
-                    if self.hostcho == "1":
-                        self.hostname = input("Type new hostname: ")
-                        with open("config.json", "r+", encoding="utf-8") as f:
-                            self.cfg["hostname"] = self.hostname
-                            json.dump(self.cfg,f,ensure_ascii=False,indent=4)
-                        print(f"{Fore.GREEN}Hostname change successfully.")
-                    elif self.hostcho == "2":
-                        break
-                    else:
-                        print(f"{Fore.RED}Unknown command.")
             case "calc":
                 self.error = 0
                 s1 = 0
