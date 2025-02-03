@@ -17,9 +17,9 @@ class Init: #初始化
             self.cfg=json.load(f)
             self.names=self.cfg["accounts"].keys()
             self.hostname = self.cfg["hostname"]
-            self.ver = "2.7.1"
+            self.ver = "2.8"
             self.pyshver = "1.2.0"
-            self.core = "20250202"
+            self.core = "20250203"
         if os.name == "nt": #Windows系统
             self.cls = 1
         else: #其他系统
@@ -272,6 +272,7 @@ class PyOS(login):
                 print("asciier     Converts characters to ASCII")
                 print(f"{Back.BLUE} Games ")
                 print("numgame     Number guessing game")
+                print("finguess    Finger-gussing game")
                 print(f"{Back.BLUE} Power ")
                 print("exit        Log out")
                 print("shutdown    Shutdown the system")
@@ -380,6 +381,38 @@ class PyOS(login):
                             space = 0
                         case _:
                             print("")
+            case "finguess":
+                self.error = 0
+                options = ["1", "2", "3", "exit"]
+                print(f"{Fore.BLUE}Finger-guess Game")
+                while True:
+                    player_choice = input(f"Punch ({Fore.BLUE}1{Fore.RESET}:Rock/{Fore.BLUE}2{Fore.RESET}:Scissors/{Fore.BLUE}3{Fore.RESET}:Paper/{Fore.BLUE}exit{Fore.RESET}:Exiting the game)\n>")
+                    if player_choice not in options:
+                        print("Unknown choice")
+                        continue
+                    elif player_choice == "exit":
+                        break
+                    if player_choice == "1":
+                        player = "Rock"
+                    elif player_choice == "2":
+                        player = "Scissors"
+                    elif player_choice == "3":
+                        player = "Paper"
+                    computer_choice = random.choice(options)
+                    if computer_choice == "1":
+                        computer = "Rock"
+                    elif computer_choice == "2":
+                        computer = "Scissors"
+                    elif computer_choice == "3":
+                        computer = "Paper"
+                    print(f"Player: {Fore.CYAN}{player}")
+                    print(f"Computer：{Fore.CYAN}{computer}")
+                    if player_choice == computer_choice:
+                        print(f"{Fore.YELLOW}Draw！")
+                    elif (player_choice == "1" and computer_choice == "2") or (player_choice == "2" and computer_choice == "3") or (player_choice == "3" and computer_choice == "1"):
+                        print(f"{Fore.GREEN}Player win!")
+                    else:
+                        print(f"{Fore.RED}Computer win!")
             case "exit":
                 self.error = 0
                 self.clear()
