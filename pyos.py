@@ -204,6 +204,7 @@ class PyOS(login):
                 print("clear       Clean the screen")
                 print("passwd      Change your password")
                 print("neofetch    List all hardware and system version")
+                print("newuser     Create a new user")
                 print("hostman     PyOS Host Manager")
                 print(f"{Back.BLUE} Tools ")
                 print("time        Show the time and date")
