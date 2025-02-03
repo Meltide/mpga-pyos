@@ -186,13 +186,16 @@ class PyOS(login):
                             # print(f"{Fore.RED}ERROR: Invalid username or password!")
                         # usermenu()
                     elif self.usercho == "2":
-                        npassword = input("Input new password: ")
-                        with open("pwd", "r+") as pswd:
-                            bs64 = str(base64.b64encode(npassword.encode("utf-8")))
-                            pswd.truncate()
-                            pswd.write(bs64.strip("b'"))
-                        print("The password takes effect after the restart.")
-                        usermenu()
+                        stpasswd = base64.b64decode(self.cfg["accounts"][self.user].strip()).decode("utf-8")
+                        oldpwd = pwinput.pwinput("Old Password: ")
+                        if oldpwd == stpasswd:
+                            newpwd = pwinput.pwinput("New Password: ")
+                            self.cfg["accounts"][self.user]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+                            with open("config.json","r+",encoding="utf-8") as f:
+                                json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                            print(f'{Fore.GREEN}Resetted successfully.')
+                        else:
+                            print(f"{Fore.RED}ERROR: Invalid username or password!")
                     elif self.usercho == "3":
                         break
                     else:
