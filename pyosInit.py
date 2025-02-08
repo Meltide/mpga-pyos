@@ -24,13 +24,13 @@ class Init: #初始化
         else: #其他系统
             self.cls = 2
         time.sleep(0.5)
-        #self.clear()
+        self.clear()
         for i in range(1, 101):
             print("\r", end="")
             print(f"Starting: {i}%: ", "=" * (i // 8), end="", flush=True)
             # sys.stdout.flush()
             time.sleep(0.005)
-        #self.clear()
+        self.clear()
         self.printlist = [
             Style.DIM + "\nPY OS (R) Core Open Source System " + self.ver,
             Fore.BLUE
