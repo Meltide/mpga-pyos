@@ -1,8 +1,8 @@
-from cmdList.registerCmd import registerCmd
 from colorama import Fore #彩色文字库
 
-def calc(self):
-    self.error = 0
+__doc__="A simple calculator"
+
+def execute(args):
     s1 = 0
     while s1 == 0:
         try:
@@ -15,5 +15,3 @@ def calc(self):
                 print(f"Result: {Fore.BLUE}{str(eval(formula))}")
         except Exception as e:
             print(f"{Fore.RED}Input error.")
-
-registerCmd().register("calc", "A simple calculator", "Tools", calc)

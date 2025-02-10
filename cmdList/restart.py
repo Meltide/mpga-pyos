@@ -1,8 +1,6 @@
-from cmdList.registerCmd import registerCmd
-
-def restart(self):
-    self.error = 0
-    self.clear()
+from pyos import PyOS
+from cmdList.clear import execute as clear
+__doc__="Restart PyOS"
+def execute(self):
+    clear(self)
     PyOS()
-
-registerCmd().register("restart", "Restart PyOS", "Power", restart)

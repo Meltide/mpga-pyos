@@ -1,9 +1,7 @@
-from cmdList.registerCmd import registerCmd
 import sys #系统底层库
 
-def exit(self):
-    self.error = 0
-    self.clear()
+from . import clear
+__doc__="Log out"
+def execute(args):
+    clear.execute(args)
     sys.exit(0)
-
-registerCmd().register("exit", "Log out", "Power", exit)

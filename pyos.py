@@ -1,32 +1,35 @@
 import random #随机库
 from colorama import Fore, Back #彩色文字库
 from pyosLogin import login
-from cmdList.registerCmd import registerCmd
+from cmdList.help import execute as doc
+
+def execute(cmd,args=()):
+    '''支持带参数的命令'''
+    __import__('cmdList.'+cmd,fromlist=["execute"]).execute(args)
 
 class PyOS(login):
-    def run(self,cmd):
-        match cmd:
-            case "cd" | "cd ~":
+    def run(self,cmds:str):
+        cmd=cmds.split(' ')
+        print(cmd)
+        match cmd[0]:
+            case "cd" | "cd ~" | "cd home":
                 self.error = 0
                 self.file = "~"
-            case "cd ..":
+            case "cd .." | "cd /":
                 self.error = 0
                 self.file = "/"
-            case "cd /":
-                self.error = 0
-                self.file = "/"
-            case "cd home":
-                self.error = 0
-                self.file = "~"
-
             case "":
                 space = 0
-
+            case "help":
+                doc(cmd[1] if len(cmd)>1 else self)
             case _:
-                cmdList = registerCmd().shallowCmd
-                if cmdList.get(cmd, False) != False:
-                    cmdList.get(cmd)(self)
-                else:
+                try:
+                    self.error = 0
+                    if len(cmd) > 1:
+                        execute(cmd[0],cmd[1:])
+                    else:
+                        execute(cmd[0],self)
+                except ImportError:
                     print("Unknown command.")
                     self.error = 1
                     errcode = str(random.randint(100, 999))

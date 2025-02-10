@@ -1,7 +1,4 @@
-from cmdList.registerCmd import registerCmd
+__doc__ = "Show the system's version"
 
 def version(self):
-    self.error = 0
     print(f"PY OS (R) Core Open Source System {self.ver}")
-
-registerCmd().register("version", "Show the system's version", "System", version)

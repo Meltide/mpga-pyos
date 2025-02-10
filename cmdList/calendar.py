@@ -1,8 +1,8 @@
-from cmdList.registerCmd import registerCmd
 import datetime, calendar #时间日期库
+from colorama import Fore
 
-def calendar(self):
-    self.error = 0
+__doc__="Show a calendar"
+def execute(args):
     today = datetime.datetime.today()
     yy = str(today.year)  # int(input("Year: "))
     mm = str(today.month)  # int(input("Month: "))
@@ -26,5 +26,3 @@ def calendar(self):
         else:
             print("Invalid value! Please retype.")
     print(calendar.month(int(y), int(m)))
-
-registerCmd().register("calendar", "Show a calendar", "Tools", calendar)

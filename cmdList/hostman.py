@@ -1,8 +1,8 @@
-from cmdList.registerCmd import registerCmd
 from colorama import Fore #彩色文字库
 import json #解析和保存json配置文件
 
-def hostman(self):
+__doc__="PyOS Host Manager"
+def execute(self):
     self.error = 0
     print(f"{Fore.BLUE}PyOS Host Manager")
     print(f"Your hostname: {Fore.GREEN}{self.hostname}")
@@ -21,5 +21,3 @@ def hostman(self):
             break
         else:
             print(f"{Fore.RED}Unknown command.")
-
-registerCmd().register("hostman", "PyOS Host Manager", "System", hostman)

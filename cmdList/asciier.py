@@ -1,8 +1,8 @@
-from cmdList.registerCmd import registerCmd
 from colorama import Fore, Style #彩色文字库
 
-def asciier(self):
-    self.error = 0
+__doc__ = "Converts characters to ASCII"
+
+def execute(args):
     ascount = 0
     while ascount == 0:
         print(Fore.BLUE + "ASCII Dic")
@@ -51,20 +51,12 @@ def asciier(self):
                     space = 0
                 else:
                     try:
-                        print(
-                            "Result: "
-                            + Fore.BLUE
-                            + chr(int(aschx))
-                        )
+                        print("Result: "+ Fore.BLUE+ chr(int(aschx)))
                     except:
-                        print(
-                            Fore.RED + "Invalid value."
-                        )
+                        print(Fore.RED + "Invalid value.")
         elif asciic == "exit":
             break
         elif asciic == "":
             space = 0
         else:
             print(Fore.RED + "Unknown command.")
-
-registerCmd().register("asciier", "Converts characters to ASCII", "Tools", asciier)

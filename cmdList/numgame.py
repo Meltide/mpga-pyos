@@ -1,9 +1,7 @@
-from cmdList.registerCmd import registerCmd
 from colorama import Fore, Style #彩色文字库
 import random #随机库
-
+__doc__ = "Number guessing game"
 def numgame(self):
-    self.error = 0
     randnum = random.randint(100, 1000)
     running = 0
     runnin = 0
@@ -41,5 +39,3 @@ def numgame(self):
                 space = 0
             case _:
                 print("")
-
-registerCmd().register("numgame", "Number guessing game", "Games", numgame)
