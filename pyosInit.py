@@ -22,13 +22,13 @@ class Init: #初始化
             self.pyshver = "1.2.0"
             self.core = "20250203"
         time.sleep(0.5)
-        clear(self)
+        clear(self,[])
         for i in range(1, 101):
             print("\r", end="")
             print(f"Starting: {i}%: ", "=" * (i // 8), end="", flush=True)
             # sys.stdout.flush()
             time.sleep(0.005)
-        clear(self)
+        clear(self,[])
         self.printlist = [
             Style.DIM + "\nPY OS (R) Core Open Source System " + self.ver,
             Fore.BLUE

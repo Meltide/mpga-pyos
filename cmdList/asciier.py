@@ -2,7 +2,7 @@ from colorama import Fore, Style #彩色文字库
 
 __doc__ = "Converts characters to ASCII"
 
-def execute(args):
+def execute(self,args):
     ascount = 0
     while ascount == 0:
         print(Fore.BLUE + "ASCII Dic")

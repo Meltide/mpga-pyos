@@ -2,15 +2,20 @@ import base64 #加解密库
 from colorama import Fore #彩色文字库
 import json #解析和保存json配置文件
 import pwinput #密码输入库
+from textwrap import dedent #格式化输出库
+
 __doc__ = "PyOS User Manager"
-def execute(self):
+
+def execute(self,args):
     def usermenu():
         print(f"{Fore.BLUE}PyOS User Manager")
         print(f"Now login: {Fore.GREEN}{self.user}")
-        print("Options:\n",
-            "(1) Create a new user\n",
-            "(2) Change my password\n",
-            "(3) Exit")
+        print(dedent('''
+            Options:
+            (1) Create a new user
+            (2) Change my password
+            (3) Exit
+            '''))
         usermenu()
         while True:
             self.usercho = input("> ")

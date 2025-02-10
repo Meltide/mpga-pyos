@@ -2,7 +2,7 @@ from colorama import Fore #彩色文字库
 
 __doc__="A simple calculator"
 
-def execute(args):
+def execute(self,args):
     s1 = 0
     while s1 == 0:
         try:
