@@ -3,7 +3,7 @@ import random #随机库
 
 __doc__="Finger-gussing game"
 
-def execute(args):
+def execute(self,args):
     options = ["1", "2", "3", "exit"]
     print(f"{Fore.BLUE}Finger-guess Game")
     while True:
