@@ -1,10 +1,9 @@
-from cmdList.registerCmd import registerCmd
 import base64 #加解密库
 from colorama import Fore #彩色文字库
 import json #解析和保存json配置文件
-
-def userman(self):
-    self.error = 0
+import pwinput #密码输入库
+__doc__ = "PyOS User Manager"
+def execute(self):
     def usermenu():
         print(f"{Fore.BLUE}PyOS User Manager")
         print(f"Now login: {Fore.GREEN}{self.user}")
@@ -54,5 +53,3 @@ def userman(self):
                 break
             else:
                 print(f"{Fore.RED}Unknown command.")
-
-registerCmd().register("userman", "PyOS User Manager", "System", userman)

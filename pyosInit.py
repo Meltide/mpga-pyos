@@ -5,6 +5,8 @@ import os, sys #系统底层库
 from colorama import init, Fore, Style #彩色文字库
 import importlib
 
+from cmdList.clear import execute as clear
+
 class Init: #初始化
     def __init__(self):
         self.initCmd()
@@ -19,18 +21,14 @@ class Init: #初始化
             self.ver = "2.8"
             self.pyshver = "1.2.0"
             self.core = "20250203"
-        if os.name == "nt": #Windows系统
-            self.cls = 1
-        else: #其他系统
-            self.cls = 2
         time.sleep(0.5)
-        self.clear()
+        clear(self)
         for i in range(1, 101):
             print("\r", end="")
             print(f"Starting: {i}%: ", "=" * (i // 8), end="", flush=True)
             # sys.stdout.flush()
             time.sleep(0.005)
-        self.clear()
+        clear(self)
         self.printlist = [
             Style.DIM + "\nPY OS (R) Core Open Source System " + self.ver,
             Fore.BLUE
@@ -47,12 +45,6 @@ class Init: #初始化
             time.sleep(0.1)
         self.count = 0
         self.file = "~"
-
-    def clear(self):
-        if self.cls == 1:
-            i = os.system("cls")
-        elif self.cls == 2:
-            i = os.system("clear")
 
     def initCmd(self):
         # 获取当前绝对路径

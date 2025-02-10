@@ -1,21 +1,21 @@
-from cmdList.registerCmd import registerCmd
 from colorama import Fore, Back #彩色文字库
 import time #时间库
 import psutil
-
-def neofetch(self):
-    self.error = 0
+from cmdList.sysname import execute as sysname
+__doc__="List all hardware and system version"
+def execute(self):
     print(f"{Fore.BLUE}  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
     print(f"{Fore.BLUE}root{Fore.RESET}@{Fore.BLUE}{self.hostname}")
     print("-----------------")
     time.sleep(0.05)
     print(f"{Fore.BLUE}OS{Fore.RESET}: MPGA PyOS V{self.ver} aarch64")
-    if self.cls == 1:
-        host = "Windows CMD"
-    elif self.cls == 2:
-        host = "POSIX Shell"
-    else:
-        host = "Unknown"
+    match sysname(self):
+        case 1:
+            host = "Windows CMD"
+        case 2:
+            host = "POSIX Shell"
+        case _:
+            host = "Unknown"
     time.sleep(0.05)
     print(f"{Fore.BLUE}Host{Fore.RESET}: {host}")
     print(f"{Fore.BLUE}Kernel{Fore.RESET}: PTCORE-V{self.core}-aarch64")
@@ -46,5 +46,3 @@ def neofetch(self):
         + "    "
     )
     print("")
-
-registerCmd().register("neofetch", "List all hardware and system version", "System", neofetch)

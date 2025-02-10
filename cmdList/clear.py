@@ -1,7 +1,7 @@
-from cmdList.registerCmd import registerCmd
+import os
+from . import sysname
 
-def clear(self):
-    self.error = 0
-    self.clear()
+__doc__="Clean the screen"
 
-registerCmd().register("clear", "Clean the screen", "System", clear)
+def execute(args):
+    os.system('cls' if sysname.execute(args)==1 else 'clear')

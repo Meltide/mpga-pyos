@@ -1,19 +1,16 @@
-from cmdList.registerCmd import registerCmd
-from colorama import Back #彩色文字库
+from colorama import Fore
 
-def help(self):
-    cmdList = registerCmd().getCmdList()
-    for i in range(len(cmdList)):
-        category = list(cmdList.keys())
-        sameCategoryCmd = list(cmdList.values())
-        if category[i] != "None":
-            print(f"{Back.BLUE} {category[i]} ")
+__doc__="Get the command list"
+
+cmds=["asciier","calc","calendar","clear","exit","finguess","help","hostman","ls","neofetch","numgame","passwd","restart","shutdown","time","userman","version"]
+def execute(args):
+    if len(args)==0:
+        print("Available commands:")
+        for cmd in cmds:
+            print(cmd+": "+__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__)
+    else:
+        cmd=args[0]
+        if cmd in cmds:
+            print(__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__)
         else:
-            continue
-        for j in range(len(sameCategoryCmd[i])):
-            cmdName: str = list(dict(sameCategoryCmd[i]).keys())[j]
-            cmdDesc: str = list(dict(sameCategoryCmd[i]).values())[j][0]
-            print(f"{cmdName.ljust(12)}{cmdDesc}")
-
-
-registerCmd().register("help", "Get the command list", "None", help)
+            print(Fore.RED+"Command not found")

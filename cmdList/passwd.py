@@ -1,9 +1,7 @@
-from cmdList.registerCmd import registerCmd
 import json #解析和保存json配置文件
 import base64 #加解密库
 
-def passwd(self):
-    self.error = 0
+def execute(self):
     npassword = input("Input new password: ")
     with open("pwd", "r+") as pswd:
         bs64 = str(base64.b64encode(npassword.encode("utf-8")))
@@ -11,4 +9,3 @@ def passwd(self):
         pswd.write(bs64.strip("b'"))
     print("The password takes effect after the restart.")
 
-registerCmd().register("passwd", "Change your password", "System", passwd)

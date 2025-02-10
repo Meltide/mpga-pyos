@@ -1,9 +1,9 @@
-from cmdList.registerCmd import registerCmd
 from colorama import Fore, Style #彩色文字库
 import random #随机库
 
-def finguess(self):
-    self.error = 0
+__doc__="Finger-gussing game"
+
+def execute(args):
     options = ["1", "2", "3", "exit"]
     print(f"{Fore.BLUE}Finger-guess Game")
     while True:
@@ -34,5 +34,3 @@ def finguess(self):
             print(f"{Fore.GREEN}Player win!")
         else:
             print(f"{Fore.RED}Computer win!")
-
-registerCmd().register("finguess", "Finger-gussing game", "Games", finguess)
