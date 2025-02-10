@@ -1,16 +1,25 @@
-from colorama import Fore
+from colorama import Fore,Back
+from textwrap import fill
 
 __doc__="Get the command list"
 
-cmds=["asciier","calc","calendar","clear","exit","finguess","help","hostman","ls","neofetch","numgame","passwd","restart","shutdown","time","userman","version"]
+allcmds={
+    "System":['ls','version','clear','neofetch','userman','hostman'],
+    "Tools":['time','calendar','calc','asciier'],
+    "Games":['numgame','finguess'],
+    "Power":['exit','shutdown','restart']
+}
+
 def execute(self,args):
     if not args:
         print("Available commands:")
-        for cmd in cmds:
-            print(cmd+":",__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__)
+        for types,cmds in allcmds.items():
+            print(Back.BLUE+types)
+            for cmd in cmds:
+                doc=__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__
+                print(f"{cmd:<20} {doc}")
     else:
         cmd=args[0]
-        #print(cmd)
         if cmd in cmds:
             print(cmd+":",__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__)
         else:
