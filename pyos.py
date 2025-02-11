@@ -9,27 +9,26 @@ def execute(cmd,args=()):
 
 class PyOS(login):
     def run(self,cmds:str):
-        cmd=cmds.split(' ')
-        #print(cmd)
-        match cmd[0]:
-            case "":
-                space = 0
-            case "help":
+        try:
+            cmd=cmds.split(' ')
+            cmdname = cmd[0]
+            if cmdname:
+                self.error = 0
                 if len(cmd) > 1:
-                    doc(self,cmd[1:])
-                else:
-                    doc(self,[])
-            case _:
-                try:
-                    self.error = 0
-                    if len(cmd) > 1:
-                        execute(cmd[0],(self,cmd[1:]))
+                    if cmd[1]=='-h':
+                        execute('help',(self,[cmdname]))
                     else:
-                        execute(cmd[0],(self,[]))
-                except ImportError:
-                    print("Unknown command.")
-                    self.error = 1
-                    errcode = str(random.randint(100, 999))
+                        execute(cmdname,(self,cmd[1:]))
+                else:
+                    execute(cmdname,(self,[]))
+            else:
+                space = 0
+        except ImportError:
+            print("Unknown command.")
+            self.error = 1
+            errcode = str(random.randint(100, 999))
+            
+                
 
 
 
