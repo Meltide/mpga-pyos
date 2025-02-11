@@ -4,7 +4,6 @@ import time #时间库
 from colorama import init, Fore, Style #彩色文字库
 from art import text2art #艺术字库
 
-
 from cmdList.clear import execute as clear
 
 class Init: #初始化

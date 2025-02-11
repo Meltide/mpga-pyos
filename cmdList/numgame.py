@@ -1,6 +1,8 @@
 from colorama import Fore, Style #彩色文字库
 import random #随机库
+
 __doc__ = "Number guessing game"
+
 def numgame(self,args):
     randnum = random.randint(100, 1000)
     running = 0
