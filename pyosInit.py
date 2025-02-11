@@ -1,15 +1,13 @@
 import json #解析和保存json配置文件
 import random #随机库
 import time #时间库
-import os, sys #系统底层库
 from colorama import init, Fore, Style #彩色文字库
-import importlib
+from art import text2art #艺术字库
 
 from cmdList.clear import execute as clear
 
 class Init: #初始化
     def __init__(self):
-        self.initCmd()
         init(autoreset=True)
         self.clsn = 0
         self.error = 0
@@ -31,8 +29,7 @@ class Init: #初始化
         clear(self,[])
         self.printlist = [
             Style.DIM + "\nPY OS (R) Core Open Source System " + self.ver,
-            Fore.BLUE
-            + "  __  __ ___  ___   _   \n |  \\/  | _ \\/ __| /_\\  \n | |\\/| |  _/ (_ |/ _ \\ \n |_|  |_|_|  \\___/_/ \\_\\\n                        ",
+            Fore.BLUE + text2art("MPGA", font="small"),
             Fore.YELLOW + "Make PyOS Great Again!\n",
             "Tip: " + random.choice(self.tips),
             Fore.MAGENTA
@@ -45,18 +42,3 @@ class Init: #初始化
             time.sleep(0.1)
         self.count = 0
         self.file = "~"
-
-    def initCmd(self):
-        # 获取当前绝对路径
-        currentPath = os.path.dirname(os.path.realpath(__file__))
-        os.putenv("PYTHONPATH", currentPath)
-
-        # 存储命令的文件夹
-        cmdPath = os.path.join(currentPath, "cmdList")
-
-        # 获取文件夹下所有命令
-        cmdList = os.listdir(cmdPath)
-
-        for cmd in cmdList:
-            if os.path.splitext(cmd)[1] == ".py" and os.path.splitext(cmd)[0] != "registerCmd":
-                importlib.import_module(f"cmdList.{os.path.splitext(cmd)[0]}", currentPath)

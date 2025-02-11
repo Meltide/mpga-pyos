@@ -2,9 +2,12 @@ from colorama import Fore, Back #彩色文字库
 import time #时间库
 import psutil
 from cmdList.sysname import execute as sysname
+from art import text2art
+
 __doc__="List all hardware and system version"
+
 def execute(self,args):
-    print(f"{Fore.BLUE}  __  __ ____   ____    _    \n |  \\/  |  _ \\ / ___|  / \\   \n | |\\/| | |_) | |  _  / _ \\  \n | |  | |  __/| |_| |/ ___ \\ \n |_|  |_|_|    \\____/_/   \\_\\\n                             ")
+    print(Fore.BLUE+text2art("MPGA"))
     print(f"{Fore.BLUE}root{Fore.RESET}@{Fore.BLUE}{self.hostname}")
     print("-----------------")
     time.sleep(0.05)

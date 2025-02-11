@@ -2,6 +2,7 @@ from colorama import Fore #彩色文字库
 import json #解析和保存json配置文件
 
 __doc__="PyOS Host Manager"
+
 def execute(self,args):
     self.error = 0
     print(f"{Fore.BLUE}PyOS Host Manager")
