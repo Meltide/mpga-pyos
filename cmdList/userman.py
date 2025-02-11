@@ -16,7 +16,6 @@ def execute(self,args):
             (2) Change my password
             (3) Exit
             '''))
-        usermenu()
         while True:
             self.usercho = input("> ")
             if self.usercho == "1":
@@ -58,3 +57,4 @@ def execute(self,args):
                 break
             else:
                 print(f"{Fore.RED}Unknown command.")
+    usermenu()

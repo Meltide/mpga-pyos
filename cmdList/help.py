@@ -1,11 +1,10 @@
 from colorama import Fore,Back
-from textwrap import fill
 
 __doc__="Get the command list"
 
 allcmds={
     "System":['ls','version','clear','neofetch','userman','hostman'],
-    "Tools":['time','calendar','calc','asciier'],
+    "Tools":['time','calendar','calc','asciier','help'],
     "Games":['numgame','finguess'],
     "Power":['exit','shutdown','restart']
 }
@@ -20,6 +19,7 @@ def execute(self,args):
                 print(f"{cmd:<20} {doc}")
     else:
         cmd=args[0]
+        cmds=[cmd for category in allcmds.values() for cmd in category]
         if cmd in cmds:
             print(cmd+":",__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__)
         else:
