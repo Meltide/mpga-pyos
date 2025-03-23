@@ -1,26 +1,24 @@
 from colorama import Fore,Back
+import json
 
 __doc__="Get the command list"
 
-allcmds={
-    "System":['ls','version','clear','neofetch','userman','hostman'],
-    "Tools":['time','calendar','calc','asciier','help'],
-    "Games":['numgame','finguess'],
-    "Power":['exit','shutdown','restart']
-}
+with open("config.json","r") as f:
+    allcmds=json.load(f)["commands"]
+thirds=allcmds["Third-party"]
 
 def execute(self,args):
     if not args:
         print("Available commands:")
         for types,cmds in allcmds.items():
-            print(Back.BLUE+types)
+            print(Back.BLUE+" "+types+" ")
             for cmd in cmds:
-                doc=__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__
+                doc=__import__("cmdList.third_party."+cmd if cmd in thirds else "cmdList."+cmd, fromlist=["__doc__"]).__doc__
                 print(f"{cmd:<20} {doc}")
     else:
         cmd=args[0]
         cmds=[cmd for category in allcmds.values() for cmd in category]
         if cmd in cmds:
-            print(cmd+":",__import__("cmdList."+cmd, fromlist=["__doc__"]).__doc__)
+            print(cmd+":",__import__("cmdList.third_party."+cmd if cmd in thirds else "cmdList."+cmd, fromlist=["__doc__"]).__doc__)
         else:
             print(Fore.RED+"help: Command not found")
