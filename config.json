@@ -4,10 +4,32 @@
         "root": "MTE0NTE0"
     },
     "commands": {
-        "System":["ls","version","clear","neofetch","userman","hostman"],
-        "Tools":["time","calendar","calc","asciier","help"],
-        "Games":["numgame","finguess"],
-        "Power":["exit","shutdown","restart"],
-        "Third-party":["example"]
+        "System": [
+            "ls",
+            "version",
+            "clear",
+            "neofetch",
+            "userman",
+            "hostman"
+        ],
+        "Tools": [
+            "time",
+            "calendar",
+            "calc",
+            "asciier",
+            "help"
+        ],
+        "Games": [
+            "numgame",
+            "finguess"
+        ],
+        "Power": [
+            "exit",
+            "shutdown",
+            "restart"
+        ],
+        "Third-party": [
+            "example"
+        ]
     }
 }

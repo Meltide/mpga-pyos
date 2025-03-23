@@ -4,7 +4,8 @@ import json
 __doc__="Get the command list"
 
 with open("config.json","r") as f:
-    allcmds=json.load(f)["commands"]
+    cfg=json.load(f)
+    allcmds=cfg["commands"]
 thirds=allcmds["Third-party"]
 
 def execute(self,args):

@@ -5,11 +5,12 @@ from colorama import Fore
 __doc__ = "Registry commands"
 
 def execute(self,args):
-    cmd=help.allcmds
+    cfg=help.cfg
     addname=os.path.splitext(os.path.basename(args[0]))[0]
-    cmd["Third-party"]+=addname
-    with open("./../config.json","w") as f:
-        json.dump(cmd,f,indent=4)
+    cfg["commands"]["Third-party"]+=addname
+    #print(cfg)
+    with open("config.json","w",encoding="utf-8") as f:
+        json.dump(cfg,f,indent=4)
     try:
         shutil.copy2(args[0],"./cmdList/third_party/"+addname+".py")
         help.execute(self,addname)
