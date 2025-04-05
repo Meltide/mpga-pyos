@@ -1,4 +1,4 @@
-import importlib,json
+import importlib,json,os,subprocess
 
 class CommandManager:
     def __init__(self,core,cmd=""):
@@ -21,6 +21,14 @@ class CommandManager:
         return importlib.import_module(self.pkg_name())
     def execute(self,args=()):
         '''支持带参数的命令'''
-        __import__(self.pkg_name(),fromlist=["execute"]).execute(*args)
+        if self.loaded_cmd():
+            __import__(self.pkg_name(),fromlist=["execute"]).execute(*args)
+        elif self.core.runsys:
+            subprocess.run([self.cmd]+list(args[1]))
+        else:
+            raise ImportError
 
-    
+class PathManager:
+    def __init__(self,core):
+        self.core=core
+        self.path=os.getcwd()

@@ -5,7 +5,7 @@ from colorama import init, Fore, Style #彩色文字库
 from art import text2art #艺术字库
 
 from cmdList.clear import execute as clear
-from cmd_manager import CommandManager
+from man import CommandManager
 
 class Init: #初始化
     def __init__(self):
@@ -18,6 +18,7 @@ class Init: #初始化
             self.cfg=json.load(f)
             self.names=self.cfg["accounts"].keys()
             self.hostname = self.cfg["hostname"]
+            self.runsys=self.cfg["os.system"] #是否支持运行系统命令
             self.ver = "2.8"
             self.pyshver = "1.2.0"
             self.core = "20250405"

@@ -3,6 +3,7 @@
     "accounts": {
         "root": "MTE0NTE0"
     },
+    "os.system": true,
     "commands": {
         "System": [
             "ls",
