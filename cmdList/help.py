@@ -1,6 +1,6 @@
 from colorama import Fore,Back
 import json
-from cmd_manager import CommandManager
+from man import CommandManager
 
 __doc__="Get the command list"
 
@@ -22,6 +22,6 @@ def execute(self,args):
             if cmdman.hasattr("__usage__"):
                 print(Back.BLUE+" Usage of "+cmd+" ")
                 for usage,desc in cmdman.getpkg().__usage__.items():
-                    print(f"{usage:<20} {desc}")
+                    print(f"{cmd} {usage:<20} {desc}")
         else:
             print(Fore.RED+"help: Command not found")

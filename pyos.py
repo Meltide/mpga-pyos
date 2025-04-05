@@ -27,7 +27,4 @@ class PyOS(login):
             self.fprint(traceback.format_exc(),3)
 
 if __name__ == "__main__":
-    try:
-        PyOS()
-    except KeyboardInterrupt:
-        print(f"\n{Fore.RED}You exited PyOS just now!")
+    PyOS()
