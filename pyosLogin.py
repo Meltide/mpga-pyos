@@ -9,7 +9,6 @@ import random #随机库
 class login(Init):
     def __init__(self):
         super().__init__()
-        errcode = str(random.randint(100, 999))
         times = datetime.datetime.now()
         while self.count < 3:
             self.user = input(f"{self.hostname} login: ")
@@ -17,14 +16,14 @@ class login(Init):
                 newname=input('Name: ')
                 newpwd=pwinput.pwinput()
                 if newname in self.names:
-                    print(f"{Fore.YELLOW}WARNING: The name was created!")
+                    self.fprint("WARNING: The name was created!",2)
                 elif newname in ("create","reset name","reset pwd"): #防止卡出bug
-                    print(f"{Fore.RED}Invalid username!")
+                    self.fprint("Invalid username!",3)
                 else:
                     self.cfg["accounts"][newname]=base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
                     with open("config.json","r+",encoding="utf-8") as f:
                         json.dump(self.cfg,f,ensure_ascii=False,indent=4)
-                    print(f'{Fore.GREEN}Created successfully.')
+                    self.fprint('Created successfully.',1)
             elif self.user=="reset name": #重置用户名
                 oldname=input('OldName: ')
                 stpasswd = base64.b64decode(self.cfg["accounts"][oldname].strip()).decode("utf-8")
@@ -35,9 +34,9 @@ class login(Init):
                     self.cfg["accounts"][newname]=base64.b64encode(pwd.encode("utf-8")).decode("utf-8")
                     with open("config.json","r+",encoding="utf-8") as f:
                         json.dump(self.cfg,f,ensure_ascii=False,indent=4)
-                    print(f'{Fore.GREEN}Resetted successfully.')
+                    self.fprint('Resetted successfully.',1)
                 else:
-                    print(f"{Fore.RED}ERROR: Invalid username or password!")
+                    self.fprint("ERROR: Invalid username or password!",3)
             elif self.user=="reset pwd": #重置密码
                 name=input('Name: ')
                 stpasswd = base64.b64decode(self.cfg["accounts"][name].strip()).decode("utf-8")
@@ -62,8 +61,8 @@ class login(Init):
                             zshp9k_tm = datetime.datetime.now()
                             zshp9k_pre = zshp9k_tm.strftime(" %m/%d %H:%M:%S ")
                             zshp9k = zshp9k_pre
-                            if self.error == 1:
-                                self.cmd = input(f"{Back.RED}{Fore.WHITE} ✘ {errcode} {Back.WHITE}{Fore.BLACK}{zshp9k}{Back.YELLOW} {self.user}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.file} {Back.RESET}> ")
+                            if self.errcode:
+                                self.cmd = input(f"{Back.RED}{Fore.WHITE} ✘ {self.errcode} {Back.WHITE}{Fore.BLACK}{zshp9k}{Back.YELLOW} {self.user}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.file} {Back.RESET}> ")
                             else:
                                 self.cmd = input(f"{Back.WHITE}{Fore.BLACK}{zshp9k}{Back.YELLOW} {self.user}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.file} {Back.RESET}> ")
                             self.run(self.cmd)

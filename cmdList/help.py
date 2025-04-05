@@ -1,25 +1,27 @@
 from colorama import Fore,Back
 import json
+from cmd_manager import CommandManager
 
 __doc__="Get the command list"
 
-with open("config.json","r") as f:
-    cfg=json.load(f)
-    allcmds=cfg["commands"]
-thirds=allcmds["Third-party"]
-
 def execute(self,args):
+    cmdman=CommandManager(self)
     if not args:
         print("Available commands:")
-        for types,cmds in allcmds.items():
+        for types,cmds in cmdman.allcmds.items():
             print(Back.BLUE+" "+types+" ")
             for cmd in cmds:
-                doc=__import__("cmdList.third_party."+cmd if cmd in thirds else "cmdList."+cmd, fromlist=["__doc__"]).__doc__
+                cmdman.reg(cmd)
+                doc=cmdman.getpkg().__doc__
                 print(f"{cmd:<20} {doc}")
     else:
         cmd=args[0]
-        cmds=[cmd for category in allcmds.values() for cmd in category]
-        if cmd in cmds:
-            print(cmd+":",__import__("cmdList.third_party."+cmd if cmd in thirds else "cmdList."+cmd, fromlist=["__doc__"]).__doc__)
+        cmdman.reg(cmd)
+        if cmdman.loaded_cmd():
+            print(cmd+":",cmdman.getpkg().__doc__)
+            if cmdman.hasattr("__usage__"):
+                print(Back.BLUE+" Usage of "+cmd+" ")
+                for usage,desc in cmdman.getpkg().__usage__.items():
+                    print(f"{usage:<20} {desc}")
         else:
             print(Fore.RED+"help: Command not found")

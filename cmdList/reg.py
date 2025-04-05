@@ -7,6 +7,9 @@ __doc__ = "Registry commands"
 def execute(self,args):
     cfg=help.cfg
     addname=os.path.splitext(os.path.basename(args[0]))[0]
+    if addname in help.cmds:
+        print(Fore.RED+"Invalid command name!")
+        return
     cfg["commands"]["Third-party"]+=addname
     #print(cfg)
     with open("config.json","w",encoding="utf-8") as f:
