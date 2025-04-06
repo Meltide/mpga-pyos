@@ -51,4 +51,5 @@ class Init: #初始化
         modelist=[Fore.WHITE,Fore.GREEN,Fore.YELLOW,Fore.RED]
         print(modelist[mode]+msg)
         if mode==3:
+            random.seed(time.time_ns()) #避免错误代码一致
             self.errcode = random.randint(100, 999)

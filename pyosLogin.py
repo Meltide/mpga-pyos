@@ -77,6 +77,6 @@ class login(Init):
                 else:
                     print("Invalid user! Please retry")
                     print(Style.DIM + "Tip: 'root' is the default user.")
-        except (KeyboardInterrupt,EOFError):
-            self.fprint("\nYou exited PyOS just now!",3)
-            quit(114)
+        except (KeyboardInterrupt,EOFError,SystemExit):
+            self.fprint("\nYou exited PyOS just now!",2)
+            self.count = 114514 #退出程序

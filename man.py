@@ -22,9 +22,16 @@ class CommandManager:
     def execute(self,args=()):
         '''支持带参数的命令'''
         if self.loaded_cmd():
-            __import__(self.pkg_name(),fromlist=["execute"]).execute(*args)
+            try:
+                __import__(self.pkg_name(),fromlist=["execute"]).execute(*args)
+            except SystemExit:
+                self.core.fprint("\nYou exited PyOS just now!",2)
+                self.core.count=114514
         elif self.core.runsys:
-            subprocess.run([self.cmd]+list(args[1]))
+            try:
+                subprocess.run([self.cmd]+list(args[1]))
+            except FileNotFoundError:
+                self.core.fprint("Command not found.",3)
         else:
             raise ImportError
 
