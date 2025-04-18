@@ -20,7 +20,7 @@ class Init:  # 初始化
             "Maybe the coverter is useless :)",
             "'root' is the default user.",
             "Is this file system real?",
-            "Columns make the calculator work.",
+            "Columns make the calculator work."
         ]
         self.selected_tip = random.choice(self.tips)  # 提前选择随机提示
         self.color_modes = [Fore.WHITE, Fore.GREEN, Fore.YELLOW, Fore.RED]  # 颜色模式列表
