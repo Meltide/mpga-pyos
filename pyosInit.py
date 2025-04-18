@@ -42,12 +42,15 @@ class Init:  # 初始化
 
         # 打印启动信息
         self.printlist = [
-            Style.DIM + f"\nPY OS (R) Core Open Source System {self.ver}",
+            Style.DIM + f"\nMPGA PyOS Open Source System {self.ver}",
             Fore.BLUE + text2art("MPGA", font="small"),
             Fore.YELLOW + "Make PyOS Great Again!\n",
             f"Tip: {self.selected_tip}",
             Fore.MAGENTA
-            + "\nContributors: MeltIce, Yukari2024, EricDing618\nVisit this project in github: github.com/Meltide/mpga-pyos\nLifeinvader Studio Telegram Group: @MeetLifeinvader",
+            + "\nContributors: MeltIce, Yukari2024, EricDing618\n"
+            + "Visit this project in github: github.com/Meltide/mpga-pyos\n"
+            + "MPGA Team Telegram Group: @MPGATeam\n"
+            + "MPGA Team Matrix Group: #MPGATeam:mozilla.org",
             Fore.CYAN
             + "\nAlso try PyOS's improved version by minqwq and bibimingming!\n",
         ]
