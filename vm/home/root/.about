@@ -1,5 +1,0 @@
-# New feature
-
-# You can do anything in /home/<username> like creating files, directories, editing files, etc.
-
-print("Welcome to PyOS.Start your journey by typing 'help'.")
