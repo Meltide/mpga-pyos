@@ -7,7 +7,8 @@ def execute(self,args):
     options = ["1", "2", "3", "exit"]
     print(f"{Fore.BLUE}Finger-guess Game")
     while True:
-        player_choice = input(f"Punch ({Fore.BLUE}1{Fore.RESET}:Rock/{Fore.BLUE}2{Fore.RESET}:Scissors/{Fore.BLUE}3{Fore.RESET}:Paper/{Fore.BLUE}exit{Fore.RESET}:Exiting the game)\n>")
+        player_choice = input(f"Punch ({Fore.BLUE}1{Fore.RESET}:Rock/{Fore.BLUE}2{Fore.RESET}:Scissors/{Fore.BLUE}3{Fore.RESET}:Paper/{Fore.BLUE}exit{Fore.RESET}:Exiting the game)\n> ")
+        computer = ""
         if player_choice not in options:
             print("Unknown choice")
             continue
