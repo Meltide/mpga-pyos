@@ -15,8 +15,8 @@ def execute(self,args):
         if self.hostcho == "1":
             self.hostname = input("Type new hostname: ")
             with open("config.json", "r+", encoding="utf-8") as f:
-                self.cfg["hostname"] = self.hostname
-                json.dump(self.cfg,f,ensure_ascii=False,indent=4)
+                self.config["hostname"] = self.hostname
+                json.dump(self.config,f,ensure_ascii=False,indent=4)
             print(f"{Fore.GREEN}Hostname change successfully.")
         elif self.hostcho == "2":
             break

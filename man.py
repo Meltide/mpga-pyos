@@ -42,7 +42,7 @@ class CommandManager:
         if self.loaded_cmd():
             pkg_name = self.pkg_name()
             __import__(pkg_name, fromlist=["execute"]).execute(*args)
-        elif self.core.runsys:
+        elif self.core.allow_system_commands:
             try:
                 subprocess.run([self.cmd] + list(args[1]), check=True)
             except subprocess.CalledProcessError as e:

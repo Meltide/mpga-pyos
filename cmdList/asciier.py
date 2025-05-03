@@ -46,7 +46,7 @@ def execute(self,args):
                 )
                 aschx = input("> ")
                 if aschx == "exit":
-                    continue
+                    break
                 elif aschx == "":
                     space = 0
                 else:

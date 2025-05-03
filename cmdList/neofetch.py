@@ -11,7 +11,7 @@ def execute(self,args):
     print(f"{Fore.BLUE}root{Fore.RESET}@{Fore.BLUE}{self.hostname}")
     print("-----------------")
     time.sleep(0.05)
-    print(f"{Fore.BLUE}OS{Fore.RESET}: MPGA PyOS V{self.ver} aarch64")
+    print(f"{Fore.BLUE}OS{Fore.RESET}: MPGA PyOS V{self.version} aarch64")
     match sysname(self,args):
         case 1:
             host = "Windows CMD"
@@ -21,9 +21,9 @@ def execute(self,args):
             host = "Unknown"
     time.sleep(0.05)
     print(f"{Fore.BLUE}Host{Fore.RESET}: {host}")
-    print(f"{Fore.BLUE}Kernel{Fore.RESET}: PTCORE-V{self.core}-aarch64")
+    print(f"{Fore.BLUE}Kernel{Fore.RESET}: PTCORE-V{self.core_version}-aarch64")
     time.sleep(0.05)
-    print(f"{Fore.BLUE}Shell{Fore.RESET}: pysh {self.pyshver}")
+    print(f"{Fore.BLUE}Shell{Fore.RESET}: pysh {self.shell_version}")
     time.sleep(0.05)
     print(f"{Fore.BLUE}CPU{Fore.RESET}: ({psutil.cpu_count()}) @ {psutil.cpu_freq().max  / (1024):.2f}Ghz")
     time.sleep(0.05)
