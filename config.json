@@ -11,7 +11,8 @@
             "clear",
             "neofetch",
             "userman",
-            "hostman"
+            "hostman",
+            "reg"
         ],
         "Tools": [
             "time",
