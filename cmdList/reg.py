@@ -1,6 +1,6 @@
 import json,shutil,os
 from utils.config import cfg
-import help
+from . import help
 from colorama import Fore
 
 __doc__ = "Registry commands"
