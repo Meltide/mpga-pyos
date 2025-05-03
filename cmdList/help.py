@@ -1,6 +1,6 @@
 from colorama import Fore,Back
 import json
-from man import CommandManager
+from utils.man import CommandManager
 
 __doc__="Get the command list"
 

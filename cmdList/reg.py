@@ -1,11 +1,11 @@
 import json,shutil,os
-from . import help
+from utils.config import cfg
+import help
 from colorama import Fore
 
 __doc__ = "Registry commands"
 
 def execute(self,args):
-    cfg=help.cfg
     addname=os.path.splitext(os.path.basename(args[0]))[0]
     if addname in help.cmds:
         print(Fore.RED+"Invalid command name!")

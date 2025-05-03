@@ -6,7 +6,8 @@ from colorama import init, Fore, Style  # 彩色文字库
 from art import text2art  # 艺术字库
 
 from cmdList.clear import execute as clear
-from man import CommandManager
+from utils.man import CommandManager
+from utils.config import *
 
 
 class Init:  # 初始化
@@ -15,6 +16,8 @@ class Init:  # 初始化
         self.command_manager = CommandManager(self, self)  # 命令管理器
         self.clear_screen_count = 0  # 清屏计数
         self.error_code = 0  # 错误代码
+        self.config=cfg
+        self.account_names=ACCOUNTS.keys()
         self.tips_list = [  # 提示列表
             "You can find the default password in the passwd file.",
             "Maybe the coverter is useless :)",
@@ -24,9 +27,6 @@ class Init:  # 初始化
         ]
         self.selected_tip = random.choice(self.tips_list)  # 随机选择提示
         self.color_modes = [Fore.WHITE, Fore.GREEN, Fore.YELLOW, Fore.RED]  # 颜色模式列表
-
-        # 加载配置
-        self._load_config()
 
         # 显示启动进度条
         time.sleep(0.5)
@@ -39,17 +39,6 @@ class Init:  # 初始化
 
         self.command_count = 0  # 命令计数
         self.current_directory = "~"  # 当前目录
-
-    def _load_config(self):
-        """加载配置文件"""
-        with open("config.json", "r", encoding="utf-8") as config_file:
-            self.config = json.load(config_file)
-            self.account_names = self.config["accounts"].keys()  # 账户名称
-            self.hostname = self.config["hostname"]  # 主机名
-            self.allow_system_commands = self.config["os.system"]  # 是否支持运行系统命令
-            self.version = "2.9"  # 系统版本
-            self.shell_version = "1.2.0"  # Shell 版本
-            self.core_version = "20250405"  # 核心版本
 
     def _show_progress_bar(self):
         """显示启动进度条"""
@@ -84,4 +73,5 @@ class Init:  # 初始化
         """
         print(self.color_modes[mode] + message)
         if mode == 3:
-            self.error_code = random.randint(100, 999)
+            random.seed(time.time_ns()) #避免错误代码一致
+            self.errcode = random.randint(100, 999)
