@@ -4,6 +4,7 @@
         "root": "MTE0NTE0"
     },
     "os.system": true,
+    "error.details": true,
     "commands": {
         "System": [
             "ls",
@@ -12,14 +13,17 @@
             "neofetch",
             "userman",
             "hostman",
-            "reg"
+            "reg",
+            "init"
         ],
         "Tools": [
             "time",
             "calendar",
             "calc",
             "asciier",
-            "help"
+            "help",
+            "errcode",
+            "script"
         ],
         "Games": [
             "numgame",

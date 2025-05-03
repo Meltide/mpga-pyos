@@ -10,24 +10,20 @@ import pwinput  # 密码隐藏库
 class Login(Init):
     def __init__(self):
         super().__init__()
-        try:
-            self.current_time = datetime.datetime.now()
-            self.max_attempts = 3
-            while self.command_count < self.max_attempts:
-                self.username = input(f"{self.hostname} login: ")
-                if self.username == "create":
-                    self.create_account()
-                elif self.username == "reset name":
-                    self.reset_username()
-                elif self.username == "reset pwd":
-                    self.reset_password()
-                elif self.username in self.account_names:
-                    self.login_user()
-                else:
-                    self._invalid_user_message()
-        except (KeyboardInterrupt, EOFError):
-            self.fprint("\nYou exited PyOS just now!", 3)
-            sys.exit(114)  # 使用 sys.exit() 优雅退出程序
+        self.current_time = datetime.datetime.now()
+        self.max_attempts = 3
+        while self.command_count < self.max_attempts:
+            self.username = input(f"{self.hostname} login: ")
+            if self.username == "create":
+                self.create_account()
+            elif self.username == "reset name":
+                self.reset_username()
+            elif self.username == "reset pwd":
+                self.reset_password()
+            elif self.username in self.account_names:
+                self.login_user()
+            else:
+                self._invalid_user_message()
 
     def save_config(self):
         """保存配置到文件"""
