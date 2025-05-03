@@ -52,14 +52,16 @@ class PathManager:
         self.core = core
         self.basepath = BASEPATH
 
-    def real_to_fake(self, path, userspace=False):
+    def real_to_fake(self, path:str, userspace=False):
         """将真实路径转换为虚拟路径"""
         basepath = os.path.join(self.basepath,"vm/home",self.core.account_names) if userspace else self.basepath
+        assert path.startswith(basepath.replace("\\", "/")), "Path not in userspace"
         return os.path.relpath(path, basepath).replace("\\", "/")
 
-    def fake_to_real(self, path, userspace=False):
+    def fake_to_real(self, path:str, userspace=False):
         """将虚拟路径转换为真实路径"""
         basepath = os.path.join(self.basepath,"vm/home",self.core.account_names) if userspace else self.basepath
+        assert path.startswith(basepath.replace("\\", "/")), "Path not in userspace"
         return os.path.join(basepath, path.replace("\\", "/"))
     
 class ErrorCodeManager:
