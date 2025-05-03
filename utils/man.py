@@ -8,11 +8,7 @@ class CommandManager:
     def __init__(self, core, cmd=""):
         self.cmd = cmd
         self.core = core
-
-        # 加载配置文件
-        with open("config.json", "r") as f:
-            self.cfg = json.load(f)
-            self.allcmds = self.cfg["commands"]
+        self.allcmds = self.cfg["commands"]
 
         self.thirds = self.allcmds["Third-party"]  # 第三方命令
         self.cmds = [cmd for category in self.allcmds.values() for cmd in category]  # 所有命令列表
@@ -42,7 +38,7 @@ class CommandManager:
         if self.loaded_cmd():
             pkg_name = self.pkg_name()
             __import__(pkg_name, fromlist=["execute"]).execute(*args)
-        elif self.core.runsys:
+        elif self.core.allow_system_commands:
             try:
                 subprocess.run([self.cmd] + list(args[1]), check=True)
             except subprocess.CalledProcessError as e:
@@ -54,4 +50,25 @@ class CommandManager:
 class PathManager:
     def __init__(self, core):
         self.core = core
-        self.path = os.getcwd()
+        self.basepath = os.getcwd().replace("\\", "/")
+
+    def real_to_fake(self, path, userspace=False):
+        """将真实路径转换为虚拟路径"""
+        basepath = os.path.join(self.basepath,"vm/home",self.core.account_names) if userspace else self.basepath
+        return os.path.relpath(path, basepath).replace("\\", "/")
+
+    def fake_to_real(self, path, userspace=False):
+        """将虚拟路径转换为真实路径"""
+        basepath = os.path.join(self.basepath,"vm/home",self.core.account_names) if userspace else self.basepath
+        return os.path.join(basepath, path.replace("\\", "/"))
+    
+class CodeManager:
+    def __init__(self, core):
+        self.core = core
+        self.returns={
+            FileNotFoundError:404,
+            PermissionError:403,
+            IsADirectoryError:401,
+            NotADirectoryError:400,
+            KeyError:300,
+        }
