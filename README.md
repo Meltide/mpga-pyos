@@ -9,7 +9,7 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/Meltide/mpga-pyos)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Meltide/mpga-pyos)
 ![GitHub Created At](https://img.shields.io/github/created-at/Meltide/mpga-pyos) 
-### 唯一的不同，是处处不同
+### 颠覆想象，焕然新生
 
 **M**ake **P**yOS **G**reat **A**gain
 <br>
