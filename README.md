@@ -1,6 +1,7 @@
 <div align="center">
 
-![logo](res/logo.png)
+<img src="https://github.com/user-attachments/assets/d445a2b8-bf4d-4d4f-a630-bed13952dbf2" height="114px">
+
 # MPGA PyOS
 ![GitHub repo size](https://img.shields.io/github/repo-size/Meltide/mpga-pyos)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Meltide/mpga-pyos?style=flat)
