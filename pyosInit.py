@@ -57,17 +57,11 @@ class Init:  # 初始化
     def _print_startup_messages(self):
         """打印启动信息"""
         startup_messages = [
-            Style.DIM + f"\nMPGA PyOS Open Source System {self.version}",
+            f"{Style.DIM}\nMPGA PyOS Open Source System {self.version}",
             Fore.BLUE + text2art("MPGA", font="small"),
-            Fore.YELLOW + "Make PyOS Great Again!\n",
+            f"{Fore.YELLOW}Make PyOS Great Again!\n",
             f"Tip: {self.selected_tip}",
-            Fore.MAGENTA
-            + "\nContributors: MeltIce, Yukari2024, EricDing618\n"
-            + "Visit this project in github: github.com/Meltide/mpga-pyos\n"
-            + "MPGA Team Telegram Group: @MPGATeam\n"
-            + "MPGA Team Matrix Group: #MPGATeam:mozilla.org",
-            Fore.CYAN
-            + "\nAlso try PyOS's improved version by minqwq and bibimingming!\n",
+            f"{Fore.CYAN}\nAlso try PyOS's improved version by minqwq and bibimingming!\n" if SHOW_AD else "",
         ]
         for message in startup_messages:
             print(message)

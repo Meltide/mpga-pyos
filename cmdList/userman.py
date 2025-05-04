@@ -43,7 +43,7 @@ def execute(self, args):
                     json.dump(self.config, f, ensure_ascii=False, indent=4)
                 print(f'{Fore.GREEN}Resetted successfully.')
             else:
-                print(f"{Fore.RED}ERROR: Invalid username or password!")
+                print(f"Error: {Fore.RED}Invalid username or password!")
         case _:
             print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
             print("Usage:")

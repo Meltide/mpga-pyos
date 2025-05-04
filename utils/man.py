@@ -1,6 +1,7 @@
 import importlib
 import os
 import subprocess
+import shutil
 
 from .config import *
 from .err import *
@@ -112,6 +113,7 @@ class ErrorCodeManager:
             StopAsyncIteration: 146,
             LookupError: 156,
             ReferenceError: 164,
+            shutil.SameFileError: 170,
 
             ErrorCodeManager: 810 # 自定义错误码
         }

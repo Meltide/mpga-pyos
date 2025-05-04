@@ -6,8 +6,9 @@ with open("config.json", "r",encoding='utf-8') as f:
 HOSTNAME:str = cfg["hostname"]
 ACCOUNTS:dict = cfg["accounts"]
 
-ALLOW_SYSTEM_COMMANDS:bool = cfg["os.system"]
-SHOW_ERROR_DETAILS:bool = cfg["error.details"]
+ALLOW_SYSTEM_COMMANDS:bool = cfg["system_commands"]
+SHOW_ERROR_DETAILS:bool = cfg["show_error_details"]
+SHOW_AD:bool = cfg["show_ad"]
 SIGNED_COMMANDS:dict = cfg["commands"]
 
 SC_SYSTEM:list=SIGNED_COMMANDS["System"]

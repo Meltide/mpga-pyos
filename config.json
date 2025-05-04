@@ -3,18 +3,19 @@
     "accounts": {
         "root": "MTE0NTE0"
     },
-    "os.system": true,
-    "error.details": false,
+    "system_commands": true,
+    "show_error_details": false,
+    "show_ad": true,
     "commands": {
         "System": [
             "ls",
             "echo",
-            "version",
+            "about",
             "clear",
             "neofetch",
             "userman",
             "hostman",
-            "reg",
+            "yet",
             "init"
         ],
         "Tools": [
@@ -36,7 +37,9 @@
             "restart"
         ],
         "Third-party": [
-            "example"
+            "example",
+            "fuck",
+            "ciallo"
         ]
     }
 }
