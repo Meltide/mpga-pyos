@@ -1,6 +1,7 @@
 import json,shutil,os
 from utils.config import cfg
 from . import help
+from utils.man import CommandManager
 from colorama import Fore
 
 __doc__ = "Registry commands"
@@ -9,10 +10,15 @@ def execute(self,args):
     if not args:
         print(f"Error: {Fore.RED}No file selected. Please input a file path.")
         return
+
+    cmdman = CommandManager(self)
+    allcmds = list(cmdman.allcmds.values())
+
     addname=os.path.splitext(os.path.basename(args[0]))[0]
-    if addname in help.cmds:
-        print(Fore.RED+"Invalid command name!")
-        return
+    for cmds in allcmds:
+        if addname in cmds:
+            print(Fore.RED+"Invalid command name!")
+            return
     cfg["commands"]["Third-party"]+=addname
     #print(cfg)
     with open("config.json","w",encoding="utf-8") as f:
