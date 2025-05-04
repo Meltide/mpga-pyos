@@ -6,6 +6,9 @@ from colorama import Fore
 __doc__ = "Registry commands"
 
 def execute(self,args):
+    if not args:
+        print(f"Error: {Fore.RED}No file selected. Please input a file path.")
+        return
     addname=os.path.splitext(os.path.basename(args[0]))[0]
     if addname in help.cmds:
         print(Fore.RED+"Invalid command name!")
