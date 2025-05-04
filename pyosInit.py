@@ -51,7 +51,6 @@ class Init:  # 初始化
         for progress in range(1, 101):
             sys.stdout.write(f"\rStarting: {progress}%: {'=' * (progress // 8)}")
             sys.stdout.flush()
-            time.sleep(0.005)
         print()  # 换行
 
     def _print_startup_messages(self):
