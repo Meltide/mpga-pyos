@@ -1,6 +1,7 @@
 __doc__="Run PYOScript files(.pyos)"
 
 import os
+from colorama import Fore
 from utils.config import *
 
 class PYOScript:
@@ -22,6 +23,10 @@ class PYOScript:
         self.execute()
         
 def execute(self,args):
+    if not args:
+        print(f"Error: {Fore.RED}No file selected. Please input a file path.")
+        return
+
     script=PYOScript(self)
     if os.path.isfile(args[0]):
         script.read(args[0])

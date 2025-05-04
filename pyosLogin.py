@@ -124,7 +124,6 @@ class Login(Init):
     def _successful_login_message(self):
         """打印成功登录提示"""
         print("Last login: " + Fore.CYAN + self.current_time.strftime("%y/%m/%d %H:%M:%S"))
-        time.sleep(0.45)
         print("")
         if self.allow_system_commands:
             self.fprint("WARNING: Running system commands is enabled!", 2)

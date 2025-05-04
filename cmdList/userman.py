@@ -45,7 +45,7 @@ def execute(self, args):
             else:
                 print(f"{Fore.RED}ERROR: Invalid username or password!")
         case _:
-            print(f"{Fore.RED}ERROR: Unknown command '{args[0]}'.")
+            print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
             print("Usage:")
             for command, description in __usage__.items():
                 print(f"  {command}: {description}")
