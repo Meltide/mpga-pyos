@@ -1,5 +1,4 @@
 from colorama import Fore,Back
-import json
 from utils.man import CommandManager
 
 __doc__="Get the command list"
