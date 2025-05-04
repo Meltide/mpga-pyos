@@ -34,10 +34,6 @@ class Init:  # 初始化
         self.selected_tip = random.choice(self.tips_list)  # 随机选择提示
         self.color_modes = [Fore.WHITE, Fore.GREEN, Fore.YELLOW, Fore.RED]  # 颜色模式列表
 
-        # 显示启动进度条
-        time.sleep(0.5)
-        clear(self, [])
-        self._show_progress_bar()
         clear(self, [])
 
         # 打印启动信息
@@ -45,13 +41,6 @@ class Init:  # 初始化
 
         self.command_count = 0  # 命令计数
         self.current_directory = "~"  # 当前目录
-
-    def _show_progress_bar(self):
-        """显示启动进度条"""
-        for progress in range(1, 101):
-            sys.stdout.write(f"\rStarting: {progress}%: {'=' * (progress // 8)}")
-            sys.stdout.flush()
-        print()  # 换行
 
     def _print_startup_messages(self):
         """打印启动信息"""
