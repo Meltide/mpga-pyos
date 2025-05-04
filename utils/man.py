@@ -3,6 +3,7 @@ import os
 import subprocess
 
 from .config import *
+from .err import *
 
 
 class CommandManager:
@@ -111,6 +112,8 @@ class ErrorCodeManager:
             StopAsyncIteration: 146,
             LookupError: 156,
             ReferenceError: 164,
+
+            ErrorCodeManager: 810 # 自定义错误码
         }
     def get_code(self, e):
         """获取错误码"""
@@ -126,4 +129,4 @@ class ErrorCodeManager:
         if isinstance(code_or_e,int):
             return self.info.get(code_or_e,self.get_type(code_or_e))
         else:
-            return self.info.get(self.get_code(code_or_e),code_or_e.name)
+            return self.info.get(self.get_code(code_or_e),type(code_or_e).name)

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/d445a2b8-bf4d-4d4f-a630-bed13952dbf2" height="114px">
+<img src="res/logo.png" height="114px">
 
 # MPGA PyOS
 ![GitHub repo size](https://img.shields.io/github/repo-size/Meltide/mpga-pyos)
@@ -36,10 +36,10 @@
 输入 `help` 获取帮助
 
 ## 界面截图
-![1000082364](https://github.com/user-attachments/assets/16b3d5e6-0575-498a-b6fa-d7452bcf9c47)
-![1000082366](https://github.com/user-attachments/assets/8921b9f2-80cb-429e-9979-630019be80c5)
+![ui1](res/ui1.jpg)
+![ui2](res/ui2.jpg)
 
 ----
 注意：  
-1. 2.0版本开始 **不再提供** 已编译exe文件，请直接下载源码！   
-2. 请确保 **您的 Python 版本 >= 3.10** ！
+- 2.0版本开始 **不再提供** 已编译exe文件，请直接下载源码！   
+- 请确保 **您的 Python 版本 >= 3.10** ！

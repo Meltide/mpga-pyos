@@ -13,7 +13,7 @@ def execute(self,args):
             for cmd in cmds:
                 cmdman.reg(cmd)
                 doc=cmdman.getpkg().__doc__
-                print(f"{cmd:<20} {doc}")
+                print(f"{cmd:<20} {doc}.")
     else:
         cmd=args[0]
         cmdman.reg(cmd)
@@ -21,7 +21,9 @@ def execute(self,args):
             print(cmd+":",cmdman.getpkg().__doc__)
             if cmdman.hasattr("__usage__"):
                 print(Back.BLUE+" Usage of "+cmd+" ")
+                default=cmd+' -h'
+                print(f"{default:<20} Show the help of {cmd}.")
                 for usage,desc in cmdman.getpkg().__usage__.items():
-                    print(f"{cmd} {usage:<20} {desc}")
+                    print(f"{cmd} {usage:<20} {desc}.")
         else:
             print(Fore.RED+"help: Command not found")
