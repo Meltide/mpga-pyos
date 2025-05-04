@@ -38,8 +38,10 @@ if __name__ == "__main__":
         PyOS()
         '''except ModuleNotFoundError:
             os.system("pip install -r requirements.txt")'''
+    except SystemExit:
+        ...
     except BaseException as e:
-        print(f"Something went wrong in PyOS: {e}")
-        print(f"Error code: {ErrorCodeManager().get_code(e)}")
+        print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
+        print(f"Error code: {Fore.RED}{ErrorCodeManager().get_code(e)}")
         if SHOW_ERROR_DETAILS:
             print(f"Details: \n{traceback.format_exc()}")

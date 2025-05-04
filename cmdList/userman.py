@@ -14,7 +14,7 @@ __usage__ = {
 
 def execute(self, args):
     if not args:  # 检查是否提供了参数
-        print(f"{Fore.RED}ERROR: No arguments provided. Please specify a valid command.")
+        print(f"Error: {Fore.RED}No arguments provided. Please specify a valid command.")
         print("Usage:")
         for command, description in __usage__.items():
             print(f"  {command}: {description}")

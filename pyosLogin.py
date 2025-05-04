@@ -6,6 +6,9 @@ import time, datetime  # 时间日期库
 import json  # 解析和保存json配置文件
 import pwinput  # 密码隐藏库
 
+from utils.man import ErrorCodeManager
+from utils.config import SHOW_ERROR_DETAILS
+
 
 class Login(Init):
     def __init__(self):
@@ -91,7 +94,13 @@ class Login(Init):
             timestamp = datetime.datetime.now().strftime(" %m/%d %H:%M:%S ")
             prompt = self._generate_prompt(timestamp)
             command = input(prompt)
-            self.run(command)
+            try:
+                self.run(command)
+            except Exception as e:
+                print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
+                self.error_code = ErrorCodeManager().get_code(e)
+                if SHOW_ERROR_DETAILS:
+                    print(f"Details: \n{traceback.format_exc()}")
 
     def _validate_user(self, username):
         """验证用户名和密码"""

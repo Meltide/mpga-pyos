@@ -4,7 +4,7 @@
         "root": "MTE0NTE0"
     },
     "os.system": true,
-    "error.details": true,
+    "error.details": false,
     "commands": {
         "System": [
             "ls",
