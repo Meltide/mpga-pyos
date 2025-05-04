@@ -39,7 +39,7 @@ if __name__ == "__main__":
         '''except ModuleNotFoundError:
             os.system("pip install -r requirements.txt")'''
     except SystemExit:
-        ...
+        pass
     except BaseException as e:
         print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
         print(f"Error code: {Fore.RED}{ErrorCodeManager().get_code(e)}")

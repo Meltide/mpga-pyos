@@ -8,6 +8,7 @@
     "commands": {
         "System": [
             "ls",
+            "echo",
             "version",
             "clear",
             "neofetch",
