@@ -23,4 +23,4 @@ jobs:
     - name: 运行pytest
       run: |
         pip install pytest
-        pytest
+        pytest ./tests # 运行测试用例
