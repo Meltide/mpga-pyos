@@ -31,7 +31,7 @@ class PyOS(Login):
     def _register_and_execute(self, command_name, args):
         """注册并执行命令"""
         self.command_manager.reg(command_name)
-        self.command_manager.execute((self, args))
+        self.command_manager.execute(args)  # 仅传递 args
 
 if __name__ == "__main__":
     try:

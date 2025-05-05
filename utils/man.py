@@ -88,8 +88,11 @@ class CommandManager:
         """导入命令对应的模块"""
         return importlib.import_module(self.pkg_name())
 
-    def execute(self, args=()):
+    def execute(self, args=None):
         """执行命令"""
+        if args is None:
+            args = ()  # 确保 args 是一个元组
+
         if not self.loaded_cmd():
             if ALLOW_SYSTEM_COMMANDS:
                 self._execute_system_command(args)
@@ -100,7 +103,7 @@ class CommandManager:
         try:
             module = self.getpkg()
             if hasattr(module, 'execute'):
-                # 传递core对象和参数给命令
+                # 传递 core 对象和参数给命令
                 module.execute(self.core, args)
             else:
                 raise AttributeError(f"Command '{self.cmd}' has no execute function")
