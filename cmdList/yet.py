@@ -123,10 +123,6 @@ def install(self, args):
     cmd_name = args[2].replace('.py', '') if len(args) > 2 else \
                os.path.splitext(os.path.basename(source_path))[0]
 
-    if not cmd_name.isidentifier():
-        print(f"Error: {Fore.RED}Invalid command name '{cmd_name}'. Must be a valid Python identifier.{Style.RESET_ALL}")
-        return
-
     # 检查命令是否已存在（包括原生命令）
     all_commands = []
     for cmd_type in CommandManager(self).allcmds.values():
@@ -183,13 +179,6 @@ def install_from_package(self, package_path, cmd_name=None):
                 cmd_name = package_info['command']
             else:
                 raise NameError("Missing package name")
-        
-        # 验证命令名
-        if not cmd_name.isidentifier():
-            print(f"Error: {Fore.RED}Invalid command name '{cmd_name}'. Must be a valid Python identifier.{Style.RESET_ALL}")
-            self.error_code = ErrorCodeManager().get_code(NameError)
-            shutil.rmtree(temp_dir)
-            return
         
         old_version = get_installed_version(self, cmd_name)
         new_version = get_package_version(self, source_path)
