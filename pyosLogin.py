@@ -1,14 +1,15 @@
-import sys  # 系统库
-from pyosInit import Init
 import base64  # 加解密库
-from colorama import Fore, Back, Style  # 彩色文字库
-import time, datetime  # 时间日期库
+import datetime  # 时间日期库
 import json  # 解析和保存json配置文件
-import pwinput  # 密码隐藏库
 import traceback
 
-from utils.man import ErrorCodeManager
+from colorama import Fore, Back, Style  # 彩色文字库
+import pwinput  # 密码隐藏库
+
+from pyosInit import Init
+from utils.man import ErrorCodeManager, HelpManager
 from utils.config import SHOW_ERROR_DETAILS
+from utils.basic import Basic
 
 
 class Login(Init):
@@ -16,6 +17,11 @@ class Login(Init):
         super().__init__()
         self.current_time = datetime.datetime.now()
         self.max_attempts = 3
+        self.basic = Basic()
+        self.fprint=self.basic.fprint #移植时更好兼容以前代码
+
+    def login(self):
+        """登录"""
         while self.command_count < self.max_attempts:
             self.username = input(f"{self.hostname} login: ")
             if self.username == "create":
@@ -28,6 +34,24 @@ class Login(Init):
                 self.login_user()
             else:
                 self._invalid_user_message()
+
+    def start_shell(self):
+        """启动命令行交互"""
+        while self.command_count < self.max_attempts:
+            timestamp = datetime.datetime.now().strftime(" %m/%d %H:%M:%S ")
+            prompt = self._generate_prompt(timestamp)
+            command = input(prompt)
+            command_parts = command.split(' ')
+            try:
+                self.run(command_parts)
+            except Exception as e:
+                print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
+                self.error_code = ErrorCodeManager().get_code(e)
+                if SHOW_ERROR_DETAILS:
+                    print(f"Details: \n{traceback.format_exc()}")
+                self.helpman=HelpManager(self, command_parts)
+                self.helpman.show_info()
+                self.error_code = 0
 
     def save_config(self):
         """保存配置到文件"""
@@ -89,20 +113,6 @@ class Login(Init):
             else:
                 self._invalid_password_message()
 
-    def start_shell(self):
-        """启动命令行交互"""
-        while self.command_count < self.max_attempts:
-            timestamp = datetime.datetime.now().strftime(" %m/%d %H:%M:%S ")
-            prompt = self._generate_prompt(timestamp)
-            command = input(prompt)
-            try:
-                self.run(command)
-            except Exception as e:
-                print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
-                self.error_code = ErrorCodeManager().get_code(e)
-                if SHOW_ERROR_DETAILS:
-                    print(f"Details: \n{traceback.format_exc()}")
-
     def _validate_user(self, username):
         """验证用户名和密码"""
         if username in self.config["accounts"] and username != "root":
@@ -139,3 +149,6 @@ class Login(Init):
             f"{Back.WHITE}{Fore.BLACK}{timestamp}{Back.YELLOW} {self.username}@{self.hostname} "
             f"{Back.BLUE}{Fore.WHITE} {self.current_directory} {Back.RESET}> "
         )
+
+    def run(self, commands:str):
+        """运行命令"""

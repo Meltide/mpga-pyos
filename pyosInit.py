@@ -32,7 +32,6 @@ class Init:  # 初始化
             "Columns make the calculator work."
         ]
         self.selected_tip = random.choice(self.tips_list)  # 随机选择提示
-        self.color_modes = [Fore.WHITE, Fore.GREEN, Fore.YELLOW, Fore.RED]  # 颜色模式列表
 
         clear(self, [])
 
@@ -54,12 +53,3 @@ class Init:  # 初始化
         for message in startup_messages:
             print(message)
             time.sleep(0.05)
-
-    def fprint(self, message, mode=0):
-        """打印消息
-        mode: 0白色，1绿色，2黄色，3红色
-        """
-        print(self.color_modes[mode] + message)
-        if mode == 3:
-            random.seed(time.time_ns()) #避免错误代码一致
-            self.errcode = random.randint(100, 999)
