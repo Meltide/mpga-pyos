@@ -3,6 +3,7 @@ __doc__="Run PYOScript files(.pyos)"
 import os
 from colorama import Fore
 from utils.config import *
+from utils.man import ErrorCodeManager
 
 class PYOScript:
     def __init__(self,core):

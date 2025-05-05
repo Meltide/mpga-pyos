@@ -1,4 +1,5 @@
 from colorama import Fore #彩色文字库
+from utils.man import ErrorCodeManager
 import json #解析和保存json配置文件
 
 __doc__="PyOS Host Manager"

@@ -3,6 +3,7 @@ from colorama import Fore  # 彩色文字库
 import json  # 解析和保存json配置文件
 import pwinput  # 密码输入库
 from textwrap import dedent  # 格式化输出库
+from utils.man import ErrorCodeManager
 
 __doc__ = "PyOS User Manager"
 

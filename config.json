@@ -37,9 +37,7 @@
             "restart"
         ],
         "Third-party": [
-            "example",
-            "ciallo",
-            "testmpk"
+            "example"
         ]
     }
 }

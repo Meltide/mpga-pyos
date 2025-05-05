@@ -1,3 +1,4 @@
+import os, json
 from colorama import Fore, Back, Style
 from utils.man import CommandManager
 from utils.man import ErrorCodeManager
@@ -10,6 +11,8 @@ __usage__ = {
 }
 
 def execute(self, args):
+    global pkg_doc
+    
     cmdman = CommandManager(self)
     
     # 过滤和清理参数，只保留字符串类型的有效命令名
@@ -26,10 +29,18 @@ def execute(self, args):
             for cmd in sorted(cmds):
                 cmdman.reg(cmd)
                 try:
-                    doc = cmdman.getpkg().__doc__ or "No description"
-                    print(f"{cmd:<15}{Style.RESET_ALL} {doc}")
+                    # 优先从package.json获取描述
+                    pkg_doc = _get_package_description(cmd)
+                    doc = pkg_doc if pkg_doc else cmdman.getpkg().__doc__ or "No description"
+                    print(f"{cmd:<15} {doc}")
                 except ImportError:
-                    print(f"{cmd:<15}{Style.RESET_ALL} (Not loadable)")
+                    print(f"{cmd:<15} (Command not loadable)")
+                    self.error_code = ErrorCodeManager.get_code(ImportError)
+                # try:
+                    # doc = cmdman.getpkg().__doc__ or "No description"
+                    # print(f"{cmd:<15}{Style.RESET_ALL} {doc}")
+                # except ImportError:
+                    # print(f"{cmd:<15}{Style.RESET_ALL} (Not loadable)")
         return
 
     # 获取要查询的命令名（第一个有效参数）
@@ -46,20 +57,34 @@ def execute(self, args):
     # 显示命令帮助信息
     try:
         pkg = cmdman.getpkg()
-        print(f"\n{Back.BLUE} Help for: {cmd_name} {Style.RESET_ALL}")
+        print(f"{Back.BLUE} Help for: {cmd_name} {Style.RESET_ALL}")
         
         # 显示描述
-        description = getattr(pkg, '__doc__', "No description available")
-        print(f"\n{description}\n")
+        description = pkg_doc if pkg_doc else getattr(pkg, '__doc__', "No description")
+        print(f"{description}\n")
         
         # 显示用法
         if hasattr(pkg, '__usage__'):
-            print(f"{Back.BLUE} Usage Examples: {Style.RESET_ALL}")
+            print(f"{Back.BLUE} Usage {Style.RESET_ALL}")
             for usage, desc in pkg.__usage__.items():
-                print(f"  {cmd_name} {Fore.GREEN}{usage:<15}{Style.RESET_ALL} {desc}")
+                print(f"{usage:<15}{Style.RESET_ALL} {desc}")
         else:
             print(f"{Fore.YELLOW}No usage examples available{Style.RESET_ALL}")
             
     except Exception as e:
         print(f"{Fore.RED}Error loading command help: {str(e)}{Style.RESET_ALL}")
         self.error_code = ErrorCodeManager().get_code(e)
+
+def _get_package_description(cmd_name):
+    """从package.json文件中获取命令描述信息"""
+    package_json_path = os.path.join("cmdList", "third_party", cmd_name, "package.json")
+    
+    if os.path.exists(package_json_path):
+        try:
+            with open(package_json_path, 'r', encoding='utf-8') as f:
+                pkg_info = json.load(f)
+                return pkg_info.get('description')
+        except:
+            return None
+    
+    return None
