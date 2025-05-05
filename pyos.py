@@ -1,4 +1,4 @@
-import os  # 系统库
+import os, sys  # 系统库
 from colorama import Fore  # 彩色文字库
 from pyosLogin import Login
 import traceback
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     except SystemExit:
         pass
     except BaseException as e:
-        print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
+        print(f"\nError: {Fore.RED}{type(e).__name__ if not str(e) else e}")
         print(f"Error code: {Fore.RED}{ErrorCodeManager().get_code(e)}")
         if SHOW_ERROR_DETAILS:
             print(f"Details: \n{traceback.format_exc()}")

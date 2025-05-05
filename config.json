@@ -38,7 +38,8 @@
         ],
         "Third-party": [
             "example",
-            "ciallo"
+            "ciallo",
+            "testmpk"
         ]
     }
 }

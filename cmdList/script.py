@@ -25,6 +25,7 @@ class PYOScript:
 def execute(self,args):
     if not args:
         print(f"Error: {Fore.RED}No file selected. Please input a file path.")
+        self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
 
     script=PYOScript(self)

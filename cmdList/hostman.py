@@ -14,6 +14,7 @@ def execute(self,args):
         print("Usage:")
         for command, description in __usage__.items():
             print(f"  {command}: {description}")
+        self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
     
     match args[0]:
@@ -30,3 +31,4 @@ def execute(self,args):
             print("Usage:")
             for command, description in __usage__.items():
                 print(f"  {command}: {description}")
+            self.error_code = ErrorCodeManager().get_code(SyntaxError)

@@ -5,6 +5,7 @@ __doc__="Return the name of error code"
 def execute(self, args):
     if not args:
         print(f"Error: {Fore.RED}No errcode inputed. Please input an errcode.")
+        self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
 
     if len(args) >= 1:

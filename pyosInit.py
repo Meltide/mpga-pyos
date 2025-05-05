@@ -53,7 +53,7 @@ class Init:  # 初始化
         ]
         for message in startup_messages:
             print(message)
-            time.sleep(0.1)
+            time.sleep(0.05)
 
     def fprint(self, message, mode=0):
         """打印消息
