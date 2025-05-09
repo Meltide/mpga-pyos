@@ -31,7 +31,8 @@
             "restart"
         ],
         "Third-party": [
-            "example"
+            "example",
+            "ciallo"
         ]
     }
 }

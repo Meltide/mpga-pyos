@@ -28,21 +28,29 @@ def execute(self, args):
             print(f"Now login: {Fore.GREEN}{self.username}")
         case "create":
             newname = input('Name: ')
-            newpwd = pwinput.pwinput()
+            newpwd = pwinput.pwinput("Password: ")
+            repwd = pwinput.pwinput("Re-enter Password: ")
+            if newpwd != repwd:
+                raise SyntaxError("The two passwords do not match!")
+                return
             if newname in ACCOUNTS:
                 print(f"{Fore.YELLOW}WARNING: The name was created!")
                 return
             ACCOUNTS[newname] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
             with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
-                json.dump(cfg, f, ensure_ascii=False, indent=4)
+                json.dump(profiles, f, ensure_ascii=False, indent=4)
             print(f'{Fore.GREEN}Created successfully.')
         case "change":
             stpasswd = base64.b64decode(profiles["accounts"][self.username].strip()).decode("utf-8")
             oldpwd = pwinput.pwinput("Old Password: ")
+            reoldpwd = pwinput.pwinput("Re-enter Old Password: ")
+            if oldpwd != reoldpwd:
+                raise SyntaxError("The two passwords do not match!")
+                return
             if oldpwd == stpasswd:
                 newpwd = pwinput.pwinput("New Password: ")
                 ACCOUNTS[self.username] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
-                with open(os.path.join("configs", "profiles.json"), "r+", encoding="utf-8") as f:
+                with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
                     json.dump(profiles, f, ensure_ascii=False, indent=4)
                 print(f'{Fore.GREEN}Resetted successfully.')
             else:

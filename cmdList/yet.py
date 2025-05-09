@@ -105,7 +105,7 @@ def get_command_module(self, cmd_name):
 def install(self, args):
     """安装应用并自动重载"""
     global source_path
-    
+
     if len(args) < 2:
         print(f"Error: {Fore.RED}No source file specified.{Style.RESET_ALL}")
         print(f"Usage: install <source_path> [command_name]")
@@ -113,12 +113,13 @@ def install(self, args):
         return
 
     source_path = os.path.abspath(os.path.expanduser(args[1]))
-    
+
     # ZIP/MPK包处理
     if source_path.endswith(('.zip', '.mpk')):
         install_from_package(self, source_path, args[2] if len(args) > 2 else None)
+        _auto_reload_commands(self)  # 动态重载命令
         return
-    
+
     # 单文件安装
     cmd_name = args[2].replace('.py', '') if len(args) > 2 else \
                os.path.splitext(os.path.basename(source_path))[0]
@@ -155,8 +156,23 @@ def install(self, args):
     # 安装依赖
     install_dependencies(self, cmd_name, target_path)
 
-    # 显示安装成功信息
-    print(f"• {Fore.GREEN}Command '{cmd_name}' installed successfully!{Style.RESET_ALL}")
+    # 动态加载新命令
+    try:
+        module = importlib.import_module(f'cmdList.third_party.{cmd_name}')
+        _command_cache[cmd_name] = module
+        if cmd_name not in commands["commands"]["Third-party"]:
+            commands["commands"]["Third-party"].append(cmd_name)
+        print(f"• {Fore.GREEN}Command '{cmd_name}' installed and loaded successfully!{Style.RESET_ALL}")
+    except Exception as e:
+        print(f"Error: {Fore.RED}Failed to load command '{cmd_name}': {e}{Style.RESET_ALL}")
+        return
+
+    # 保存配置
+    try:
+        with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
+            json.dump(commands, f, indent=4, ensure_ascii=False)
+    except Exception as e:
+        print(f"Warning: {Fore.YELLOW}Failed to update config: {e}{Style.RESET_ALL}")
 
 def install_from_package(self, package_path, cmd_name=None):
     """从ZIP/MPK包安装应用"""
@@ -171,7 +187,7 @@ def install_from_package(self, package_path, cmd_name=None):
             print(f"• {Fore.GREEN}Extracted package to: {temp_dir}{Style.RESET_ALL}")
         
         # 检查是否有package.json
-        package_info = read_package_info(temp_dir)
+        package_info = read_package_info(temp_dir)  # 调用函数，确保 version_code 存在
         
         # 如果没有指定命令名，尝试从package.json获取或使用主模块名
         if not cmd_name:
@@ -180,27 +196,14 @@ def install_from_package(self, package_path, cmd_name=None):
             else:
                 raise NameError("Missing package name")
         
-        old_version = get_installed_version(self, cmd_name)
-        new_version = get_package_version(self, source_path)
-        if new_version is None:
-            new_version = "0.0.0"
+        # 获取已安装版本的 version_code
+        old_version_code = get_installed_version_code(self, cmd_name)
+        new_version_code = int(package_info.get("version_code", 0))  # 新包的 version_code
         
         # 检查是否已存在
-        if old_version is not None:
-            comp = compare_versions(new_version, old_version)
-            if comp < 0:
-                print(f"Warning: {Fore.YELLOW}You are executing a downgrade operation (installed: {old_version}, new: {new_version})")
-                choice = input("Do you want to continue? [y/n]: ")
-                match choice:
-                    case "n" | "N":
-                        print(Fore.YELLOW + "Installition canceled.")
-                        return
-                    case "Y" | "y" | "":
-                        pass
-                    case _:
-                        raise NameError("Unknown command.")
-            elif comp == 0:
-                print(f"{Fore.YELLOW}Same version detected ({new_version}), reinstalling...{Style.RESET_ALL}")
+        if old_version_code is not None and new_version_code < old_version_code:
+            print(f"Error: {Fore.RED}Cannot install an older version (installed: {old_version_code}, new: {new_version_code}).{Style.RESET_ALL}")
+            return
         
         # 创建目标目录
         target_dir = os.path.join("cmdList", "third_party", cmd_name)
@@ -235,6 +238,18 @@ def install_from_package(self, package_path, cmd_name=None):
         # 清理临时目录
         if os.path.exists(temp_dir):
             shutil.rmtree(temp_dir)
+
+def get_installed_version_code(self, cmd_name):
+    """获取已安装软件的 version_code"""
+    # 检测包目录
+    pkg_dir = os.path.join("cmdList", "third_party", cmd_name)
+    pkg_info = os.path.join(pkg_dir, "package.json")
+    if os.path.exists(pkg_info):
+        with open(pkg_info, 'r', encoding='utf-8') as f:
+            info = json.load(f)
+            return int(info.get('version_code', 0))  # 返回 version_code，默认为 0
+    
+    return None
 
 def compare_versions(ver1, ver2):
     """
@@ -322,15 +337,22 @@ def get_installed_version(self, cmd_name):
     return None
 
 def read_package_info(directory):
-    """读取package.json文件"""
+    """读取package.json文件并检查version_code"""
     package_json = os.path.join(directory, "package.json")
     if os.path.exists(package_json):
         try:
             with open(package_json, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                package_info = json.load(f)
+                # 检查是否包含 version_code
+                if "version_code" not in package_info:
+                    raise KeyError("Missing 'version_code' in package.json")
+                return package_info
+        except KeyError as e:
+            print(f"Error: {Fore.RED}{e}{Style.RESET_ALL}")
+            raise
         except Exception as e:
             print(f"Error: {Fore.RED}Invalid package.json: {e}{Style.RESET_ALL}")
-            self.error_code = ErrorCodeManager().get_code(e)
+            raise
     else:
         raise FileNotFoundError("Missing package.json")
     return None
