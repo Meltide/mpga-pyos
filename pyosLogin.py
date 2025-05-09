@@ -8,8 +8,8 @@ import pwinput  # 密码隐藏库
 import traceback
 
 from utils.man import ErrorCodeManager
-from utils.config import SHOW_ERROR_DETAILS
-
+from utils.config import *
+from utils.foxShell import FoxShell
 
 class Login(Init):
     def __init__(self):
@@ -31,8 +31,8 @@ class Login(Init):
 
     def save_config(self):
         """保存配置到文件"""
-        with open("config.json", "r+", encoding="utf-8") as f:
-            json.dump(self.config, f, ensure_ascii=False, indent=4)
+        with open(os.path.join("configs", "profiles.json"), "r+", encoding="utf-8") as f:
+            json.dump(profiles, f, ensure_ascii=False, indent=4)
 
     def encode_password(self, password):
         """加密密码"""
@@ -51,7 +51,7 @@ class Login(Init):
         elif new_username in ("create", "reset name", "reset pwd"):
             self.fprint("Invalid username!", 3)
         else:
-            self.config["accounts"][new_username] = self.encode_password(new_password)
+            profiles["accounts"][new_username] = self.encode_password(new_password)
             self.save_config()
             self.fprint("Account created successfully.", 1)
 
@@ -60,7 +60,7 @@ class Login(Init):
         old_username = input("OldName: ")
         if self._validate_user(old_username):
             new_username = input("NewName: ")
-            self.config["accounts"][new_username] = self.config["accounts"].pop(old_username)
+            profiles["accounts"][new_username] = profiles["accounts"].pop(old_username)
             self.save_config()
             self.fprint("Username reset successfully.", 1)
         else:
@@ -71,7 +71,7 @@ class Login(Init):
         username = input("Name: ")
         if self._validate_user(username):
             new_password = pwinput.pwinput("NewPassword: ")
-            self.config["accounts"][username] = self.encode_password(new_password)
+            profiles["accounts"][username] = self.encode_password(new_password)
             self.save_config()
             self.fprint("Password reset successfully.", 1)
         else:
@@ -79,7 +79,7 @@ class Login(Init):
 
     def login_user(self):
         """用户登录"""
-        stored_password = self.decode_password(self.config["accounts"][self.username])
+        stored_password = self.decode_password(profiles["accounts"][self.username])
         while self.command_count < self.max_attempts:
             entered_password = pwinput.pwinput()
             if entered_password == stored_password:
@@ -92,8 +92,7 @@ class Login(Init):
     def start_shell(self):
         """启动命令行交互"""
         while self.command_count < self.max_attempts:
-            timestamp = datetime.datetime.now().strftime(" %m/%d %H:%M:%S ")
-            prompt = self._generate_prompt(timestamp)
+            prompt = FoxShell.generate_prompt(self)
             command = input(prompt)
             try:
                 self.run(command)
@@ -105,8 +104,8 @@ class Login(Init):
 
     def _validate_user(self, username):
         """验证用户名和密码"""
-        if username in self.config["accounts"] and username != "root":
-            stored_password = self.decode_password(self.config["accounts"][username])
+        if username in profiles["accounts"] and username != "root":
+            stored_password = self.decode_password(profiles["accounts"][username])
             entered_password = pwinput.pwinput("Password: ")
             return entered_password == stored_password
         return False
@@ -127,15 +126,3 @@ class Login(Init):
         print("")
         if self.allow_system_commands:
             self.fprint("WARNING: Running system commands is enabled!", 2)
-
-    def _generate_prompt(self, timestamp):
-        """生成命令行提示符"""
-        if self.error_code:
-            return (
-                f"{Back.RED}{Fore.WHITE} ✘ {self.error_code} {Back.WHITE}{Fore.BLACK}{timestamp}"
-                f"{Back.YELLOW} {self.username}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.current_directory} {Back.RESET}> "
-            )
-        return (
-            f"{Back.WHITE}{Fore.BLACK}{timestamp}{Back.YELLOW} {self.username}@{self.hostname} "
-            f"{Back.BLUE}{Fore.WHITE} {self.current_directory} {Back.RESET}> "
-        )

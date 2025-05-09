@@ -3,7 +3,7 @@ import zipfile
 import subprocess
 import sys
 import re
-from utils.config import cfg
+from utils.config import commands
 from . import help, sysname
 from utils.man import ErrorCodeManager
 from utils.man import CommandManager
@@ -71,15 +71,15 @@ def _auto_reload_commands(self):
             try:
                 module = importlib.import_module(f'cmdList.third_party.{cmd_name}')
                 _command_cache[cmd_name] = module
-                if cmd_name not in cfg["commands"]["Third-party"]:
-                    cfg["commands"]["Third-party"].append(cmd_name)
+                if cmd_name not in commands["commands"]["Third-party"]:
+                    commands["commands"]["Third-party"].append(cmd_name)
             except Exception as e:
                 print(f"{Fore.YELLOW}Warning: Failed to reload command '{cmd_name}': {e}{Style.RESET_ALL}")
     
     # 4. 保存配置
     try:
-        with open("config.json", "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=4, ensure_ascii=False)
+        with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
+            json.dump(commands, f, indent=4, ensure_ascii=False)
     except Exception as e:
         print(f"{Fore.YELLOW}Warning: Failed to update config: {e}{Style.RESET_ALL}")
 
@@ -216,11 +216,11 @@ def install_from_package(self, package_path, cmd_name=None):
                 shutil.copy2(src, dst)
         
         # 更新配置
-        if cmd_name not in cfg["commands"]["Third-party"]:
-            cfg["commands"]["Third-party"].append(cmd_name)
+        if cmd_name not in commands["commands"]["Third-party"]:
+            commands["commands"]["Third-party"].append(cmd_name)
         
-        with open("config.json", "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=4, ensure_ascii=False)
+        with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
+            json.dump(commands, f, indent=4, ensure_ascii=False)
         
         # 检查并安装依赖
         main_module_path = os.path.join(target_dir, find_main_module(target_dir) or 'main.py')
@@ -449,13 +449,13 @@ def remove_app(self, args):
         return
     
     app_name = args[1]
-    if app_name not in cfg["commands"]["Third-party"]:
+    if app_name not in commands["commands"]["Third-party"]:
         print(f"Error: {Fore.RED}App '{app_name}' is not installed.{Style.RESET_ALL}")
         return
     
     try:
         # 从配置中移除
-        cfg["commands"]["Third-party"].remove(app_name)
+        commands["commands"]["Third-party"].remove(app_name)
         
         # 删除命令文件或目录
         third_party_dir = os.path.join("cmdList", "third_party")
@@ -472,8 +472,8 @@ def remove_app(self, args):
             print(f"Warning: {Fore.YELLOW}Could not find app files, but removed from configuration.{Style.RESET_ALL}")
         
         # 保存配置
-        with open("config.json", "w", encoding="utf-8") as f:
-            json.dump(cfg, f, indent=4)
+        with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
+            json.dump(commands, f, indent=4)
             
     except Exception as e:
         print(f"Error removing app: {Fore.RED}{e}{Style.RESET_ALL}")
@@ -481,7 +481,7 @@ def remove_app(self, args):
 
 def list_apps(self, args):
     print(Back.BLUE + " Installed Apps " + Style.RESET_ALL)
-    for app in cfg["commands"]["Third-party"]:
+    for app in commands["commands"]["Third-party"]:
         # 检查是单文件还是目录
         app_path = os.path.join("cmdList", "third_party", f"{app}.py")
         if os.path.exists(app_path):

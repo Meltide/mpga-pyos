@@ -1,6 +1,8 @@
+import json
 from colorama import Fore #彩色文字库
+
 from utils.man import ErrorCodeManager
-import json #解析和保存json配置文件
+from utils.config import *
 
 __doc__="PyOS Host Manager"
 
@@ -23,9 +25,9 @@ def execute(self,args):
             print(f"Current hostname: {Fore.GREEN}{self.hostname}")
         case "change":
             self.hostname = input("Type new hostname: ")
-            with open("config.json", "r+", encoding="utf-8") as f:
-                self.config["hostname"] = self.hostname
-                json.dump(self.config,f,ensure_ascii=False,indent=4)
+            with open(os.path.join("configs", "profiles.json"), "r+", encoding="utf-8") as f:
+                HOSTNAME = self.hostname
+                json.dump(profiles,f,ensure_ascii=False,indent=4)
             print(f"{Fore.GREEN}Hostname change successfully.")
         case _:
             print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")

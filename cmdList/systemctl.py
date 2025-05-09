@@ -37,9 +37,9 @@ def set_status(self, status, args):
         return
 
     try:
-        with open("config.json", "w", encoding='utf-8') as f:
-            cfg[args[0]] = status
-            json.dump(cfg, f, ensure_ascii=False, indent=4)
+        with open(os.path.join("configs", "system_policys.json"), "w", encoding='utf-8') as f:
+            policys[args[0]] = status
+            json.dump(policys, f, ensure_ascii=False, indent=4)
             print(f"The new status of {args[0]}: {status}")
     except Exception as e:
         print(f"Error: {Fore.RED}{e}")

@@ -16,7 +16,6 @@ class Init:  # 初始化
         self.command_manager = CommandManager(self, "")  # 命令管理器
         self.clear_screen_count = 0  # 清屏计数
         self.error_code = 0  # 错误代码
-        self.config=cfg
         self.account_names=ACCOUNTS.keys()
         self.hostname=HOSTNAME
         self.allow_system_commands = ALLOW_SYSTEM_COMMANDS
