@@ -18,3 +18,5 @@ class FoxShell(Init):
                 return (
                     f"[{timestamp}] {Fore.GREEN}{self.username}{Fore.RESET}@{self.hostname} {Fore.BLUE}{self.current_directory}{Fore.RESET} {f'[{Fore.RED}{self.error_code}{Fore.RESET}]' if self.error_code else ''}> "
                 )
+            case _:
+                raise SyntaxError("Unknown theme.")

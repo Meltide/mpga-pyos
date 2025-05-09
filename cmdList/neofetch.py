@@ -26,7 +26,7 @@ def execute(self,args):
     time.sleep(0.05)
     print(f"{Fore.BLUE}Package{Fore.RESET}: {len(SC_THIRD_PARTY)}")
     time.sleep(0.05)
-    print(f"{Fore.BLUE}Shell{Fore.RESET}: pysh {self.shell_version}")
+    print(f"{Fore.BLUE}Shell{Fore.RESET}: FoxShell {self.shell_version}")
     time.sleep(0.05)
     print(f"{Fore.BLUE}CPU{Fore.RESET}: ({psutil.cpu_count()}) @ {psutil.cpu_freq().max  / (1024):.2f}Ghz")
     time.sleep(0.05)
