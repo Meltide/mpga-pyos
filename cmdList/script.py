@@ -3,32 +3,16 @@ __doc__="Run PYOScript files(.pyos)"
 import os
 from colorama import Fore
 from utils.config import *
+from utils.man import ErrorCodeManager
+from PYOScript.compiler import PSC
 
-class PYOScript:
-    def __init__(self,core):
-        self.tab=0
-        self.end=True
-        self.code=[]
-        self.core=core
-    def read(self,filename):
-        with open(filename,"r") as f:
-            self.code=f.read().splitlines()
-    def execute(self):
-        for line in self.code:
-            tokens=line.split(" ")
-
-    def run(self,code=""):
-        if not code:
-            self.code=[code]
-        self.execute()
-        
 def execute(self,args):
     if not args:
         print(f"Error: {Fore.RED}No file selected. Please input a file path.")
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
 
-    script=PYOScript(self)
+    script=PSC(args[0])
     if os.path.isfile(args[0]):
-        script.read(args[0])
+        script.read()
     script.run()
