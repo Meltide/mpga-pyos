@@ -98,10 +98,7 @@ class Login(Init):
             try:
                 self.run(command)
             except Exception as e:
-                if isinstance(e, FileNotFoundError):
-                    print(f"Error: {Fore.RED}Unknown command: {command}")
-                else:
-                    print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
+                print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
                 self.error_code = ErrorCodeManager().get_code(e)
                 if SHOW_ERROR_DETAILS:
                     print(f"Details: \n{traceback.format_exc()}")
