@@ -38,6 +38,10 @@ if __name__ == "__main__":
         PyOS()
         '''except ModuleNotFoundError:
             os.system("pip install -r requirements.txt")'''
+    except KeyboardInterrupt or EOFError as e:
+        if isinstance(e, EOFError):
+            print()
+        print(Fore.RED + "You exited PyOS just now.")
     except SystemExit:
         pass
     except BaseException as e:
