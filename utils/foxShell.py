@@ -3,9 +3,33 @@ import datetime
 from colorama import Fore, Back
 
 from pyosInit import Init
+from utils.man import ErrorCodeManager
 from utils.config import *
 
 class FoxShell(Init):
+    def show_greeting():
+        if SHOW_GREETING:
+            try:
+                with open(os.path.join("configs", "Fox", "fox_greeting.txt"), "r", encoding="utf-8") as f:
+                    greeting_message = f.read()
+            except FileNotFoundError:
+                raise FileNotFoundError("Can't find fox_greeting.txt")
+            except Exception:
+                raise
+            print(f"\n{greeting_message}")
+    
+    def reload(self):
+        global fox, THEME, SHOW_GREETING
+        try:
+            with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as f:
+                fox = json.load(f)
+            THEME = fox["theme"]
+            SHOW_GREETING = fox["show_greeting"]
+            print(f"• {Fore.GREEN}Reload successfully.")
+        except Exception as e:
+            print(f"Can't reload FoxShell: {Fore.RED}{e if str(e) else type(e).__name__}")
+            self.error_code = ErrorCodeManager.get_code(e)
+    
     def generate_prompt(self):
         """生成命令行提示符"""
         timestamp = datetime.datetime.now().strftime("%m/%d %H:%M:%S")
@@ -18,5 +42,9 @@ class FoxShell(Init):
                 return (
                     f"[{timestamp}] {Fore.GREEN}{self.username}{Fore.RESET}@{self.hostname} {Fore.BLUE}{self.current_directory}{Fore.RESET} {f'[{Fore.RED}{self.error_code}{Fore.RESET}]' if self.error_code else ''}> "
                 )
+            case "bash":
+                return (
+                    f"{self.username}@{self.hostname}: {Fore.GREEN}{self.current_directory}{Fore.RESET} {f'[{Fore.RED}{self.error_code}{Fore.RESET}]' if self.error_code else ''}$ "
+                )
             case _:
-                raise SyntaxError("Unknown theme.")
+                raise SyntaxError("Unknown theme.")     
