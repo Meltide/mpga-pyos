@@ -29,7 +29,6 @@ SC_SYSTEM: list = SIGNED_COMMANDS["System"]
 SC_TOOLS: list = SIGNED_COMMANDS["Tools"]
 SC_GAMES: list = SIGNED_COMMANDS["Games"]
 SC_POWER: list = SIGNED_COMMANDS["Power"]
-SC_THIRD_PARTY: list = SIGNED_COMMANDS["Third-party"]
 
 # fox_config.json
 THEME: str = fox["theme"]

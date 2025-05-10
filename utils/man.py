@@ -14,7 +14,6 @@ class CommandManager:
         self.cmd = _cmd
         self.core = core
         self.allcmds = SIGNED_COMMANDS  # 所有内置命令
-        self.thirds = SC_THIRD_PARTY  # 第三方命令
         self.cmds = [cmd for category in self.allcmds.values() for cmd in category]  # 所有命令列表
         self.package_info_cache: Dict[str, dict] = {}  # 包信息缓存
 
@@ -24,9 +23,6 @@ class CommandManager:
 
     def resolve_package_path(self) -> Optional[str]:
         """解析命令对应的包路径"""
-        if self.cmd not in self.thirds:
-            return None
-            
         # 检查是否是包形式安装的命令
         pkg_dir = os.path.join("cmdList", "third_party", self.cmd)
         if os.path.isdir(pkg_dir):

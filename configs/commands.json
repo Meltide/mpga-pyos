@@ -30,9 +30,6 @@
             "exit",
             "shutdown",
             "restart"
-        ],
-        "Third-party": [
-            "example"
         ]
     }
 }

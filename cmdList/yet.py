@@ -2,7 +2,6 @@ import json, shutil, os, importlib
 import zipfile
 import subprocess
 import sys
-import re
 from utils.config import commands
 from . import help, sysname
 from utils.man import ErrorCodeManager
@@ -219,8 +218,11 @@ def install_from_package(self, package_path, cmd_name=None):
                 shutil.copy2(src, dst)
         
         # 更新配置
-        if cmd_name not in commands["commands"]["Third-party"]:
-            commands["commands"]["Third-party"].append(cmd_name)
+        category = package_info.get("category", "Other")
+        if category in commands["commands"]:
+            commands["commands"][category].append(cmd_name)
+        else:
+            commands["commands"][category] = [cmd_name]
         
         with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
             json.dump(commands, f, indent=4, ensure_ascii=False)
@@ -251,91 +253,6 @@ def get_installed_version_code(self, cmd_name):
     
     return None
 
-def compare_versions(ver1, ver2):
-    """
-    自定义版本比较函数
-    返回: 1 (ver1 > ver2), 0 (相等), -1 (ver1 < ver2)
-    """
-    def normalize_version(v):
-        # 将版本字符串转换为数字列表，处理常见版本格式如 1.2.3-alpha
-        v = str(v).lower()
-        v = re.sub(r'[^0-9a-z.]', '', v)  # 移除非字母数字和点号
-        parts = []
-        for part in v.split('.'):
-            if part.isdigit():
-                parts.append(int(part))
-            else:
-                # 处理带字母的版本部分 (如 1.0a -> [1, 0, 'a'])
-                digit_part = re.sub(r'[^0-9]', '', part)
-                alpha_part = re.sub(r'[^a-z]', '', part)
-                if digit_part:
-                    parts.append(int(digit_part))
-                if alpha_part:
-                    parts.append(alpha_part)
-        return parts
-    
-    v1 = normalize_version(ver1)
-    v2 = normalize_version(ver2)
-    
-    # 逐部分比较
-    for i in range(max(len(v1), len(v2))):
-        p1 = v1[i] if i < len(v1) else 0
-        p2 = v2[i] if i < len(v2) else 0
-        
-        # 如果部分类型不同（数字 vs 字符串）
-        if type(p1) != type(p2):
-            # 数字总是比字母优先级高
-            if isinstance(p1, int):
-                return 1
-            else:
-                return -1
-        
-        if p1 > p2:
-            return 1
-        elif p1 < p2:
-            return -1
-    
-    return 0
-
-def get_package_version(self, source_path):
-    """获取包的版本信息"""
-    try:
-        if source_path.endswith(('.zip', '.mpk')):
-            with zipfile.ZipFile(source_path) as z:
-                if 'package.json' in z.namelist():
-                    with z.open('package.json') as f:
-                        pkg_info = json.load(f)
-                        return pkg_info.get('version')
-        else:
-            # 检测单文件
-            with open(source_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    if line.strip().startswith('__version__'):
-                        return line.split('=')[1].strip().strip('\'"')
-    except:
-        return None
-    return None
-
-def get_installed_version(self, cmd_name):
-    """获取已安装软件版本"""
-    # 检测单文件
-    cmd_path = os.path.join("cmdList", "third_party", f"{cmd_name}.py")
-    if os.path.exists(cmd_path):
-        with open(cmd_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip().startswith('__version__'):
-                    return line.split('=')[1].strip().strip('\'"')
-    
-    # 检测包目录
-    pkg_dir = os.path.join("cmdList", "third_party", cmd_name)
-    pkg_info = os.path.join(pkg_dir, "package.json")
-    if os.path.exists(pkg_info):
-        with open(pkg_info, 'r', encoding='utf-8') as f:
-            info = json.load(f)
-            return info.get('version')
-    
-    return None
-
 def read_package_info(directory):
     """读取package.json文件并检查version_code"""
     package_json = os.path.join(directory, "package.json")
@@ -346,12 +263,9 @@ def read_package_info(directory):
                 # 检查是否包含 version_code
                 if "version_code" not in package_info:
                     raise KeyError("Missing 'version_code' in package.json")
+                    return
                 return package_info
-        except KeyError as e:
-            print(f"Error: {Fore.RED}{e}{Style.RESET_ALL}")
-            raise
         except Exception as e:
-            print(f"Error: {Fore.RED}Invalid package.json: {e}{Style.RESET_ALL}")
             raise
     else:
         raise FileNotFoundError("Missing package.json")
@@ -450,6 +364,8 @@ def show_package_info(self, args):
     # 显示包信息
     print(f"Package: {Fore.CYAN}{package_info.get('command', pkg_name)}{Style.RESET_ALL}")
     print(f"Version: {Fore.GREEN}{package_info.get('version', 'unknown')}{Style.RESET_ALL}")
+    print(f"Version Code: {Fore.GREEN}{package_info.get('version_code', 'unknown')}{Style.RESET_ALL}")
+    print(f"Category: {Fore.BLUE}{package_info.get('category', 'Other')}{Style.RESET_ALL}")
     
     if 'description' in package_info:
         print(f"Description: {package_info['description']}")
@@ -471,13 +387,34 @@ def remove_app(self, args):
         return
     
     app_name = args[1]
-    if app_name not in commands["commands"]["Third-party"]:
+    
+    # 查找包目录
+    pkg_dir = os.path.join("cmdList", "third_party", app_name)
+    if not os.path.exists(pkg_dir):
+        pkg_file = os.path.join("cmdList", "third_party", f"{pkg_name}.py")
+        if not os.path.exists(pkg_file):
+            raise FileNotFoundError(f"Package '{pkg_name}' not found.")
+            return
+        return
+    
+    # 读取package.json
+    package_info = read_package_info(pkg_dir)
+    if not package_info:
+        print(f"Package: {Fore.CYAN}{pkg_name}{Style.RESET_ALL}")
+        print(f"Type: {Fore.YELLOW}Directory (no package.json){Style.RESET_ALL}")
+        return
+    
+    category = package_info.get('category', 'Other')
+    
+    if app_name not in commands["commands"][category]:
         print(f"Error: {Fore.RED}App '{app_name}' is not installed.{Style.RESET_ALL}")
         return
     
     try:
         # 从配置中移除
-        commands["commands"]["Third-party"].remove(app_name)
+        commands["commands"][category].remove(app_name)
+        if len(commands["commands"][category]) <= 1:
+            del commands["commands"][category]
         
         # 删除命令文件或目录
         third_party_dir = os.path.join("cmdList", "third_party")
