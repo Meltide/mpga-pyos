@@ -24,7 +24,7 @@ def execute(self,args):
     print(f"{Fore.BLUE}Host{Fore.RESET}: {host}")
     print(f"{Fore.BLUE}Kernel{Fore.RESET}: PTCORE-V{self.core_version}-aarch64")
     time.sleep(0.05)
-    print(f"{Fore.BLUE}Package{Fore.RESET}: {len(SC_THIRD_PARTY)}")
+    print(f"{Fore.BLUE}Package{Fore.RESET}: {get_package_count()}")
     time.sleep(0.05)
     print(f"{Fore.BLUE}Shell{Fore.RESET}: FoxShell {self.shell_version}")
     time.sleep(0.05)
@@ -52,3 +52,9 @@ def execute(self,args):
         + "    "
     )
     print("")
+
+def get_package_count():
+    third_party_dir = os.path.join("cmdList", "third_party")
+    if not os.path.exists(third_party_dir):
+        return 0
+    return len(os.listdir(third_party_dir))
