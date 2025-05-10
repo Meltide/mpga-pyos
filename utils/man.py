@@ -3,6 +3,8 @@ import os
 import subprocess
 import shutil
 from typing import Optional, Dict
+from colorama import Fore, Back, Style
+from .basic import *
 
 from .config import *
 from .err import *
@@ -88,7 +90,7 @@ class CommandManager:
         """导入命令对应的模块"""
         return importlib.import_module(self.pkg_name())
 
-    def execute(self, args=None):
+    def execute(self, args=()):
         """执行命令"""
         if args is None:
             args = ()  # 确保 args 是一个元组
@@ -138,55 +140,9 @@ class PathManager:
     
 class ErrorCodeManager:
     def __init__(self):
-        self.info = {
-            119: "Unknown command."
-        }
-        self.returns = {
-            FileNotFoundError: 404,
-            PermissionError: 403,
-            KeyError: 300,
-            SystemExit: -1,
-            KeyboardInterrupt: -30,
-            EOFError: -31,
-            Exception: 114,
-            BaseException: -114,
-            TypeError: 111,
-            ValueError: 112,
-            IndexError: 113,
-            NameError: 115,
-            AttributeError: 116,
-            OSError: 117,
-            NotImplementedError: 118,
-            ImportError: 119,
-            RuntimeError: 120,
-            SyntaxError: 121,
-            IndentationError: 122,
-            TabError: 123,
-            UnicodeError: 124,
-            UnicodeDecodeError: 125,
-            UnicodeEncodeError: 126,
-            UnicodeTranslateError: 127,
-            SystemError: 128,
-            ZeroDivisionError: 129,
-            ArithmeticError: 130,
-            FloatingPointError: 131,
-            OverflowError: 132,
-            AssertionError: 133,
-            MemoryError: 134,
-            BufferError: 135,
-            ReferenceError: 136,
-            RecursionError: 138,
-            GeneratorExit: 140,
-            KeyboardInterrupt: 141,
-            StopIteration: 142,
-            StopAsyncIteration: 143,
-            StopAsyncIteration: 146,
-            LookupError: 156,
-            ReferenceError: 164,
-            shutil.SameFileError: 170,
+        self.info = EXCEPTION_INFO
+        self.returns = EXCEPTION_RETURNS
 
-            RunningError: 810 # 自定义错误码
-        }
     def get_code(self, e):
         """获取错误码"""
         if isinstance(e, (BaseException, Exception)):
@@ -195,15 +151,67 @@ class ErrorCodeManager:
             return self.returns.get(e,0)
         else:
             return
+        
     def get_type(self, code):
         """获取错误类型"""
         for k,v in self.returns.items():
             if v==code:
                 return k.__name__
         return "UnknownException"
+    
     def get_info(self, code_or_e):
         """获取错误信息"""
         if isinstance(code_or_e,int):
             return self.info.get(code_or_e,self.get_type(code_or_e))
         else:
             return self.info.get(self.get_code(code_or_e),type(code_or_e).name)
+
+class HelpManager:
+    def __init__(self, core, args=()):
+        self.core = core
+        self.cmdman = CommandManager(self.core)
+        self.basic = Basic()
+        self.args = self.basic.clean_args(args) # 过滤和清理参数，只保留字符串类型的有效命令名
+        self.cmd_name = self.args[0] if self.args else ""
+        self.cmdman.reg(self.cmd_name)
+
+    def show_all(self):
+        """显示所有命令"""
+        print(f"Available Commands:{Style.RESET_ALL}")
+        for category, cmds in self.cmdman.allcmds.items():
+            print(f"{Back.BLUE} {category} ")
+            for cmd in sorted(cmds):
+                self.cmdman.reg(cmd)
+                try:
+                    doc = self.cmdman.getpkg().__doc__ or "No description"
+                    print(f"{cmd:<15}{Style.RESET_ALL} {doc}")
+                except ImportError:
+                    print(f"{cmd:<15}{Style.RESET_ALL} (Not loadable)")
+        return
+
+    def show_cmd(self):
+        """显示指定命令的帮助信息"""
+        # 检查命令是否存在
+        if not self.cmdman.loaded_cmd():
+            raise FileNotFoundError(f"Command '{self.cmd_name}' not found.Type 'help' to see available commands")
+
+    def show_info(self):
+        """显示指定命令的详细信息"""
+        try:
+            pkg = self.cmdman.getpkg()
+            print(f"\n{Back.BLUE} Help for: {self.cmd_name} {Style.RESET_ALL}")
+            
+            # 显示描述
+            description = getattr(pkg, '__doc__', "No description available")
+            print(f"Description: \n{description}")
+            
+            # 显示用法
+            if hasattr(pkg, '__usage__'):
+                print(f"{Back.BLUE} Usage Examples: {Style.RESET_ALL}")
+                for usage, desc in pkg.__usage__.items():
+                    print(f"  {self.cmd_name} {Fore.GREEN}{usage:<15}{Style.RESET_ALL} {desc}")
+            else:
+                print(f"{Fore.YELLOW}Usage: No usage examples available{Style.RESET_ALL}")
+                
+        except Exception as e:
+            raise RunningError(f"Error loading command help: {str(e)}")
