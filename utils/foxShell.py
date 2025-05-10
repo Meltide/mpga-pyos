@@ -47,4 +47,39 @@ class FoxShell(Init):
                     f"{self.username}@{self.hostname}: {Fore.GREEN}{self.current_directory}{Fore.RESET} {f'[{Fore.RED}{self.error_code}{Fore.RESET}]' if self.error_code else ''}$ "
                 )
             case _:
-                raise SyntaxError("Unknown theme.")     
+                raise SyntaxError("Unknown theme.")
+    @staticmethod
+    def parse_commands(commands_str):
+        commands = []
+        command_parts = []
+        buffer = ""
+        inside_single_quote = False
+        escaped = False
+
+        for char in commands_str:
+            if escaped:
+                escaped = False
+                if char == "'" or char == "\\" or char == ";":
+                    buffer += char
+            elif char == " " and not inside_single_quote:
+                command_parts.append(buffer)
+                buffer = ""
+            elif char == "'":
+                inside_single_quote = not inside_single_quote
+            elif char == "\\":
+                escaped = True
+            elif char == ";" and not inside_single_quote:
+                if buffer != "":
+                    command_parts.append(buffer)
+                    buffer = ""
+                commands.append(command_parts)
+                command_parts = []
+            else:
+                buffer += char
+
+        if buffer != "":
+            command_parts.append(buffer)
+        if len(command_parts) > 0:
+            commands.append(command_parts)
+
+        return commands

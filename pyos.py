@@ -3,6 +3,7 @@ from colorama import Fore  # 彩色文字库
 from pyosLogin import Login
 import traceback
 
+from utils.foxShell import FoxShell
 from utils.man import ErrorCodeManager
 from utils.config import SHOW_ERROR_DETAILS
 
@@ -16,17 +17,25 @@ class PyOS(Login):
 
     def run(self, commands: str):
         """运行命令"""
-        command_parts = commands.split(' ')
-        command_name = command_parts[0]
+        commands = FoxShell.parse_commands(commands)
 
-        if not command_name:  # 如果命令为空，直接返回
-            return
+        for command_parts in commands:
+            if len(command_parts) < 1:
+                continue
+        
+            command_name = command_parts[0]
+            if not command_name:  # 如果命令为空，直接返回
+                continue
 
-        self.error_code = 0
-        if len(command_parts) > 1 and command_parts[1] == '-h':  # 如果有帮助标志
-            self._register_and_execute("help", [command_name])
-        else:  # 执行命令（带参数或无参数）
-            self._register_and_execute(command_name, command_parts[1:] if len(command_parts) > 1 else [])
+            self.error_code = 0
+            try:
+                if len(command_parts) > 1 and command_parts[1] == '-h':  # 如果有帮助标志
+                    self._register_and_execute("help", [command_name])
+                else:  # 执行命令（带参数或无参数）
+                    self._register_and_execute(command_name, command_parts[1:] if len(command_parts) > 1 else [])
+            except FileNotFoundError:
+                print(f"Error: {Fore.RED}Unknown command: " + "".join(command_parts))
+                self.error_code = ErrorCodeManager().get_code(FileNotFoundError)
 
     def _register_and_execute(self, command_name, args):
         """注册并执行命令"""
