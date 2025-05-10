@@ -13,7 +13,6 @@
             "about",
             "clear",
             "neofetch",
-            "systemctl",
             "userman",
             "hostman",
             "yet",
@@ -38,7 +37,9 @@
             "restart"
         ],
         "Third-party": [
-            "example"
+            "example",
+            "ciallo",
+            "testmpk"
         ]
     }
 }

@@ -2,7 +2,6 @@ from colorama import Fore, Back #彩色文字库
 import time #时间库
 import psutil
 from cmdList.sysname import execute as sysname
-from utils.config import *
 from art import text2art
 
 __doc__="List all hardware and system version"
@@ -24,9 +23,7 @@ def execute(self,args):
     print(f"{Fore.BLUE}Host{Fore.RESET}: {host}")
     print(f"{Fore.BLUE}Kernel{Fore.RESET}: PTCORE-V{self.core_version}-aarch64")
     time.sleep(0.05)
-    print(f"{Fore.BLUE}Package{Fore.RESET}: {len(SC_THIRD_PARTY)}")
-    time.sleep(0.05)
-    print(f"{Fore.BLUE}Shell{Fore.RESET}: FoxShell {self.shell_version}")
+    print(f"{Fore.BLUE}Shell{Fore.RESET}: pysh {self.shell_version}")
     time.sleep(0.05)
     print(f"{Fore.BLUE}CPU{Fore.RESET}: ({psutil.cpu_count()}) @ {psutil.cpu_freq().max  / (1024):.2f}Ghz")
     time.sleep(0.05)
