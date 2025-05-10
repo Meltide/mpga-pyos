@@ -1,5 +1,5 @@
 import json
-from colorama import Fore
+from colorama import Fore, Style
 from utils.config import *
 from utils.man import ErrorCodeManager
 
@@ -29,7 +29,6 @@ def execute(self, args):
             print("All system policys:")
             for policy, status in policys.items():
                 print(f"- {Fore.BLUE}{policy}{Fore.RESET}: {Fore.YELLOW}{status}")
-        case _:
             print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
             print("Usage:")
             for command, description in __usage__.items():
@@ -45,7 +44,8 @@ def set_status(self, status, args):
         with open(os.path.join("configs", "system_policys.json"), "w", encoding='utf-8') as f:
             policys[args[0]] = status
             json.dump(policys, f, ensure_ascii=False, indent=4)
-            print(f"The new status of {args[0]}: {status}")
+            print(f"The new status of {Fore.BLUE}{args[0]}{Fore.RESET}: {Fore.YELLOW}{status}")
+            print(Style.DIM + "It will take effect after restarting the system.")
     except Exception as e:
         print(f"Error: {Fore.RED}{e}")
         self.error_code = ErrorCodeManager.get_code(e)

@@ -97,11 +97,11 @@ class Login(Init):
             command = input(prompt)
             try:
                 self.run(command)
-            except FileNotFoundError or ModuleNotFoundError:
-                print(f"Error: {Fore.RED}Unknown command: {command}")
-                self.error_code = ErrorCodeManager().get_code(FileNotFoundError)
             except Exception as e:
-                print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
+                if isinstance(e, FileNotFoundError):
+                    print(f"Error: {Fore.RED}Unknown command: {command}")
+                else:
+                    print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
                 self.error_code = ErrorCodeManager().get_code(e)
                 if SHOW_ERROR_DETAILS:
                     print(f"Details: \n{traceback.format_exc()}")

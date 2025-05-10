@@ -2,10 +2,9 @@ import json, shutil, os, importlib
 import zipfile
 import subprocess
 import sys
-from utils.config import commands
-from . import help, sysname
-from utils.man import ErrorCodeManager
-from utils.man import CommandManager
+
+from utils.config import *
+from utils.man import ErrorCodeManager, CommandManager
 from colorama import Fore, Back, Style
 
 __doc__ = "YET Package manager"  # 第三方命令注册模块
@@ -50,31 +49,55 @@ def execute(self, args):
 
 def _auto_reload_commands(self):
     """自动重载所有第三方命令"""
-    global _command_cache
-    
+    global _command_cache, SIGNED_COMMANDS
+
     # 1. 清除已加载的命令模块
     for cmd in list(sys.modules.keys()):
         if cmd.startswith('cmdList.third_party.'):
             del sys.modules[cmd]
-    
+
     # 2. 重新扫描命令目录
     third_party_dir = os.path.join("cmdList", "third_party")
     if not os.path.exists(third_party_dir):
         return
-    
-    # 3. 更新命令缓存
+
+    # 3. 更新命令缓存并根据 package.json 分类
     _command_cache.clear()
     for item in os.listdir(third_party_dir):
         if item.endswith('.py') and not item.startswith('_'):
             cmd_name = item[:-3]
             try:
                 module = importlib.import_module(f'cmdList.third_party.{cmd_name}')
+                importlib.reload(module)  # 动态重新加载模块
                 _command_cache[cmd_name] = module
-                if cmd_name not in commands["commands"]["Third-party"]:
-                    commands["commands"]["Third-party"].append(cmd_name)
+
+                # 读取 package.json 获取分类
+                package_json = os.path.join(third_party_dir, cmd_name, "package.json")
+                category = "Other"  # 默认分类
+                if os.path.exists(package_json):
+                    try:
+                        with open(package_json, "r", encoding="utf-8") as f:
+                            package_info = json.load(f)
+                            category = package_info.get("category", "Other")
+                    except (json.JSONDecodeError, IOError):
+                        print(f"{Fore.YELLOW}Warning: Invalid package.json for '{cmd_name}'{Style.RESET_ALL}")
+
+                # 确保分类存在于 commands
+                if category not in commands["commands"]:
+                    commands["commands"][category] = []
+
+                # 添加命令到分类
+                if cmd_name not in commands["commands"][category]:
+                    commands["commands"][category].append(cmd_name)
+
             except Exception as e:
                 print(f"{Fore.YELLOW}Warning: Failed to reload command '{cmd_name}': {e}{Style.RESET_ALL}")
-    
+
+    # 更新 SIGNED_COMMANDS 和 CommandManager
+    SIGNED_COMMANDS.update(commands["commands"])
+    self.command_manager.allcmds = SIGNED_COMMANDS
+    self.command_manager.cmds = [cmd for category in self.command_manager.allcmds.values() for cmd in category]
+
     # 4. 保存配置
     try:
         with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
@@ -439,15 +462,42 @@ def remove_app(self, args):
         self.error_code = ErrorCodeManager().get_code(e)
 
 def list_apps(self, args):
+    """列出所有已安装的第三方应用"""
     print(Back.BLUE + " Installed Apps " + Style.RESET_ALL)
-    for app in commands["commands"]["Third-party"]:
-        # 检查是单文件还是目录
-        app_path = os.path.join("cmdList", "third_party", f"{app}.py")
-        if os.path.exists(app_path):
-            print(f"• {app} (single file)")
-        else:
-            app_dir = os.path.join("cmdList", "third_party", app)
-            if os.path.exists(app_dir):
-                print(f"• {app} (package)")
+    categorized_apps = {}
+
+    # 遍历所有第三方命令目录
+    third_party_dir = os.path.join("cmdList", "third_party")
+    if not os.path.exists(third_party_dir):
+        print(f"{Fore.YELLOW}No third-party apps installed.{Style.RESET_ALL}")
+        return
+
+    for item in os.listdir(third_party_dir):
+        if item.endswith('.py') or os.path.isdir(os.path.join(third_party_dir, item)):
+            cmd_name = item[:-3] if item.endswith('.py') else item
+            package_json = os.path.join(third_party_dir, cmd_name, "package.json")
+            category = "Other"  # 默认分类
+
+            # 读取 package.json 获取分类
+            if os.path.exists(package_json):
+                try:
+                    with open(package_json, "r", encoding="utf-8") as f:
+                        package_info = json.load(f)
+                        category = package_info.get("category", "Other")
+                except (json.JSONDecodeError, IOError):
+                    print(f"{Fore.YELLOW}Warning: Invalid package.json for '{cmd_name}'{Style.RESET_ALL}")
+
+            # 将命令归类
+            if category not in categorized_apps:
+                categorized_apps[category] = []
+            categorized_apps[category].append(cmd_name)
+
+    # 打印分类和命令
+    for category, apps in categorized_apps.items():
+        print(f"{category}:")
+        for app in sorted(apps):
+            app_path = os.path.join(third_party_dir, f"{app}.py")
+            if os.path.exists(app_path):
+                print(f"- {Fore.BLUE}{app}{Style.RESET_ALL} (single file)")
             else:
-                print(f"• {app} (missing files)")
+                print(f"- {Fore.BLUE}{app}{Style.RESET_ALL} (package)")

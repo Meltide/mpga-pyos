@@ -171,16 +171,34 @@ class HelpManager:
         self.cmd_name = self.args[0] if self.args else ""
         self.cmdman.reg(self.cmd_name)
 
+    def get_package_doc(self, cmd_name):
+        """获取包中package.json中的描述信息"""
+        package_json = os.path.join("cmdList", "third_party", cmd_name, "package.json")
+        if os.path.exists(package_json):
+            try:
+                with open(package_json, 'r', encoding='utf-8') as f:
+                    package_info = json.load(f)
+                    return package_info.get("description", "No description available")
+            except (json.JSONDecodeError, IOError):
+                return "Invalid package.json"
+        return None
+
     def show_all(self):
         """显示所有命令"""
         print(f"Available Commands:{Style.RESET_ALL}")
         for category, cmds in self.cmdman.allcmds.items():
-            print(f"{Back.BLUE} {category} ")
+            print(f"{Back.BLUE} {category} {Style.RESET_ALL}")
             for cmd in sorted(cmds):
                 self.cmdman.reg(cmd)
                 try:
-                    doc = self.cmdman.getpkg().__doc__ or "No description"
-                    print(f"{cmd:<15}{Style.RESET_ALL} {doc}")
+                    if self.cmdman.is_package():
+                        # 如果是包，从 package.json 获取描述
+                        doc = self.get_package_doc(cmd) or "No description"
+                        print(f"{Fore.YELLOW}{cmd:<15}{Style.RESET_ALL} {doc}")
+                    else:
+                        # 内置命令
+                        doc = self.cmdman.getpkg().__doc__ or "No description"
+                        print(f"{cmd:<15}{Style.RESET_ALL} {doc}")
                 except ImportError:
                     print(f"{cmd:<15}{Style.RESET_ALL} (Not loadable)")
         return
