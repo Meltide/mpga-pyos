@@ -46,7 +46,8 @@ def execute(self, args):
             else:
                 print(f"Error: {Fore.RED}Invalid username or password!")
         case _:
-            raise SyntaxError(f"Unknown command '{args[0]}'.")
+            print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
             print("Usage:")
             for command, description in __usage__.items():
                 print(f"  {command}: {description}")
+            self.error_code = ErrorCodeManager().get_code(SyntaxError)

@@ -91,13 +91,21 @@ class Login(Init):
 
     def start_shell(self):
         """启动命令行交互"""
-        FoxShell.show_greeting()
+        if SHOW_GREETING:
+            try:
+                with open(os.path.join("configs", "Fox", "fox_greeting.txt"), "r", encoding="utf-8") as f:
+                    greeting_message = f.read()
+            except FileNotFoundError:
+                raise FileNotFoundError("Can't find fox_greeting.txt")
+            except Exception:
+                raise
+            print(f"\n{greeting_message}")
         while self.command_count < self.max_attempts:
             prompt = FoxShell.generate_prompt(self)
             command = input(prompt)
             try:
                 self.run(command)
-            except FileNotFoundError or ModuleNotFoundError:
+            except FileNotFoundError:
                 print(f"Error: {Fore.RED}Unknown command: {command}")
                 self.error_code = ErrorCodeManager().get_code(FileNotFoundError)
             except Exception as e:
