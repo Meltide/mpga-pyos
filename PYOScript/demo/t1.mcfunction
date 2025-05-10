@@ -1,7 +1,7 @@
 @author JvavLargePython #标明作者
 @name demo #脚本命令名（可用作插件）
 @version 1.1.4#版本号
-@description: A test. #描述
+@description A test. #描述
 
 """
 多行
@@ -15,7 +15,7 @@ using PyCode {
     import os
     print("hi")
 }; #python单、多行代码运行基本用法
-using PyPro {
+using PyCode {
     print(`a+`b)
 }; #python单、多行代码运行赋值用法
 pytype c = {
