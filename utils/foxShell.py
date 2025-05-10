@@ -28,7 +28,7 @@ class FoxShell(Init):
             print(f"• {Fore.GREEN}Reload successfully.")
         except Exception as e:
             print(f"Can't reload FoxShell: {Fore.RED}{e if str(e) else type(e).__name__}")
-            self.error_code = ErrorCodeManager.get_code(e)
+            self.error_code = ErrorCodeManager().get_code(e)
     
     def generate_prompt(self):
         """生成命令行提示符"""

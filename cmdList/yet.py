@@ -223,10 +223,29 @@ def install_from_package(self, package_path, cmd_name=None):
         new_version_code = int(package_info.get("version_code", 0))  # 新包的 version_code
         
         # 检查是否已存在
-        if old_version_code is not None and new_version_code < old_version_code:
-            print(f"Error: {Fore.RED}Cannot install an older version (installed: {old_version_code}, new: {new_version_code}).{Style.RESET_ALL}")
-            return
+        all_commands = []
+        app_installed = False
         
+        for cmd_type in CommandManager(self).allcmds.values():
+            all_commands.extend(cmd_type)
+        if cmd_name in all_commands:
+            app_installed = True
+        
+        if old_version_code is not None:
+            if new_version_code < old_version_code:
+                print(f"Warning: {Fore.YELLOW}You are executing a downgrade operation (installed: {old_version_code}, new: {new_version_code})")
+                choice = input("Do you want to continue? [y/n]: ")
+                match choice:
+                    case "n" | "N":
+                        print(Fore.YELLOW + "Installition canceled.")
+                        return
+                    case "Y" | "y" | "":
+                        pass
+                    case _:
+                        raise NameError("Unknown command.")
+            elif new_version_code == old_version_code:
+                print(f"{Fore.YELLOW}Same version detected ({new_version_code}), reinstalling...{Style.RESET_ALL}")
+            
         # 创建目标目录
         target_dir = os.path.join("cmdList", "third_party", cmd_name)
         os.makedirs(target_dir, exist_ok=True)
@@ -241,14 +260,15 @@ def install_from_package(self, package_path, cmd_name=None):
                 shutil.copy2(src, dst)
         
         # 更新配置
-        category = package_info.get("category", "Other")
-        if category in commands["commands"]:
-            commands["commands"][category].append(cmd_name)
-        else:
-            commands["commands"][category] = [cmd_name]
-        
-        with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
-            json.dump(commands, f, indent=4, ensure_ascii=False)
+        if not app_installed:
+            category = package_info.get("category", "Other")
+            if category in commands["commands"]:
+                commands["commands"][category].append(cmd_name)
+            else:
+                commands["commands"][category] = [cmd_name]
+            
+            with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
+                json.dump(commands, f, indent=4, ensure_ascii=False)
         
         # 检查并安装依赖
         main_module_path = os.path.join(target_dir, find_main_module(target_dir) or 'main.py')
@@ -414,16 +434,16 @@ def remove_app(self, args):
     # 查找包目录
     pkg_dir = os.path.join("cmdList", "third_party", app_name)
     if not os.path.exists(pkg_dir):
-        pkg_file = os.path.join("cmdList", "third_party", f"{pkg_name}.py")
+        pkg_file = os.path.join("cmdList", "third_party", f"{app_name}.py")
         if not os.path.exists(pkg_file):
-            raise FileNotFoundError(f"Package '{pkg_name}' not found.")
+            raise FileNotFoundError(f"Package '{app_name}' not found.")
             return
         return
     
     # 读取package.json
     package_info = read_package_info(pkg_dir)
     if not package_info:
-        print(f"Package: {Fore.CYAN}{pkg_name}{Style.RESET_ALL}")
+        print(f"Package: {Fore.CYAN}{app_name}{Style.RESET_ALL}")
         print(f"Type: {Fore.YELLOW}Directory (no package.json){Style.RESET_ALL}")
         return
     
@@ -433,10 +453,14 @@ def remove_app(self, args):
         print(f"Error: {Fore.RED}App '{app_name}' is not installed.{Style.RESET_ALL}")
         return
     
+    only_app = False
+    
     try:
         # 从配置中移除
+        if len(commands["commands"][category]) <= 1 and commands["commands"][category][0] == app_name:
+            only_app = True
         commands["commands"][category].remove(app_name)
-        if len(commands["commands"][category]) <= 1:
+        if only_app:
             del commands["commands"][category]
         
         # 删除命令文件或目录
@@ -493,6 +517,10 @@ def list_apps(self, args):
             categorized_apps[category].append(cmd_name)
 
     # 打印分类和命令
+    if not categorized_apps:
+        print(Fore.YELLOW + "No third-party app installed.")
+        return
+    
     for category, apps in categorized_apps.items():
         print(f"{category}:")
         for app in sorted(apps):

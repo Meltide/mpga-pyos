@@ -27,7 +27,6 @@ SHOW_AD: bool = policys["show_ad"]
 SIGNED_COMMANDS: dict = commands["commands"]
 SC_SYSTEM: list = SIGNED_COMMANDS["System"]
 SC_TOOLS: list = SIGNED_COMMANDS["Tools"]
-SC_GAMES: list = SIGNED_COMMANDS["Games"]
 SC_POWER: list = SIGNED_COMMANDS["Power"]
 
 # fox_config.json

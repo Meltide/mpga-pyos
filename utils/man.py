@@ -185,7 +185,8 @@ class HelpManager:
 
     def show_all(self):
         """显示所有命令"""
-        print(f"Available Commands:{Style.RESET_ALL}")
+        print("Available Commands:")
+        print(Style.DIM + "* Third-party apps will be highlighted")
         for category, cmds in self.cmdman.allcmds.items():
             print(f"{Back.BLUE} {category} {Style.RESET_ALL}")
             for cmd in sorted(cmds):

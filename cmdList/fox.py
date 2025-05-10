@@ -8,7 +8,8 @@ from utils.foxShell import FoxShell
 __doc__ = "FoxShell config"
 
 __usage__ = {
-    "theme": "Set theme for FoxShell"
+    "theme": "Set theme for FoxShell",
+    "reload": "Reload FoxShell"
 }
 
 def execute(self, args):
@@ -29,8 +30,9 @@ def execute(self, args):
             if args[1] == "list":
                 show_available_themes()
                 return
-            if not args[1]:
+            if len(args) < 2:
                 raise SyntaxError("Please input a theme.")
+                return
             elif args[1] not in theme_list:
                 print(f"Unknown theme: {args[1]}")
                 show_available_themes()
@@ -40,7 +42,8 @@ def execute(self, args):
             with open(os.path.join("configs", "fox_config.json"), "w", encoding="utf-8") as f:
                 json.dump(fox, f, ensure_ascii=False, indent=4)
                 print(f"• {Fore.GREEN}Theme set successfully.")
-                FoxShell.reload(self)
+        case "reload":
+            FoxShell.reload(self)
         case _:
             print(f"Unknown command '{args[0]}'.")
             print("Usage:")

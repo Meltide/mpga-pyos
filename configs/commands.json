@@ -22,10 +22,6 @@
             "errcode",
             "script"
         ],
-        "Games": [
-            "numgame",
-            "finguess"
-        ],
         "Power": [
             "exit",
             "shutdown",
