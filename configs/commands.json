@@ -5,6 +5,7 @@
             "echo",
             "about",
             "clear",
+            "fox",
             "neofetch",
             "systemctl",
             "userman",
@@ -31,8 +32,7 @@
             "restart"
         ],
         "Third-party": [
-            "example",
-            "ciallo"
+            "example"
         ]
     }
 }

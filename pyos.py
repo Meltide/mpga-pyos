@@ -14,8 +14,9 @@ class PyOS(Login):
         if not hasattr(self, "command_manager"):
             raise AttributeError("CommandManager (command_manager) is not initialized in Login or PyOS.")
 
-    def run(self, command_parts: list|tuple):
+    def run(self, commands: str):
         """运行命令"""
+        command_parts = commands.split(' ')
         command_name = command_parts[0]
 
         if not command_name:  # 如果命令为空，直接返回
@@ -33,14 +34,13 @@ class PyOS(Login):
         self.command_manager.execute(args)  # 仅传递 args
 
 if __name__ == "__main__":
-    pyos=PyOS()
     try:
-        pyos.login()
+        PyOS()
         '''except ModuleNotFoundError:
             os.system("pip install -r requirements.txt")'''
-    except (SystemExit, KeyboardInterrupt, EOFError):
-        pyos.fprint("You exited PyOS just now.",2)
-    except (Exception, BaseException) as e:
+    except SystemExit:
+        pass
+    except BaseException as e:
         print(f"\nError: {Fore.RED}{type(e).__name__ if not str(e) else e}")
         print(f"Error code: {Fore.RED}{ErrorCodeManager().get_code(e)}")
         if SHOW_ERROR_DETAILS:

@@ -9,14 +9,15 @@ def execute(self, args):
     # 分离文件夹和文件，并按名称排序（不区分大小写）
     folders = sorted(
         [item for item in items if os.path.isdir(item)],
-        key=lambda x: x.lower()  # 按文件名排序（忽略大小写）
+        key = lambda x: x.lower()  # 按文件名排序（忽略大小写）
     )
     files = sorted(
         [item for item in items if not os.path.isdir(item)],
-        key=lambda x: x.lower()  # 按文件名排序（忽略大小写）
+        key = lambda x: x.lower()  # 按文件名排序（忽略大小写）
     )
     
-    print(Fore.BLUE + "/\n".join(folders) + "/")
-    print("\n".join(files), end="")
-    
-    print()
+    for folder in folders:
+        print(Fore.BLUE + folder, end="/\n")
+
+    for file in files:
+        print(file)

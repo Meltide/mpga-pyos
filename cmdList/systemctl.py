@@ -3,11 +3,12 @@ from colorama import Fore
 from utils.config import *
 from utils.man import ErrorCodeManager
 
-__doc__ = "Set system settings"
+__doc__ = "Set system policy"
 
 __usage__ = {
-    "enable": "Enable settings",
-    "disable": "Disable settings"
+    "enable": "Enable policys",
+    "disable": "Disable policys",
+    "list": "Show all policys"
 }
 
 def execute(self, args):
@@ -24,6 +25,10 @@ def execute(self, args):
             set_status(self, True, args[1:])
         case "disable":
             set_status(self, False, args[1:])
+        case "list":
+            print("All system policys:")
+            for policy, status in policys.items():
+                print(f"- {Fore.BLUE}{policy}{Fore.RESET}: {Fore.YELLOW}{status}")
         case _:
             print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
             print("Usage:")
