@@ -16,13 +16,12 @@ class Init:  # 初始化
         self.command_manager = CommandManager(self, "")  # 命令管理器
         self.clear_screen_count = 0  # 清屏计数
         self.error_code = 0  # 错误代码
-        self.config=cfg
         self.account_names=ACCOUNTS.keys()
         self.hostname=HOSTNAME
         self.allow_system_commands = ALLOW_SYSTEM_COMMANDS
         self.show_error_details = SHOW_ERROR_DETAILS
         self.version = "3.0 Akita"  # 系统版本
-        self.shell_version = "2.0.0"  # Shell 版本
+        self.shell_version = "1.0"  # Shell 版本
         self.core_version = "20250504"  # 核心版本
         self.tips_list = [  # 提示列表
             "You can find the default password in the passwd file.",

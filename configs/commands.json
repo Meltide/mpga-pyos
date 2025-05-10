@@ -1,11 +1,4 @@
 {
-    "hostname": "localhost",
-    "accounts": {
-        "root": "MTE0NTE0"
-    },
-    "system_commands": true,
-    "show_error_details": true,
-    "show_ad": true,
     "commands": {
         "System": [
             "ls",
@@ -38,7 +31,8 @@
             "restart"
         ],
         "Third-party": [
-            "example"
+            "example",
+            "ciallo"
         ]
     }
 }

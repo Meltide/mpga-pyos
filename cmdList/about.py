@@ -1,5 +1,5 @@
 from art import text2art
-from colorama import Fore
+from colorama import Fore, Style
 
 __doc__ = "Show the about of PyOS"
 
@@ -11,7 +11,7 @@ def print_contributors():
         "adproqwq": "Split project, fix bugs."
     }
     
-    for name, value in contributors.items():
+    for name, value in sorted(contributors.items()):
         print(f"{Fore.BLUE}{name}{Fore.RESET}: {value}")
 
 def execute(self,args):
@@ -19,6 +19,7 @@ def execute(self,args):
     print(Fore.BLUE + text2art("MPGA", font="small"))
     print(f"Visit this project in github: {Fore.BLUE}github.com/Meltide/mpga-pyos\n")
     print("[Contributors]".center(20, "="))
+    print(Style.DIM + "Arranged by the first letter, in no particular order.")
     print_contributors()
     print()
     print("[Contact us]".center(20, "="))
