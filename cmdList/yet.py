@@ -5,6 +5,7 @@ import sys
 
 from utils.config import *
 from utils.man import ErrorCodeManager, CommandManager
+from utils.err import RunningError
 from colorama import Fore, Back, Style
 
 __doc__ = "YET Package manager"  # 第三方命令注册模块
@@ -277,8 +278,7 @@ def install_from_package(self, package_path, cmd_name=None):
         print(f"• {Fore.GREEN}Package '{cmd_name}' installed successfully!{Style.RESET_ALL}")
         
     except Exception as e:
-        print(f"Error: {Fore.RED}Failed to install: {type(e).__name__ if not str(e) else e}{Style.RESET_ALL}")
-        self.error_code = ErrorCodeManager().get_code(e)
+        raise RunningError(f"Failed to install: {type(e).__name__ if not str(e) else e}")
     finally:
         # 清理临时目录
         if os.path.exists(temp_dir):
@@ -336,7 +336,6 @@ def install_dependencies(self, cmd_name, module_path, package_info=None):
                     return  # 如果package.json有依赖，就不再检查其他来源
                 except subprocess.CalledProcessError as e:
                     print(f"Warning: {Fore.YELLOW}Failed to install some dependencies: {e}{Style.RESET_ALL}")
-                    self.error_code = ErrorCodeManager().get_code(e)
         
         # 检查是否有requirements.txt在同一目录
         req_file = os.path.join(os.path.dirname(module_path), "requirements.txt")
@@ -346,8 +345,7 @@ def install_dependencies(self, cmd_name, module_path, package_info=None):
                 subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", req_file])
                 print(f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}")
             except subprocess.CalledProcessError as e:
-                print(f"Warning: {Fore.YELLOW}Failed to install some dependencies: {e}{Style.RESET_ALL}")
-                self.error_code = ErrorCodeManager().get_code(e)
+                raise RunningError(f"Failed to install some dependencies: {e}")
         
         # 检查模块中是否有__dependencies__变量
         elif os.path.exists(module_path):
@@ -365,13 +363,11 @@ def install_dependencies(self, cmd_name, module_path, package_info=None):
                             print(f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}")
                         except subprocess.CalledProcessError as e:
                             print(f"Warning: {Fore.YELLOW}Failed to install some dependencies: {e}{Style.RESET_ALL}")
-                            self.error_code = ErrorCodeManager().get_code(e)
             except:
                 pass
                     
     except Exception as e:
         print(f"Warning: {Fore.YELLOW}Could not check dependencies: {type(e).__name__}: {e}{Style.RESET_ALL}")
-        self.error_code = ErrorCodeManager().get_code(e)
 
 def show_package_info(self, args):
     """显示包信息"""
@@ -482,8 +478,7 @@ def remove_app(self, args):
             json.dump(commands, f, indent=4)
             
     except Exception as e:
-        print(f"Error removing app: {Fore.RED}{e}{Style.RESET_ALL}")
-        self.error_code = ErrorCodeManager().get_code(e)
+        raise RunningError(f"Error removing app: {e}")
 
 def list_apps(self, args):
     """列出所有已安装的第三方应用"""
