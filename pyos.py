@@ -1,12 +1,11 @@
-import os, sys  # 系统库
+import traceback  # 异常追踪库
+
 from colorama import Fore  # 彩色文字库
 from pyosLogin import Login
-import traceback
 
 from utils.foxShell import FoxShell
 from utils.man import ErrorCodeManager
 from utils.config import SHOW_ERROR_DETAILS
-
 
 class PyOS(Login):
     def __init__(self):
@@ -34,8 +33,7 @@ class PyOS(Login):
                 else:  # 执行命令（带参数或无参数）
                     self._register_and_execute(command_name, command_parts[1:] if len(command_parts) > 1 else [])
             except FileNotFoundError:
-                print(f"Error: {Fore.RED}Unknown command: " + "".join(command_parts))
-                self.error_code = ErrorCodeManager().get_code(FileNotFoundError)
+                raise FileNotFoundError("Unknown command: " + "".join(command_parts))
 
     def _register_and_execute(self, command_name, args):
         """注册并执行命令"""
@@ -45,12 +43,10 @@ class PyOS(Login):
 if __name__ == "__main__":
     try:
         PyOS()
-        '''except ModuleNotFoundError:
-            os.system("pip install -r requirements.txt")'''
-    except KeyboardInterrupt or EOFError as e:
+    except (KeyboardInterrupt,EOFError) as e:
         if isinstance(e, EOFError):
             print()
-        print(Fore.RED + "You exited PyOS just now.")
+        print('\n'+Fore.RED+"You exited PyOS just now.")
     except SystemExit:
         pass
     except BaseException as e:

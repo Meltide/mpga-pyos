@@ -1,0 +1,4 @@
+[submodule "cmdList/third_party"]
+	path = cmdList/third_party
+	url = https://github.com/Meltide/mpga-apps.git
+    branch = main

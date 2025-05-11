@@ -24,10 +24,10 @@
     pip install -r requirements.txt
     ```
 2. 转到 PyOS 所在的目录
-3. 输入 `python pyos.py` 来启动
+3. 输入 `python start.py` 来启动
 
 > [!WARNING]
-> 必须在pyos.py所在的目录下运行该文件，且不要尝试运行除 `pyos.py` 以外的其他文件，否则可能会因为绝对引用而报错
+> 必须在start.py所在的目录下运行该文件，且不要尝试运行除 `start.py` 以外的其他文件，否则可能会因为绝对引用而报错
 
 用户名：**root**
 <br>

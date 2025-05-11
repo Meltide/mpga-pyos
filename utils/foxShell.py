@@ -5,6 +5,7 @@ from colorama import Fore, Back
 from pyosInit import Init
 from utils.man import ErrorCodeManager
 from utils.config import *
+from utils.err import *
 
 class FoxShell(Init):
     def show_greeting():
@@ -27,8 +28,7 @@ class FoxShell(Init):
             SHOW_GREETING = fox["show_greeting"]
             print(f"• {Fore.GREEN}Reload successfully.")
         except Exception as e:
-            print(f"Can't reload FoxShell: {Fore.RED}{e if str(e) else type(e).__name__}")
-            self.error_code = ErrorCodeManager().get_code(e)
+           raise RunningError(f"Can't reload FoxShell: {Fore.RED}{e if str(e) else type(e).__name__}")
     
     def generate_prompt(self):
         """生成命令行提示符"""
