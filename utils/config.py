@@ -17,11 +17,13 @@ with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as 
 # profiles.json
 HOSTNAME: str = profiles["hostname"]
 ACCOUNTS: dict = profiles["accounts"]
+AUTO_LOGIN: str = profiles["auto_login"]
 
 # system_policys.json
 ALLOW_SYSTEM_COMMANDS: bool = policys["system_commands"]
 SHOW_ERROR_DETAILS: bool = policys["show_error_details"]
 SHOW_AD: bool = policys["show_ad"]
+USE_CUSTOM_STARTUPMSG: bool = policys["use_custom_startupmsg"]
 
 # commands.json
 SIGNED_COMMANDS: dict = commands["commands"]

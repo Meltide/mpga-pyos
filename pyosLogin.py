@@ -17,6 +17,11 @@ class Login(Init):
         self.current_time = datetime.datetime.now()
         self.max_attempts = 3
         while self.command_count < self.max_attempts:
+            if AUTO_LOGIN:
+                self.username = "root"
+                self._successful_login_message()
+                self.start_shell()
+
             self.username = input(f"{self.hostname} login: ")
             if self.username == "create":
                 self.create_account()
@@ -124,6 +129,8 @@ class Login(Init):
     def _successful_login_message(self):
         """打印成功登录提示"""
         print("Last login: " + Fore.CYAN + self.current_time.strftime("%y/%m/%d %H:%M:%S"))
+        if AUTO_LOGIN:
+            print(f"• Auto logined as {Fore.YELLOW}{self.username}")
         print("")
         if self.allow_system_commands:
             self.fprint("WARNING: Running system commands is enabled!", 2)

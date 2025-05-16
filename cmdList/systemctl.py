@@ -29,6 +29,7 @@ def execute(self, args):
             print("All system policys:")
             for policy, status in policys.items():
                 print(f"- {Fore.BLUE}{policy}{Fore.RESET}: {Fore.YELLOW}{status}")
+        case _:
             print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
             print("Usage:")
             for command, description in __usage__.items():
@@ -39,6 +40,8 @@ def set_status(self, status, args):
     if not args:
         raise SyntaxError("No settings inputed.")
         return
+    elif args[0] not in policys:
+        raise SyntaxError(f"Unknown policy '{args[0]}'")
 
     try:
         with open(os.path.join("configs", "system_policys.json"), "w", encoding='utf-8') as f:

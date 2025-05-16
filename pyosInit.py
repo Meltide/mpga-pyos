@@ -50,9 +50,20 @@ class Init:  # 初始化
             f"Tip: {self.selected_tip}",
             f"{Fore.CYAN}\nAlso try PyOS's improved version by minqwq and bibimingming!\n" if SHOW_AD else "",
         ]
+
+        if USE_CUSTOM_STARTUPMSG:
+            try:
+                with open(os.path.join("configs", "PyOS", "startup_msg.txt"), "r", encoding="utf-8") as f:
+                    startup_messages = f.readlines()
+            except FileNotFoundError:
+                print(f"Error: {Fore.RED}Can't find startup_msg.txt")
+                return
+
         for message in startup_messages:
-            print(message)
+            print(message.strip() if USE_CUSTOM_STARTUPMSG else message)
             time.sleep(0.05)
+        if USE_CUSTOM_STARTUPMSG:
+                print()
 
     def fprint(self, message, mode=0):
         """打印消息

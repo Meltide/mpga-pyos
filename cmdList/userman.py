@@ -10,8 +10,10 @@ __doc__ = "PyOS User Manager"
 
 __usage__ = {
     "log": "Show current login user",
+    "list": "List all users",
     "create": "Create a new user",
-    "change": "Change current user password"
+    "change": "Change current user password",
+    "auto": "Set auto login user"
 }
 
 def execute(self, args):
@@ -26,37 +28,75 @@ def execute(self, args):
     match args[0]:
         case "log":
             print(f"Now login: {Fore.GREEN}{self.username}")
+        case "list":
+            show_all_users(self)
         case "create":
-            newname = input('Name: ')
-            newpwd = pwinput.pwinput("Password: ")
-            repwd = pwinput.pwinput("Re-enter Password: ")
-            if newpwd != repwd:
-                raise SyntaxError("The two passwords do not match!")
-                return
-            if newname in ACCOUNTS:
-                print(f"{Fore.YELLOW}WARNING: The name was created!")
-                return
-            ACCOUNTS[newname] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
-            with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
-                json.dump(profiles, f, ensure_ascii=False, indent=4)
-            print(f'{Fore.GREEN}Created successfully.')
+            create_user()
         case "change":
-            stpasswd = base64.b64decode(profiles["accounts"][self.username].strip()).decode("utf-8")
-            oldpwd = pwinput.pwinput("Old Password: ")
-            reoldpwd = pwinput.pwinput("Re-enter Old Password: ")
-            if oldpwd != reoldpwd:
-                raise SyntaxError("The two passwords do not match!")
-                return
-            if oldpwd == stpasswd:
-                newpwd = pwinput.pwinput("New Password: ")
-                ACCOUNTS[self.username] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
-                with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
-                    json.dump(profiles, f, ensure_ascii=False, indent=4)
-                print(f'{Fore.GREEN}Resetted successfully.')
-            else:
-                print(f"Error: {Fore.RED}Invalid username or password!")
+            change_passwd(self)
+        case "auto":
+            set_auto_login(args)
         case _:
-            raise SyntaxError(f"Unknown command '{args[0]}'.")
+            print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
             print("Usage:")
             for command, description in __usage__.items():
                 print(f"  {command}: {description}")
+            self.error_code = ErrorCodeManager().get_code(SyntaxError)
+
+def show_all_users(self):
+    print("All users:")
+    for user in ACCOUNTS:
+        if user == self.username:
+            print(f"- {Fore.BLUE}{user} {Fore.RESET}(Current user)")
+            continue
+        print(f"- {Fore.BLUE}{user}")
+
+def create_user():
+    newname = input('Name: ')
+    newpwd = pwinput.pwinput("Password: ")
+    repwd = pwinput.pwinput("Re-enter Password: ")
+    if newpwd != repwd:
+        raise SyntaxError("The two passwords do not match!")
+        return
+    if newname in ACCOUNTS:
+        print(f"{Fore.YELLOW}WARNING: The name was created!")
+        return
+    ACCOUNTS[newname] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+    with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
+        json.dump(profiles, f, ensure_ascii=False, indent=4)
+    print(f'• {Fore.GREEN}Created successfully.')
+
+def change_passwd(self):
+    stpasswd = base64.b64decode(profiles["accounts"][self.username].strip()).decode("utf-8")
+    oldpwd = pwinput.pwinput("Old Password: ")
+    reoldpwd = pwinput.pwinput("Re-enter Old Password: ")
+    if oldpwd != reoldpwd:
+        raise SyntaxError("The two passwords do not match!")
+        return
+    if oldpwd == stpasswd:
+        newpwd = pwinput.pwinput("New Password: ")
+        ACCOUNTS[self.username] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+        with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
+            json.dump(profiles, f, ensure_ascii=False, indent=4)
+        print(f'• {Fore.GREEN}Resetted successfully.')
+    else:
+        print(f"Error: {Fore.RED}Invalid username or password!")
+
+def set_auto_login(args):
+    if len(args) < 2:
+        print(f"Error: {Fore.RED}Please input a username.")
+        return
+    
+    if args[1] == "disable":
+        profiles["auto_login"] = None
+        with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
+            json.dump(profiles, f, ensure_ascii=False, indent=4)
+        print(f"• {Fore.GREEN}Auto login disabled.")
+        return
+    elif args[1] not in ACCOUNTS:
+        print(f"Error: {Fore.RED}Unknown user '{args[1]}'.")
+        return
+    profiles["auto_login"] = args[1]
+    with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
+        json.dump(profiles, f, ensure_ascii=False, indent=4)
+    print(f"• {Fore.GREEN}Auto login set to '{args[1]}'.")
