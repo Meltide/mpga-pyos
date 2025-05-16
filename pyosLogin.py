@@ -136,6 +136,6 @@ class Login(Init):
         )
         if AUTO_LOGIN:
             print(f"• Auto logined as {Fore.YELLOW}{self.username}")
-        print("")
+        print()
         if self.allow_system_commands:
             self.fprint("WARNING: Running system commands is enabled!", 2)
