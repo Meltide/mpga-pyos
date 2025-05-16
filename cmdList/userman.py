@@ -13,12 +13,15 @@ __usage__ = {
     "list": "List all users",
     "create": "Create a new user",
     "change": "Change current user password",
-    "auto": "Set auto login user"
+    "auto": "Set auto login user",
 }
+
 
 def execute(self, args):
     if not args:  # 检查是否提供了参数
-        print(f"Error: {Fore.RED}No arguments provided. Please specify a valid command.")
+        print(
+            f"Error: {Fore.RED}No arguments provided. Please specify a valid command."
+        )
         print("Usage:")
         for command, description in __usage__.items():
             print(f"  {command}: {description}")
@@ -43,6 +46,7 @@ def execute(self, args):
                 print(f"  {command}: {description}")
             self.error_code = ErrorCodeManager().get_code(SyntaxError)
 
+
 def show_all_users(self):
     print("All users:")
     for user in ACCOUNTS:
@@ -51,8 +55,9 @@ def show_all_users(self):
             continue
         print(f"- {Fore.BLUE}{user}")
 
+
 def create_user():
-    newname = input('Name: ')
+    newname = input("Name: ")
     newpwd = pwinput.pwinput("Password: ")
     repwd = pwinput.pwinput("Re-enter Password: ")
     if newpwd != repwd:
@@ -64,10 +69,13 @@ def create_user():
     ACCOUNTS[newname] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
     with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
         json.dump(profiles, f, ensure_ascii=False, indent=4)
-    print(f'• {Fore.GREEN}Created successfully.')
+    print(f"• {Fore.GREEN}Created successfully.")
+
 
 def change_passwd(self):
-    stpasswd = base64.b64decode(profiles["accounts"][self.username].strip()).decode("utf-8")
+    stpasswd = base64.b64decode(profiles["accounts"][self.username].strip()).decode(
+        "utf-8"
+    )
     oldpwd = pwinput.pwinput("Old Password: ")
     reoldpwd = pwinput.pwinput("Re-enter Old Password: ")
     if oldpwd != reoldpwd:
@@ -75,18 +83,21 @@ def change_passwd(self):
         return
     if oldpwd == stpasswd:
         newpwd = pwinput.pwinput("New Password: ")
-        ACCOUNTS[self.username] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
+        ACCOUNTS[self.username] = base64.b64encode(newpwd.encode("utf-8")).decode(
+            "utf-8"
+        )
         with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
             json.dump(profiles, f, ensure_ascii=False, indent=4)
-        print(f'• {Fore.GREEN}Resetted successfully.')
+        print(f"• {Fore.GREEN}Resetted successfully.")
     else:
         print(f"Error: {Fore.RED}Invalid username or password!")
+
 
 def set_auto_login(args):
     if len(args) < 2:
         print(f"Error: {Fore.RED}Please input a username.")
         return
-    
+
     if args[1] == "disable":
         profiles["auto_login"] = None
         with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:

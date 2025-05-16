@@ -1,9 +1,10 @@
-import datetime, calendar #时间日期库
+import datetime, calendar  # 时间日期库
 from colorama import Fore
 
-__doc__="Show a calendar"
+__doc__ = "Show a calendar"
 
-def execute(self,args):
+
+def execute(self, args):
     today = datetime.datetime.today()
     yy = str(today.year)  # int(input("Year: "))
     mm = str(today.month)  # int(input("Month: "))

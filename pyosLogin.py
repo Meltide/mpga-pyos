@@ -11,6 +11,7 @@ from utils.man import ErrorCodeManager
 from utils.config import *
 from utils.foxShell import FoxShell
 
+
 class Login(Init):
     def __init__(self):
         super().__init__()
@@ -36,7 +37,9 @@ class Login(Init):
 
     def save_config(self):
         """保存配置到文件"""
-        with open(os.path.join("configs", "profiles.json"), "r+", encoding="utf-8") as f:
+        with open(
+            os.path.join("configs", "profiles.json"), "r+", encoding="utf-8"
+        ) as f:
             json.dump(profiles, f, ensure_ascii=False, indent=4)
 
     def encode_password(self, password):
@@ -128,7 +131,9 @@ class Login(Init):
 
     def _successful_login_message(self):
         """打印成功登录提示"""
-        print("Last login: " + Fore.CYAN + self.current_time.strftime("%y/%m/%d %H:%M:%S"))
+        print(
+            "Last login: " + Fore.CYAN + self.current_time.strftime("%y/%m/%d %H:%M:%S")
+        )
         if AUTO_LOGIN:
             print(f"• Auto logined as {Fore.YELLOW}{self.username}")
         print("")

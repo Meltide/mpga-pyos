@@ -38,16 +38,16 @@ SHOW_GREETING: bool = fox["show_greeting"]
 # 其他
 BASEPATH: str = os.getcwd().replace("\\", "/")
 
+
 # 重载 FoxShell
 def reload_fox():
     with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as f:
         fox: dict = json.load(f)
 
-EXCEPTION_INFO:dict = {
-    119: "Unknown command."
-}
 
-EXCEPTION_RETURNS:dict = {
+EXCEPTION_INFO: dict = {119: "Unknown command."}
+
+EXCEPTION_RETURNS: dict = {
     FileNotFoundError: 404,
     PermissionError: 403,
     KeyError: 300,
@@ -98,6 +98,5 @@ EXCEPTION_RETURNS:dict = {
     subprocess.CalledProcessError: 177,
     subprocess.TimeoutExpired: 178,
     subprocess.SubprocessError: 179,
-
-    RunningError: 810 # 自定义错误码
+    RunningError: 810,  # 自定义错误码
 }

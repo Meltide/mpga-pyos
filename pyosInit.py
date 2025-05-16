@@ -16,8 +16,8 @@ class Init:  # 初始化
         self.command_manager = CommandManager(self, "")  # 命令管理器
         self.clear_screen_count = 0  # 清屏计数
         self.error_code = 0  # 错误代码
-        self.account_names=ACCOUNTS.keys()
-        self.hostname=HOSTNAME
+        self.account_names = ACCOUNTS.keys()
+        self.hostname = HOSTNAME
         self.allow_system_commands = ALLOW_SYSTEM_COMMANDS
         self.show_error_details = SHOW_ERROR_DETAILS
         self.version = "3.1 Beagle"  # 系统版本
@@ -28,10 +28,15 @@ class Init:  # 初始化
             "Maybe the coverter is useless :)",
             "'root' is the default user.",
             "Is this file system real?",
-            "Columns make the calculator work."
+            "Columns make the calculator work.",
         ]
         self.selected_tip = random.choice(self.tips_list)  # 随机选择提示
-        self.color_modes = [Fore.WHITE, Fore.GREEN, Fore.YELLOW, Fore.RED]  # 颜色模式列表
+        self.color_modes = [
+            Fore.WHITE,
+            Fore.GREEN,
+            Fore.YELLOW,
+            Fore.RED,
+        ]  # 颜色模式列表
 
         clear(self, [])
 
@@ -48,12 +53,20 @@ class Init:  # 初始化
             Fore.BLUE + text2art("MPGA", font="small"),
             f"{Fore.YELLOW}Make PyOS Great Again!\n",
             f"Tip: {self.selected_tip}",
-            f"{Fore.CYAN}\nAlso try PyOS's improved version by minqwq and bibimingming!\n" if SHOW_AD else "",
+            (
+                f"{Fore.CYAN}\nAlso try PyOS's improved version by minqwq and bibimingming!\n"
+                if SHOW_AD
+                else ""
+            ),
         ]
 
         if USE_CUSTOM_STARTUPMSG:
             try:
-                with open(os.path.join("configs", "PyOS", "startup_msg.txt"), "r", encoding="utf-8") as f:
+                with open(
+                    os.path.join("configs", "PyOS", "startup_msg.txt"),
+                    "r",
+                    encoding="utf-8",
+                ) as f:
                     startup_messages = f.readlines()
             except FileNotFoundError:
                 print(f"Error: {Fore.RED}Can't find startup_msg.txt")
@@ -63,7 +76,7 @@ class Init:  # 初始化
             print(message.strip() if USE_CUSTOM_STARTUPMSG else message)
             time.sleep(0.05)
         if USE_CUSTOM_STARTUPMSG:
-                print()
+            print()
 
     def fprint(self, message, mode=0):
         """打印消息
@@ -71,5 +84,5 @@ class Init:  # 初始化
         """
         print(self.color_modes[mode] + message)
         if mode == 3:
-            random.seed(time.time_ns()) #避免错误代码一致
+            random.seed(time.time_ns())  # 避免错误代码一致
             self.errcode = random.randint(100, 999)
