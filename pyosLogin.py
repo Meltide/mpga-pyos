@@ -30,7 +30,7 @@ class Login(Init):
                 self.reset_username()
             elif self.username == "reset pwd":
                 self.reset_password()
-            elif self.username in self.account_names:
+            elif self.username in ACCOUNT_NAMES:
                 self.login_user()
             else:
                 self._invalid_user_message()
@@ -54,7 +54,7 @@ class Login(Init):
         """创建新账户"""
         new_username = input("Name: ")
         new_password = pwinput.pwinput()
-        if new_username in self.account_names:
+        if new_username in ACCOUNT_NAMES:
             self.fprint("WARNING: The name already exists!", 2)
         elif new_username in ("create", "reset name", "reset pwd"):
             self.fprint("Invalid username!", 3)
@@ -137,5 +137,5 @@ class Login(Init):
         if AUTO_LOGIN:
             print(f"• Auto logined as {Fore.YELLOW}{self.username}")
         print()
-        if self.allow_system_commands:
+        if ALLOW_SYSTEM_COMMANDS:
             self.fprint("WARNING: Running system commands is enabled!", 2)

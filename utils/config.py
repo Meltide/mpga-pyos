@@ -17,6 +17,7 @@ with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as 
 # profiles.json
 HOSTNAME: str = profiles["hostname"]
 ACCOUNTS: dict = profiles["accounts"]
+ACCOUNT_NAMES: list = ACCOUNTS.keys()
 AUTO_LOGIN: str = profiles["auto_login"]
 
 # system_policys.json
