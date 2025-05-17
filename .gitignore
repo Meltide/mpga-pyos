@@ -1,4 +1,4 @@
 __pycache__/
 *.pyc
 .pytest_cache/
-cmdList/third_party
+cmdList/third_party/
