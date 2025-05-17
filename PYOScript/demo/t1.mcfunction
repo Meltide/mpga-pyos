@@ -7,9 +7,12 @@
 多行
 注释（字符串）
 """
+# 单行注释
+
 /yet list; #命令
 @config system_commands true; #临时调整config.json，指运行时修改文件，运行完成后恢复
 /python; #系统命令
+
 int a = 1;float b = 2.0; #基本变量用法，计划支持整数、浮点数、字符串、布尔值
 using PyCode {
     import os
@@ -23,6 +26,7 @@ pytype c = {
         return `a
     main()
 }; #python单、多行代码赋值用法
+
+reader d = ./a.py; #读取外部文件并返回给变量
 /echo `c; #命令运行赋值用法
-reader d = ./a.py;
-/runpy `d;
+/runpy `d; 
