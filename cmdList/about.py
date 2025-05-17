@@ -8,6 +8,7 @@ def print_contributors():
     contributors = {
         "MeltIce": "The author of MPGA PyOS",
         "Yukari2024": "Fix bugs",
+        "MinimalMio": "Add nix running method",
         "EricDing618": "Refactor project, add functions",
         "adproqwq": "Split project, fix bugs.",
     }

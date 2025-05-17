@@ -20,9 +20,9 @@ class Init:  # 初始化
         self.hostname = HOSTNAME
         self.allow_system_commands = ALLOW_SYSTEM_COMMANDS
         self.show_error_details = SHOW_ERROR_DETAILS
-        self.version = "3.1 Beagle"  # 系统版本
+        self.version = "3.1.1 Beagle"  # 系统版本
         self.shell_version = "1.0"  # Shell 版本
-        self.core_version = "20250510"  # 核心版本
+        self.core_version = "20250517"  # 核心版本
         self.tips_list = [  # 提示列表
             "You can find the default password in the passwd file.",
             "Maybe the coverter is useless :)",
