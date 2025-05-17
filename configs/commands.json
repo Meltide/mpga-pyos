@@ -21,7 +21,8 @@
             "asciier",
             "help",
             "errcode",
-            "script"
+            "script",
+            "cowsay"
         ],
         "Power": [
             "exit",
