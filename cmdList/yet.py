@@ -11,10 +11,10 @@ from colorama import Fore, Back, Style
 __doc__ = "YET Package manager"  # 第三方命令注册模块
 
 __usage__ = {
-    "install": "Install a local app",
-    "remove": "Remove apps",
+    "install [path]": "Install a local app",
+    "remove [command]": "Remove apps",
     "list": "List all third-party apps",
-    "info": "Show package information",
+    "info [command]": "Show package information",
 }
 
 # 全局命令缓存字典
@@ -197,9 +197,6 @@ def install(self, args):
         )
         return
 
-    # 安装依赖
-    install_dependencies(self, cmd_name, target_path)
-
     # 动态加载新命令
     try:
         module = importlib.import_module(f"cmdList.third_party.{cmd_name}")
@@ -283,6 +280,18 @@ def install_from_package(self, package_path, cmd_name=None):
         target_dir = os.path.join("cmdList", "third_party", cmd_name)
         os.makedirs(target_dir, exist_ok=True)
 
+        # 检查并安装依赖
+        main_module_path = os.path.join(
+            target_dir, find_main_module(target_dir, package_info) or "main.py"
+        )
+        try:
+            install_dependencies(self, cmd_name, main_module_path, package_info)
+        except Exception as e:
+            print(f"Error: {Fore.RED}{e}")
+            shutil.rmtree(target_dir)
+            self.error_code = ErrorCodeManager().get_code(e)
+            return
+        
         # 移动所有文件到目标目录
         for item in os.listdir(temp_dir):
             src = os.path.join(temp_dir, item)
@@ -304,12 +313,6 @@ def install_from_package(self, package_path, cmd_name=None):
                 os.path.join("configs", "commands.json"), "w", encoding="utf-8"
             ) as f:
                 json.dump(commands, f, indent=4, ensure_ascii=False)
-
-        # 检查并安装依赖
-        main_module_path = os.path.join(
-            target_dir, find_main_module(target_dir) or "main.py"
-        )
-        install_dependencies(self, cmd_name, main_module_path, package_info)
 
         print(
             f"• {Fore.GREEN}Package '{cmd_name}' installed successfully!{Style.RESET_ALL}"
@@ -357,10 +360,11 @@ def read_package_info(directory):
     return None
 
 
-def find_main_module(directory):
+def find_main_module(directory, package_info):
     """在目录中查找主模块"""
-    # 检查是否有main.py
-    if os.path.exists(os.path.join(directory, "main.py")):
+    if "main_file" in package_info:
+        return package_info["main_file"]
+    elif os.path.exists(os.path.join(directory, "main.py")):
         return "main.py"
 
     return None
@@ -368,75 +372,40 @@ def find_main_module(directory):
 
 def install_dependencies(self, cmd_name, module_path, package_info=None):
     """自动安装依赖"""
-    try:
-        # 优先使用package.json中的依赖
-        if package_info and "dependences" in package_info:
-            deps = package_info["dependences"]
-            if isinstance(deps, (list, tuple)) and deps:
-                print(
-                    f"• {Fore.YELLOW}Found dependencies in package.json, installing...{Style.RESET_ALL}"
-                )
-                try:
-                    subprocess.check_call(
-                        [sys.executable, "-m", "pip", "install"] + list(deps)
-                    )
-                    print(
-                        f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}"
-                    )
-                    return  # 如果package.json有依赖，就不再检查其他来源
-                except subprocess.CalledProcessError as e:
-                    print(
-                        f"Warning: {Fore.YELLOW}Failed to install some dependencies: {e}{Style.RESET_ALL}"
-                    )
-
-        # 检查是否有requirements.txt在同一目录
-        req_file = os.path.join(os.path.dirname(module_path), "requirements.txt")
-        if os.path.exists(req_file):
+    # 优先使用package.json中的依赖
+    if package_info and "dependencies" in package_info:
+        deps = package_info["dependencies"]
+        if isinstance(deps, (list, tuple)) and deps:
             print(
-                f"• {Fore.YELLOW}Found requirements.txt, installing dependencies...{Style.RESET_ALL}"
+                f"• {Fore.YELLOW}Found dependencies in package.json, installing...{Style.RESET_ALL}"
             )
             try:
                 subprocess.check_call(
-                    [sys.executable, "-m", "pip", "install", "-r", req_file]
+                    [sys.executable, "-m", "pip", "install"] + list(deps)
                 )
                 print(
                     f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}"
                 )
+                return  # 如果package.json有依赖，就不再检查其他来源
             except subprocess.CalledProcessError as e:
                 raise RunningError(f"Failed to install some dependencies: {e}")
 
-        # 检查模块中是否有__dependencies__变量
-        elif os.path.exists(module_path):
-            try:
-                spec = importlib.util.spec_from_file_location(cmd_name, module_path)
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-
-                if hasattr(module, "__dependencies__"):
-                    deps = getattr(module, "__dependencies__")
-                    if isinstance(deps, (list, tuple)) and deps:
-                        print(
-                            f"• {Fore.YELLOW}Found dependencies in module, installing...{Style.RESET_ALL}"
-                        )
-                        try:
-                            subprocess.check_call(
-                                [sys.executable, "-m", "pip", "install"] + list(deps)
-                            )
-                            print(
-                                f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}"
-                            )
-                        except subprocess.CalledProcessError as e:
-                            print(
-                                f"Warning: {Fore.YELLOW}Failed to install some dependencies: {e}{Style.RESET_ALL}"
-                            )
-            except:
-                pass
-
-    except Exception as e:
+    # 检查是否有requirements.txt在同一目录
+    req_file = os.path.join(os.path.dirname(module_path), "requirements.txt")
+    if os.path.exists(req_file):
         print(
-            f"Warning: {Fore.YELLOW}Could not check dependencies: {type(e).__name__}: {e}{Style.RESET_ALL}"
+            f"• {Fore.YELLOW}Found requirements.txt, installing dependencies...{Style.RESET_ALL}"
         )
-
+        try:
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "-r", req_file]
+            )
+            print(
+                f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}"
+            )
+        except subprocess.CalledProcessError as e:
+            raise RunningError(f"Failed to install some dependencies: {e}")
+        
 
 def show_package_info(self, args):
     """显示包信息"""
@@ -489,9 +458,9 @@ def show_package_info(self, args):
     if "author" in package_info:
         print(f"Author: {Fore.BLUE}{package_info['author']}{Style.RESET_ALL}")
 
-    if "dependences" in package_info:
+    if "dependencies" in package_info:
         print("Dependencies:")
-        for dependence in sorted(package_info["dependences"]):
+        for dependence in sorted(package_info["dependencies"]):
             print(f"- {Fore.YELLOW}{dependence}{Fore.RESET}")
 
 

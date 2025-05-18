@@ -13,7 +13,7 @@ __usage__ = {
     "list": "List all users",
     "create": "Create a new user",
     "change": "Change current user password",
-    "auto": "Set auto login user",
+    "auto [user/disable]": "Set auto login user",
 }
 
 

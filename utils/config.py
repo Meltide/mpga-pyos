@@ -88,6 +88,7 @@ EXCEPTION_RETURNS: dict = {
     StopIteration: 142,
     StopAsyncIteration: 143,
     StopAsyncIteration: 146,
+    UnboundLocalError: 149,
     LookupError: 156,
     ReferenceError: 164,
     shutil.SameFileError: 170,

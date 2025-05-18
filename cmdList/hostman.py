@@ -26,7 +26,7 @@ def execute(self, args):
 
     match args[0]:
         case "hostname":
-            print(f"Current hostname: {Fore.GREEN}{profiles['hostname']}")
+            print(f"Current hostname: {Fore.GREEN}{self.hostname}")
         case "change":
             self.hostname = input("Type new hostname: ")
             profiles["hostname"] = self.hostname

@@ -7,7 +7,11 @@ from utils.foxShell import FoxShell
 
 __doc__ = "FoxShell config"
 
-__usage__ = {"theme": "Set theme for FoxShell", "reload": "Reload FoxShell"}
+__usage__ = {
+    "theme [theme]": "Set theme for FoxShell",
+    "theme list": "Show all themes",
+    "reload": "Reload FoxShell",
+}
 
 
 def execute(self, args):
