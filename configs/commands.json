@@ -21,17 +21,12 @@
             "asciier",
             "help",
             "errcode",
-            "script",
-            "cowsay"
+            "script"
         ],
         "Power": [
             "exit",
             "shutdown",
             "restart"
-        ],
-        "Games": [
-            "snake",
-            "tetris"
         ]
     }
 }
