@@ -1,6 +1,6 @@
 {
     "system_commands": true,
-    "show_error_details": true,
+    "show_error_details": false,
     "show_ad": true,
     "use_custom_startupmsg": false
 }

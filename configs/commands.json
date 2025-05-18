@@ -28,6 +28,10 @@
             "exit",
             "shutdown",
             "restart"
+        ],
+        "Games": [
+            "snake",
+            "tetris"
         ]
     }
 }
