@@ -198,6 +198,18 @@ class HelpManager:
             except (json.JSONDecodeError, IOError):
                 return "Invalid package.json"
         return None
+    
+    def get_package_usage(self, cmd_name):
+        """获取包中package.json中的描述信息"""
+        package_json = os.path.join("cmdList", "third_party", cmd_name, "package.json")
+        if os.path.exists(package_json):
+            try:
+                with open(package_json, "r", encoding="utf-8") as f:
+                    package_info = json.load(f)
+                    return package_info.get("usage", "No usage available")
+            except (json.JSONDecodeError, IOError):
+                return "Invalid package.json"
+        return None
 
     def show_all(self):
         """显示所有命令"""
@@ -232,23 +244,29 @@ class HelpManager:
         """显示指定命令的详细信息"""
         try:
             pkg = self.cmdman.getpkg()
-            print(f"\n{Back.BLUE} Help for: {self.cmd_name} {Style.RESET_ALL}")
-
+            print(f"{Back.BLUE} Help for: {self.cmd_name} {Style.RESET_ALL}")
+    
             # 显示描述
-            description = getattr(pkg, "__doc__", "No description available")
-            print(f"Description: \n{description}")
-
-            # 显示用法
-            if hasattr(pkg, "__usage__"):
-                print(f"{Back.BLUE} Usage Examples: {Style.RESET_ALL}")
-                for usage, desc in pkg.__usage__.items():
-                    print(
-                        f"  {self.cmd_name} {Fore.GREEN}{usage:<15}{Style.RESET_ALL} {desc}"
-                    )
+            if self.cmdman.is_package():
+                description = self.get_package_doc(self.cmd_name) or "No description"
             else:
-                print(
-                    f"{Fore.YELLOW}Usage: No usage examples available{Style.RESET_ALL}"
-                )
-
+                description = getattr(pkg, "__doc__", "No description available")
+            print(f"Description: \n{description}")
+    
+            # 显示用法
+            if self.cmdman.is_package():
+                usage = self.get_package_usage(self.cmd_name) or "No usage available"
+            else:
+                usage = getattr(pkg, "__usage__", "No usage available")
+    
+            print(f"{Back.BLUE} Usage: {Style.RESET_ALL}")
+            if isinstance(usage, dict):  # 如果是字典，按键值对显示
+                for example, desc in usage.items():
+                    print(f"  {self.cmd_name} {Fore.GREEN}{example:<15}{Style.RESET_ALL} {desc}")
+            elif isinstance(usage, str):  # 如果是字符串，直接显示
+                print(f"  {usage}")
+            else:
+                print(f"{Fore.YELLOW}No usage examples available{Style.RESET_ALL}")
+    
         except Exception as e:
             raise RunningError(f"Error loading command help: {str(e)}")
