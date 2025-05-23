@@ -39,13 +39,25 @@ class CommandManager:
         return None
 
     def pkg_name(self) -> str:
-        """获取命令对应的模块导入路径"""
         pkg_path = self.resolve_package_path()
-
+        
         if pkg_path and os.path.isdir(pkg_path):
-            return f"cmdList.third_party.{self.cmd}.main"  # 包形式使用main作为入口
-        elif pkg_path:
-            return f"cmdList.third_party.{self.cmd}"  # 单文件形式
+            package_json_path = os.path.join(pkg_path, "package.json")
+            if os.path.exists(package_json_path):
+                with open(package_json_path, "r", encoding="utf-8") as f:
+                    pkg_info = json.load(f)
+                
+                # 获取 main_file 并规范化路径
+                main_file = pkg_info.get("main_file", "ciallo/ciallo.py")  # 默认值
+                main_module = os.path.splitext(main_file)[0]  # 去掉 .py
+                main_module = main_module.replace("/", ".")
+                
+                # 组合完整模块路径
+                return f"cmdList.third_party.{main_module}"
+        
+        elif pkg_path:  # 单文件形式
+            return f"cmdList.third_party.{os.path.splitext(self.cmd)[0]}"
+        
         return f"cmdList.{self.cmd}"  # 内置命令
 
     def is_package(self) -> bool:
@@ -89,13 +101,15 @@ class CommandManager:
         """导入命令对应的模块"""
         return importlib.import_module(self.pkg_name())
 
-    def execute(self, args=()):
+    def execute(self, username, args=()):
         """执行命令"""
         if args is None:
             args = ()  # 确保 args 是一个元组
 
         if not self.loaded_cmd():
-            if ALLOW_SYSTEM_COMMANDS:
+            with open(os.path.join("configs", "Users", username, "user_policys.json"), "r", encoding="utf-8") as f:
+                user_policys = json.load(f)
+            if user_policys["system_commands"]:
                 self._execute_system_command(args)
             else:
                 raise ImportError(f"Command '{self.cmd}' not found")

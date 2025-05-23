@@ -1,7 +1,14 @@
 {
     "hostname": "localhost",
     "accounts": {
-        "root": "MTE0NTE0"
+        "root": {
+            "passwd": "MTE0NTE0",
+            "group": "sudo"
+        }
     },
+    "groups": [
+        "sudo",
+        "user"
+    ],
     "auto_login": null
 }

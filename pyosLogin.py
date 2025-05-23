@@ -1,4 +1,4 @@
-import sys  # 系统库
+import os, sys  # 系统库
 from pyosInit import Init
 import base64  # 加解密库
 from colorama import Fore, Back, Style  # 彩色文字库
@@ -19,7 +19,7 @@ class Login(Init):
         self.max_attempts = 3
         while self.command_count < self.max_attempts:
             if AUTO_LOGIN:
-                self.username = "root"
+                self.username = AUTO_LOGIN
                 self._successful_login_message()
                 self.start_shell()
 
@@ -31,6 +31,10 @@ class Login(Init):
             elif self.username == "reset pwd":
                 self.reset_password()
             elif self.username in ACCOUNT_NAMES:
+                if ACCOUNTS[self.username]["group"] not in GROUPS:
+                    raise NameError(f"Invaild group: '{ACCOUNTS[self.username]['group']}'")
+                    return
+                self.group = ACCOUNTS[self.username]["group"]
                 self.login_user()
             else:
                 self._invalid_user_message()
@@ -87,19 +91,31 @@ class Login(Init):
 
     def login_user(self):
         """用户登录"""
-        stored_password = self.decode_password(profiles["accounts"][self.username])
+        stored_password = self.decode_password(profiles["accounts"][self.username]["passwd"])
         while self.command_count < self.max_attempts:
             entered_password = pwinput.pwinput()
             if entered_password == stored_password:
+                self.load_user_profiles()
                 self._successful_login_message()
                 self.start_shell()
                 break
             else:
                 self._invalid_password_message()
 
+    def load_user_profiles(self):
+        with open(os.path.join("configs", "Users", self.username, "user_policys.json"), "r", encoding="utf-8") as f:
+            self.user_policys = json.load(f)
+            self.ALLOW_SYSTEM_COMMANDS = self.user_policys["system_commands"]
+            self.SHOW_ERROR_DETAILS = self.user_policys["show_error_details"]
+        
+        with open(os.path.join("configs", "Users", self.username, "Fox", "fox_config.json"), "r", encoding="utf-8") as f:
+            self.fox = json.load(f)
+            self.THEME: str = self.fox["theme"]
+            self.SHOW_GREETING: bool = self.fox["show_greeting"]
+
     def start_shell(self):
         """启动命令行交互"""
-        FoxShell.show_greeting()
+        FoxShell.show_greeting(self)
         while self.command_count < self.max_attempts:
             prompt = FoxShell.generate_prompt(self)
             command = input(prompt)
@@ -108,7 +124,7 @@ class Login(Init):
             except Exception as e:
                 print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
                 self.error_code = ErrorCodeManager().get_code(e)
-                if SHOW_ERROR_DETAILS:
+                if self.SHOW_ERROR_DETAILS:
                     print(f"Details: \n{traceback.format_exc()}")
 
     def _validate_user(self, username):
@@ -137,5 +153,5 @@ class Login(Init):
         if AUTO_LOGIN:
             print(f"• Auto logined as {Fore.YELLOW}{self.username}")
         print()
-        if ALLOW_SYSTEM_COMMANDS:
+        if self.ALLOW_SYSTEM_COMMANDS:
             self.fprint("WARNING: Running system commands is enabled!", 2)
