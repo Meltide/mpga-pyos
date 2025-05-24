@@ -2,6 +2,8 @@ import json, shutil, os, importlib
 import zipfile
 import subprocess
 import sys
+import pwinput
+import base64
 
 from utils.config import *
 from utils.man import ErrorCodeManager, CommandManager
@@ -10,6 +12,16 @@ from colorama import Fore, Back, Style
 
 # 全局命令缓存字典
 _command_cache = {}
+
+
+def auth_passwd(self):
+    stpasswd = base64.b64decode(profiles["accounts"][self.username]["passwd"].strip()).decode(
+        "utf-8"
+    )
+    passwd = pwinput.pwinput("Password: ")
+    if passwd != stpasswd:
+        raise ValueError("Password incorrect.")
+
 
 def auto_reload_commands(self):
     """自动重载所有第三方命令"""
@@ -101,6 +113,9 @@ def get_command_module(self, cmd_name):
 def install(self, args):
     """安装应用并自动重载"""
     global source_path
+    
+    if self.NEED_PASSWD:
+        auth_passwd(self)
 
     if len(args) < 2:
         print(f"Error: {Fore.RED}No source file specified.{Style.RESET_ALL}")
@@ -217,23 +232,31 @@ def install_from_package(self, package_path, cmd_name=None):
             app_installed = True
 
         if old_version_code is not None:
-            if new_version_code < old_version_code:
-                print(
-                    f"Warning: {Fore.YELLOW}You are executing a downgrade operation (installed: {old_version_code}, new: {new_version_code})"
-                )
-                choice = input("Do you want to continue? [y/n]: ")
-                match choice:
-                    case "n" | "N":
-                        print(Fore.YELLOW + "Installition canceled.")
-                        return
-                    case "Y" | "y" | "":
-                        pass
-                    case _:
-                        raise NameError("Unknown command.")
-            elif new_version_code == old_version_code:
-                print(
-                    f"{Fore.YELLOW}Same version detected ({new_version_code}), reinstalling...{Style.RESET_ALL}"
-                )
+            match self.ASK_DOWNGRADE:
+                case "ask":
+                    if new_version_code < old_version_code:
+                        print(
+                            f"Warning: {Fore.YELLOW}You are executing a downgrade operation (installed: {old_version_code}, new: {new_version_code})"
+                        )
+                        choice = input("Do you want to continue? [y/n]: ")
+                        match choice:
+                            case "n" | "N":
+                                print(Fore.YELLOW + "Installition canceled.")
+                                return
+                            case "Y" | "y" | "":
+                                pass
+                            case _:
+                                raise NameError("Unknown command.")
+                    elif new_version_code == old_version_code:
+                        print(
+                            f"{Fore.YELLOW}Same version detected ({new_version_code}), reinstalling...{Style.RESET_ALL}"
+                        )
+                case "deny":
+                    raise RunningError(f"Downgrade is not allowed (installed: {old_version_code}, new: {new_version_code})")
+                case "allow":
+                    print(f"Warning: {Fore.YELLOW}Downgrade is executing (installed: {old_version_code}, new: {new_version_code})")
+                case _:
+                    raise SyntaxError(f"Unknown setting: '{self.ASK_DOWNGRADE}'")
 
         # 创建目标目录
         target_dir = os.path.join("cmdList", "third_party", cmd_name)
@@ -425,6 +448,9 @@ def show_package_info(self, args):
 
 def remove_app(self, args):
     """移除已安装应用"""
+    if self.NEED_PASSWD:
+        auth_passwd(self)
+    
     if len(args) < 2:
         print(f"Error: {Fore.RED}No app name specified for removal.{Style.RESET_ALL}")
         print(f"Usage: remove <app_name>")

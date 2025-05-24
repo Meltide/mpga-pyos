@@ -112,6 +112,11 @@ class Login(Init):
             self.fox = json.load(f)
             self.THEME: str = self.fox["theme"]
             self.SHOW_GREETING: bool = self.fox["show_greeting"]
+        
+        with open(os.path.join("configs", "Users", username, "yet_config.json"), "r", encoding="utf-8") as f:
+            self.yet = json.load(f)
+            self.ASK_DOWNGRADE: str = self.yet["ask_downgrade"]
+            self.NEED_PASSWD: bool = self.yet["need_passwd"]
 
     def start_shell(self):
         """启动命令行交互"""
