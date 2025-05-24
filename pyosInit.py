@@ -18,7 +18,7 @@ class Init:  # 初始化
         self.error_code = 0  # 错误代码
         self.hostname = HOSTNAME
         
-        self.version = "3.1.1 Beagle"  # 系统版本
+        self.version = "3.2 Corgi"  # 系统版本
         self.shell_version = "1.0"  # Shell 版本
         self.core_version = "20250517"  # 核心版本
         

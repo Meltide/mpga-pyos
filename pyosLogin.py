@@ -95,20 +95,20 @@ class Login(Init):
         while self.command_count < self.max_attempts:
             entered_password = pwinput.pwinput()
             if entered_password == stored_password:
-                self.load_user_profiles()
+                self.load_user_profiles(self.username)
                 self._successful_login_message()
                 self.start_shell()
                 break
             else:
                 self._invalid_password_message()
 
-    def load_user_profiles(self):
-        with open(os.path.join("configs", "Users", self.username, "user_policys.json"), "r", encoding="utf-8") as f:
+    def load_user_profiles(self, username):
+        with open(os.path.join("configs", "Users", username, "user_policys.json"), "r", encoding="utf-8") as f:
             self.user_policys = json.load(f)
             self.ALLOW_SYSTEM_COMMANDS = self.user_policys["system_commands"]
             self.SHOW_ERROR_DETAILS = self.user_policys["show_error_details"]
         
-        with open(os.path.join("configs", "Users", self.username, "Fox", "fox_config.json"), "r", encoding="utf-8") as f:
+        with open(os.path.join("configs", "Users", username, "Fox", "fox_config.json"), "r", encoding="utf-8") as f:
             self.fox = json.load(f)
             self.THEME: str = self.fox["theme"]
             self.SHOW_GREETING: bool = self.fox["show_greeting"]

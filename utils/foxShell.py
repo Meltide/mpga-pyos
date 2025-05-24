@@ -24,7 +24,7 @@ class FoxShell(Init):
                 raise
             print(f"\n{greeting_message}")
 
-    def reload(self):
+    def reload(self, su=False):
         try:
             with open(
                 os.path.join("configs", "Users", self.username, "Fox", "fox_config.json"), "r", encoding="utf-8"
@@ -32,7 +32,8 @@ class FoxShell(Init):
                 fox = json.load(f)
             self.THEME = fox["theme"]
             self.SHOW_GREETING = fox["show_greeting"]
-            print(f"• {Fore.GREEN}Reload successfully.")
+            if not su:
+                print(f"• {Fore.GREEN}Reload successfully.")
         except Exception as e:
             raise RunningError(
                 f"Can't reload FoxShell: {Fore.RED}{e if str(e) else type(e).__name__}"

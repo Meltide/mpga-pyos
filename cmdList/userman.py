@@ -13,6 +13,7 @@ __usage__ = {
     "log": "Show current login user",
     "list": "List all users",
     "create": "Create a new user",
+    "delete [username]": "Delete a user",
     "change": "Change current user password",
     "auto [user/disable]": "Set auto login user",
 }
@@ -36,6 +37,10 @@ def execute(self, args):
             show_all_users(self)
         case "create":
             create_user()
+        case "delete":
+            if not args[1]:
+                raise SyntaxError("No username provided. Please input a username.")
+            delete_user(args[1])
         case "change":
             change_passwd(self)
         case "auto":
@@ -85,8 +90,27 @@ def create_user():
     print(f"• {Fore.GREEN}Created successfully.")
 
 
+def delete_user(username):
+    global profiles, AUTO_LOGIN
+    if len(ACCOUNT_NAMES) <= 1:
+        raise SyntaxError("PyOS requires at least one user.")
+    if username not in ACCOUNT_NAMES:
+        raise NameError(f"Unknown username: '{username}'")
+    if username == AUTO_LOGIN:
+        profiles["auto_login"] = None
+        AUTO_LOGIN = None
+    
+    del profiles["accounts"][username]
+    if os.path.exists(os.path.join("configs", "Users", username)):
+        shutil.rmtree(os.path.join("configs", "Users", username))
+    
+    with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
+        json.dump(profiles, f, ensure_ascii=False, indent=4)
+    print(f"• {Fore.GREEN}User '{username}' deleted successfully.")
+
+
 def change_passwd(self):
-    stpasswd = base64.b64decode(profiles["accounts"][self.username].strip()).decode(
+    stpasswd = base64.b64decode(profiles["accounts"][self.username]["passwd"].strip()).decode(
         "utf-8"
     )
     oldpwd = pwinput.pwinput("Old Password: ")
@@ -96,7 +120,7 @@ def change_passwd(self):
         return
     if oldpwd == stpasswd:
         newpwd = pwinput.pwinput("New Password: ")
-        ACCOUNTS[self.username] = base64.b64encode(newpwd.encode("utf-8")).decode(
+        ACCOUNTS[self.username]["passwd"] = base64.b64encode(newpwd.encode("utf-8")).decode(
             "utf-8"
         )
         with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
