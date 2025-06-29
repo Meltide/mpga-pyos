@@ -7,10 +7,8 @@ from utils.foxShell import FoxShell
 
 __doc__ = "FoxShell config"
 
-__usage__ = {
-    "theme": "Set theme for FoxShell",
-    "reload": "Reload FoxShell"
-}
+__usage__ = {"theme": "Set theme for FoxShell", "reload": "Reload FoxShell"}
+
 
 def execute(self, args):
     global theme_list
@@ -18,13 +16,9 @@ def execute(self, args):
     if not args:  # 检查是否提供了参数
         FoxShell.show_greeting()
         return
-    
-    theme_list = [
-        "modern",
-        "classic",
-        "bash"
-    ]
-    
+
+    theme_list = ["modern", "classic", "bash"]
+
     match args[0]:
         case "theme":
             if args[1] == "list":
@@ -39,7 +33,9 @@ def execute(self, args):
                 self.error_code = ErrorCodeManager().get_code(SyntaxError)
                 return
             fox["theme"] = args[1]
-            with open(os.path.join("configs", "fox_config.json"), "w", encoding="utf-8") as f:
+            with open(
+                os.path.join("configs", "fox_config.json"), "w", encoding="utf-8"
+            ) as f:
                 json.dump(fox, f, ensure_ascii=False, indent=4)
                 print(f"• {Fore.GREEN}Theme set successfully.")
         case "reload":
@@ -50,6 +46,7 @@ def execute(self, args):
             for command, description in __usage__.items():
                 print(f"  {command}: {description}")
             self.error_code = ErrorCodeManager().get_code(SyntaxError)
+
 
 def show_available_themes():
     print("Avaliable themes:")

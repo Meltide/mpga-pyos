@@ -3,18 +3,21 @@ from colorama import Fore, Style
 
 __doc__ = "Show the about of PyOS"
 
+
 def print_contributors():
     contributors = {
         "MeltIce": "The author of MPGA PyOS",
         "Yukari2024": "Fix bugs",
+        "MinimalMio": "Add nix running method",
         "EricDing618": "Refactor project, add functions",
-        "adproqwq": "Split project, fix bugs."
+        "adproqwq": "Split project, fix bugs.",
     }
-    
+
     for name, value in sorted(contributors.items()):
         print(f"{Fore.BLUE}{name}{Fore.RESET}: {value}")
 
-def execute(self,args):
+
+def execute(self, args):
     print(f"MPGA PyOS Open Source System {self.version}")
     print(Fore.BLUE + text2art("MPGA", font="small"))
     print(f"Visit this project in github: {Fore.BLUE}github.com/Meltide/mpga-pyos\n")

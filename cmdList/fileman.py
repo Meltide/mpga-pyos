@@ -1,20 +1,21 @@
-__doc__='File manager'
-__usage__={
-    "create":"Create a new file",
-    "delete":"Delete a file",
-    "read":"Read a file",
-    "write":"Write to a file",
-    "append":"Append to a file",
-    "rename":"Rename a file",
-    "copy":"Copy a file",
-    "move":"Move a file",
-    "ls":"List files in a directory",
-    "search":"Search for a file"
+__doc__ = "File manager"
+__usage__ = {
+    "create": "Create a new file",
+    "delete": "Delete a file",
+    "read": "Read a file",
+    "write": "Write to a file",
+    "append": "Append to a file",
+    "rename": "Rename a file",
+    "copy": "Copy a file",
+    "move": "Move a file",
+    "ls": "List files in a directory",
+    "search": "Search for a file",
 }
 
 from utils.err import RunningError
 
-def execute(self,args):
+
+def execute(self, args):
     match args[0]:
         case "create":
             pass

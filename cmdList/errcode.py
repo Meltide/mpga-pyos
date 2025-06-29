@@ -1,6 +1,8 @@
-from utils.man import ErrorCodeManager 
+from utils.man import ErrorCodeManager
 from colorama import Fore
-__doc__="Return the name of error code"
+
+__doc__ = "Return the name of error code"
+
 
 def execute(self, args):
     if not args:
@@ -10,5 +12,5 @@ def execute(self, args):
 
     if len(args) >= 1:
         for code in args:
-            print(Fore.GREEN+str(code),end=": ")
-            print(Fore.BLUE+str(ErrorCodeManager().get_type(int(code))))
+            print(Fore.GREEN + str(code), end=": ")
+            print(Fore.BLUE + str(ErrorCodeManager().get_type(int(code))))

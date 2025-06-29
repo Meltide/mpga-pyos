@@ -7,12 +7,15 @@ from utils.foxShell import FoxShell
 from utils.man import ErrorCodeManager
 from utils.config import SHOW_ERROR_DETAILS
 
+
 class PyOS(Login):
     def __init__(self):
         super().__init__()
         # 初始化命令管理器
         if not hasattr(self, "command_manager"):
-            raise AttributeError("CommandManager (command_manager) is not initialized in Login or PyOS.")
+            raise AttributeError(
+                "CommandManager (command_manager) is not initialized in Login or PyOS."
+            )
 
     def run(self, commands: str):
         """运行命令"""
@@ -21,17 +24,22 @@ class PyOS(Login):
         for command_parts in commands:
             if len(command_parts) < 1:
                 continue
-        
+
             command_name = command_parts[0]
             if not command_name:  # 如果命令为空，直接返回
                 continue
 
             self.error_code = 0
             try:
-                if len(command_parts) > 1 and command_parts[1] == '-h':  # 如果有帮助标志
+                if (
+                    len(command_parts) > 1 and command_parts[1] == "-h"
+                ):  # 如果有帮助标志
                     self._register_and_execute("help", [command_name])
                 else:  # 执行命令（带参数或无参数）
-                    self._register_and_execute(command_name, command_parts[1:] if len(command_parts) > 1 else [])
+                    self._register_and_execute(
+                        command_name,
+                        command_parts[1:] if len(command_parts) > 1 else [],
+                    )
             except FileNotFoundError:
                 raise FileNotFoundError("Unknown command: " + "".join(command_parts))
 
@@ -40,13 +48,14 @@ class PyOS(Login):
         self.command_manager.reg(command_name)
         self.command_manager.execute(args)  # 仅传递 args
 
+
 if __name__ == "__main__":
     try:
         PyOS()
-    except (KeyboardInterrupt,EOFError) as e:
+    except (KeyboardInterrupt, EOFError) as e:
         if isinstance(e, EOFError):
             print()
-        print('\n'+Fore.RED+"You exited PyOS just now.")
+        print("\n" + Fore.RED + "You exited PyOS just now.")
     except SystemExit:
         pass
     except BaseException as e:

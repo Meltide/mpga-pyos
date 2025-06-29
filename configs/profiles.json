@@ -2,5 +2,6 @@
     "hostname": "localhost",
     "accounts": {
         "root": "MTE0NTE0"
-    }
+    },
+    "auto_login": null
 }

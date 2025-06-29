@@ -17,11 +17,13 @@ with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as 
 # profiles.json
 HOSTNAME: str = profiles["hostname"]
 ACCOUNTS: dict = profiles["accounts"]
+AUTO_LOGIN: str = profiles["auto_login"]
 
 # system_policys.json
 ALLOW_SYSTEM_COMMANDS: bool = policys["system_commands"]
 SHOW_ERROR_DETAILS: bool = policys["show_error_details"]
 SHOW_AD: bool = policys["show_ad"]
+USE_CUSTOM_STARTUPMSG: bool = policys["use_custom_startupmsg"]
 
 # commands.json
 SIGNED_COMMANDS: dict = commands["commands"]
@@ -36,16 +38,16 @@ SHOW_GREETING: bool = fox["show_greeting"]
 # 其他
 BASEPATH: str = os.getcwd().replace("\\", "/")
 
+
 # 重载 FoxShell
 def reload_fox():
     with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as f:
         fox: dict = json.load(f)
 
-EXCEPTION_INFO:dict = {
-    119: "Unknown command."
-}
 
-EXCEPTION_RETURNS:dict = {
+EXCEPTION_INFO: dict = {119: "Unknown command."}
+
+EXCEPTION_RETURNS: dict = {
     FileNotFoundError: 404,
     PermissionError: 403,
     KeyError: 300,
@@ -96,6 +98,5 @@ EXCEPTION_RETURNS:dict = {
     subprocess.CalledProcessError: 177,
     subprocess.TimeoutExpired: 178,
     subprocess.SubprocessError: 179,
-
-    RunningError: 810 # 自定义错误码
+    RunningError: 810,  # 自定义错误码
 }
