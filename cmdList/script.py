@@ -1,5 +1,9 @@
 __doc__ = "Run PYOScript files(.pyos)"
 
+__usage__ = {
+    "[path]": "Run PYOScript files from the path"
+}
+
 import os
 from colorama import Fore
 from utils.config import *

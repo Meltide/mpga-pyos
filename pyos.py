@@ -5,7 +5,7 @@ from pyosLogin import Login
 
 from utils.foxShell import FoxShell
 from utils.man import ErrorCodeManager
-from utils.config import SHOW_ERROR_DETAILS
+from utils.config import SHOW_BASE_ERROR_DETAILS
 
 
 class PyOS(Login):
@@ -46,7 +46,7 @@ class PyOS(Login):
     def _register_and_execute(self, command_name, args):
         """注册并执行命令"""
         self.command_manager.reg(command_name)
-        self.command_manager.execute(args)  # 仅传递 args
+        self.command_manager.execute(self.username, args)  # 仅传递 args
 
 
 if __name__ == "__main__":
@@ -61,5 +61,5 @@ if __name__ == "__main__":
     except BaseException as e:
         print(f"\nError: {Fore.RED}{type(e).__name__ if not str(e) else e}")
         print(f"Error code: {Fore.RED}{ErrorCodeManager().get_code(e)}")
-        if SHOW_ERROR_DETAILS:
+        if SHOW_BASE_ERROR_DETAILS:
             print(f"Details: \n{traceback.format_exc()}")

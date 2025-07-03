@@ -3,6 +3,9 @@ from colorama import Fore
 
 __doc__ = "Return the name of error code"
 
+__usage__ = {
+    "[error code]": "Return the name of error code"
+}
 
 def execute(self, args):
     if not args:

@@ -13,16 +13,15 @@ from utils.config import *
 class Init:  # 初始化
     def __init__(self):
         init(autoreset=True)
+        
         self.command_manager = CommandManager(self, "")  # 命令管理器
-        self.clear_screen_count = 0  # 清屏计数
         self.error_code = 0  # 错误代码
-        self.account_names = ACCOUNTS.keys()
         self.hostname = HOSTNAME
-        self.allow_system_commands = ALLOW_SYSTEM_COMMANDS
-        self.show_error_details = SHOW_ERROR_DETAILS
-        self.version = "3.1.1 Beagle"  # 系统版本
+        
+        self.version = "3.2 Corgi"  # 系统版本
         self.shell_version = "1.0"  # Shell 版本
         self.core_version = "20250517"  # 核心版本
+        
         self.tips_list = [  # 提示列表
             "You can find the default password in the passwd file.",
             "Maybe the coverter is useless :)",
@@ -31,6 +30,7 @@ class Init:  # 初始化
             "Columns make the calculator work.",
         ]
         self.selected_tip = random.choice(self.tips_list)  # 随机选择提示
+        
         self.color_modes = [
             Fore.WHITE,
             Fore.GREEN,

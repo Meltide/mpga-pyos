@@ -1,0 +1,9 @@
+{
+    "system_commands": ["sudo", "user"],
+    "set_system_policys": ["sudo"],
+    "create_user": ["sudo", "user"],
+    "delete_user": ["sudo", "user"],
+    "change_hostname": ["sudo"],
+    "install_third_party_apps": ["sudo", "user"],
+    "remove_third_party_apps": ["sudo", "user"]
+}

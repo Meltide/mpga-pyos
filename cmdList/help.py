@@ -4,7 +4,7 @@ __doc__ = "Display help information for commands"
 
 __usage__ = {
     "": "Show list of all commands",
-    "<command>": "Show help for specific command",
+    "[command]": "Show help for specific command",
 }
 
 

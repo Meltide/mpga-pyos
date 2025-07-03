@@ -3,9 +3,15 @@ from colorama import Fore, Style  # 颜色库
 
 __doc__ = "View the path"
 
+__usage__ = {
+    "[path]": "View the contents from path",
+}
 
 def execute(self, args):
-    items = os.listdir(os.getcwd())
+    if not args:
+        items = os.listdir(os.getcwd())
+    else:
+        items = os.listdir(args[0])
 
     # 分离文件夹和文件，并按名称排序（不区分大小写）
     folders = sorted(

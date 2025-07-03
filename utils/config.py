@@ -11,17 +11,15 @@ with open(os.path.join("configs", "system_policys.json"), "r", encoding="utf-8")
 with open(os.path.join("configs", "commands.json"), "r", encoding="utf-8") as f:
     commands: dict = json.load(f)
 
-with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as f:
-    fox: dict = json.load(f)
-
 # profiles.json
 HOSTNAME: str = profiles["hostname"]
 ACCOUNTS: dict = profiles["accounts"]
+ACCOUNT_NAMES: list = ACCOUNTS.keys()
+GROUPS: list = profiles["groups"]
 AUTO_LOGIN: str = profiles["auto_login"]
 
 # system_policys.json
-ALLOW_SYSTEM_COMMANDS: bool = policys["system_commands"]
-SHOW_ERROR_DETAILS: bool = policys["show_error_details"]
+SHOW_BASE_ERROR_DETAILS: bool = policys["show_base_error_details"]
 SHOW_AD: bool = policys["show_ad"]
 USE_CUSTOM_STARTUPMSG: bool = policys["use_custom_startupmsg"]
 
@@ -31,17 +29,13 @@ SC_SYSTEM: list = SIGNED_COMMANDS["System"]
 SC_TOOLS: list = SIGNED_COMMANDS["Tools"]
 SC_POWER: list = SIGNED_COMMANDS["Power"]
 
-# fox_config.json
-THEME: str = fox["theme"]
-SHOW_GREETING: bool = fox["show_greeting"]
-
 # 其他
 BASEPATH: str = os.getcwd().replace("\\", "/")
 
 
 # 重载 FoxShell
 def reload_fox():
-    with open(os.path.join("configs", "fox_config.json"), "r", encoding="utf-8") as f:
+    with open(os.path.join("configs", "Fox", "config.json"), "r", encoding="utf-8") as f:
         fox: dict = json.load(f)
 
 
@@ -87,6 +81,7 @@ EXCEPTION_RETURNS: dict = {
     StopIteration: 142,
     StopAsyncIteration: 143,
     StopAsyncIteration: 146,
+    UnboundLocalError: 149,
     LookupError: 156,
     ReferenceError: 164,
     shutil.SameFileError: 170,

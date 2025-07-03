@@ -6,8 +6,8 @@ from utils.man import ErrorCodeManager
 __doc__ = "Set system policy"
 
 __usage__ = {
-    "enable": "Enable policys",
-    "disable": "Disable policys",
+    "enable [policy]": "Enable policys",
+    "disable [policy]": "Disable policys",
     "list": "Show all policys",
 }
 

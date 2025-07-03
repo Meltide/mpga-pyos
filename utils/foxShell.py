@@ -9,11 +9,11 @@ from utils.err import *
 
 
 class FoxShell(Init):
-    def show_greeting():
-        if SHOW_GREETING:
+    def show_greeting(self):
+        if self.SHOW_GREETING:
             try:
                 with open(
-                    os.path.join("configs", "Fox", "fox_greeting.txt"),
+                    os.path.join("configs", "Users", self.username, "Fox", "fox_greeting.txt"),
                     "r",
                     encoding="utf-8",
                 ) as f:
@@ -24,16 +24,16 @@ class FoxShell(Init):
                 raise
             print(f"\n{greeting_message}")
 
-    def reload(self):
-        global fox, THEME, SHOW_GREETING
+    def reload(self, su=False):
         try:
             with open(
-                os.path.join("configs", "fox_config.json"), "r", encoding="utf-8"
+                os.path.join("configs", "Users", self.username, "Fox", "fox_config.json"), "r", encoding="utf-8"
             ) as f:
                 fox = json.load(f)
-            THEME = fox["theme"]
-            SHOW_GREETING = fox["show_greeting"]
-            print(f"• {Fore.GREEN}Reload successfully.")
+            self.THEME = fox["theme"]
+            self.SHOW_GREETING = fox["show_greeting"]
+            if not su:
+                print(f"• {Fore.GREEN}Reload successfully.")
         except Exception as e:
             raise RunningError(
                 f"Can't reload FoxShell: {Fore.RED}{e if str(e) else type(e).__name__}"
@@ -42,7 +42,7 @@ class FoxShell(Init):
     def generate_prompt(self):
         """生成命令行提示符"""
         timestamp = datetime.datetime.now().strftime("%m/%d %H:%M:%S")
-        match THEME:
+        match self.THEME:
             case "modern":
                 return f"{f'{Back.RED}{Fore.WHITE} ✘ {self.error_code} ' if self.error_code else ''}{Back.WHITE}{Fore.BLACK} {timestamp} {Back.YELLOW} {self.username}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.current_directory} {Back.RESET}▶ "
             case "classic":
