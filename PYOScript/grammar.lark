@@ -1,0 +1,62 @@
+// 基础结构
+start: (metadata | statement)*
+
+// 元数据
+metadata: "@author" STRING ";"          -> author_meta
+        | "@name" STRING ";"           -> name_meta
+        | "@version" STRING ";"        -> version_meta
+        | "@description" STRING ";"    -> desc_meta
+        | "@config" ID value ";"       -> config_meta
+
+// 语句
+statement: var_decl
+         | py_block
+         | command
+         | reader_stmt
+         | comment
+
+// 注释
+comment: SINGLE_LINE_COMMENT | MULTILINE_COMMENT
+SINGLE_LINE_COMMENT: /#[^\n]*/
+MULTILINE_COMMENT: /\"\"\"[^\"]*\"\"\"/
+
+// 变量声明
+var_decl: "int" ID "=" value ";"     -> int_decl
+        | "float" ID "=" value ";"   -> float_decl
+        | "string" ID "=" value ";"  -> string_decl
+        | "bool" ID "=" value ";"    -> bool_decl
+        | "pytype" ID "=" py_block ";" -> pytype_decl
+
+// Python代码块
+py_block: "using" "PyCode" "{" py_code "}"
+py_code: (PYCODE_TEXT | DICT_LIKE | STRING | BACKQUOTE_ID)*
+PYCODE_TEXT: /[^{}"'\/]+/
+DICT_LIKE: /\{[^{}]*\}/
+
+// 命令
+command: "/" cmd_name cmd_args? ";"
+cmd_name: ID
+cmd_args: (value | BACKQUOTE_ID)+
+
+// 文件读取
+reader_stmt: "reader" ID "=" PATH ";"
+
+// 值定义 - 避免使用算术表达式作为值
+value: STRING       -> string_value
+     | INT          -> int_value
+     | FLOAT        -> float_value
+     | BOOL         -> bool_value
+
+// 词法定义
+BACKQUOTE_ID: "`" ID
+STRING: /"[^"]*"/ | /'[^']*'/
+ID: /[a-zA-Z_][a-zA-Z0-9_]*/
+BOOL: "true" | "false"
+INT: /-?\d+/
+FLOAT: /-?\d+\.\d+/
+PATH: /\.?\/?[\w\/\.-]+/  // 路径定义
+
+// 忽略规则
+%ignore /#[^\n]*/       // 单行注释
+%ignore /[ \t\f]+/      // 空白
+%ignore /\n+/           // 换行

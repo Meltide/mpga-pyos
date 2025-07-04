@@ -8,7 +8,7 @@ import os
 from colorama import Fore
 from utils.config import *
 from utils.man import ErrorCodeManager
-from PYOScript.compiler import PSC
+from PYOScript.__compiler import PSC
 
 
 def execute(self, args):
