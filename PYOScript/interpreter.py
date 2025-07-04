@@ -1,6 +1,6 @@
 import os
 import re
-from lark import Lark, Transformer, Token
+from lark import Lark, Transformer, Token, Tree
 from typing import Callable, Any
 
 class PYOSTransformer(Transformer):
@@ -37,28 +37,71 @@ class PYOSTransformer(Transformer):
     # 变量声明
     def int_decl(self, items):
         var_name = items[0]
-        value = int(items[1])
+        value = items[1]
+        # 确保值是整数
+        if not isinstance(value, int):
+            try:
+                value = int(value)
+            except (TypeError, ValueError):
+                raise ValueError(f"无法将 {value} 转换为整数")
         self.vars[var_name] = value
     
     def float_decl(self, items):
         var_name = items[0]
-        value = float(items[1])
+        value = items[1]
+        # 确保值是浮点数
+        if not isinstance(value, float):
+            try:
+                value = float(value)
+            except (TypeError, ValueError):
+                raise ValueError(f"无法将 {value} 转换为浮点数")
         self.vars[var_name] = value
     
     def string_decl(self, items):
         var_name = items[0]
         value = items[1]
+        # 确保值是字符串
+        if not isinstance(value, str):
+            value = str(value)
         self.vars[var_name] = value
     
     def bool_decl(self, items):
         var_name = items[0]
-        value = items[1].lower() == "true"
-        self.vars[var_name] = value
+        value = items[1]
+        # 确保值是布尔值
+        if isinstance(value, bool):
+            self.vars[var_name] = value
+        elif isinstance(value, str):
+            self.vars[var_name] = value.lower() == "true"
+        else:
+            self.vars[var_name] = bool(value)
     
     def pytype_decl(self, items):
         var_name = items[0]
         self.vars[var_name] = items[1]
 
+    # 表达式处理
+    def binary_expr(self, items):
+        left, op, right = items
+        op_str = op.value if hasattr(op, 'value') else str(op)
+        
+        try:
+            if op_str == '+':
+                return left + right
+            elif op_str == '-':
+                return left - right
+            elif op_str == '*':
+                return left * right
+            elif op_str == '/':
+                return left / right
+            else:
+                raise ValueError(f"未知运算符: {op_str}")
+        except TypeError as e:
+            raise ValueError(f"类型错误: 无法执行 {type(left)} {op_str} {type(right)}")
+    
+    def paren_expr(self, items):
+        return items[0]
+    
     # 基本值处理
     def string_value(self, items):
         return items[0].strip('"\'')
@@ -71,6 +114,18 @@ class PYOSTransformer(Transformer):
     
     def bool_value(self, items):
         return items[0].lower() == "true"
+    
+    def backquote_value(self, items):
+        var_name = items[0].value[1:]
+        if var_name in self.vars:
+            return self.vars[var_name]
+        raise ValueError(f"未定义变量: {var_name}")
+    
+    def variable_ref(self, items):
+        var_name = items[0].value
+        if var_name in self.vars:
+            return self.vars[var_name]
+        raise ValueError(f"未定义变量: {var_name}")
 
     # Python代码块处理
     def py_code(self, items):
@@ -110,26 +165,42 @@ class PYOSTransformer(Transformer):
 
     # 命令处理
     def cmd(self, items):
-        cmd_name = items[0]
+        cmd_name = items[0].children[0].value if isinstance(items[0], Tree) else items[0].value
         args = []
         
+        # 处理命令参数
         if len(items) > 1:
-            for arg in items[1]:
-                # 处理反引号变量
-                if isinstance(arg, Token) and arg.type == "BACKQUOTE_ID":
-                    var_name = arg.value[1:]
-                    if var_name in self.vars:
-                        args.append(str(self.vars[var_name]))
-                    else:
-                        raise ValueError(f"未定义变量: {var_name}")
-                else:
-                    args.append(str(arg))
+            # 检查items[1]是Tree还是列表
+            if isinstance(items[1], Tree):
+                # 如果是Tree，遍历其子节点
+                for arg in items[1].children:
+                    args.append(self._process_cmd_arg(arg))
+            else:
+                # 如果已经是列表，直接遍历
+                for arg in items[1]:
+                    args.append(self._process_cmd_arg(arg))
         
         try:
             return self._execute_command(cmd_name, args)
         except Exception as e:
             print(f"命令执行失败: {e}")
             raise
+    
+    def _process_cmd_arg(self, arg):
+        """处理单个命令参数"""
+        if isinstance(arg, Token):
+            # 处理反引号变量
+            if arg.type == "BACKQUOTE_ID":
+                var_name = arg.value[1:]
+                if var_name in self.vars:
+                    return str(self.vars[var_name])
+                raise ValueError(f"未定义变量: {var_name}")
+            # 处理其他Token
+            else:
+                return arg.value
+        # 处理已转换的值
+        else:
+            return str(arg)
 
     def _default_cmd_executor(self, cmd: str, args: list):
         """默认命令执行器"""

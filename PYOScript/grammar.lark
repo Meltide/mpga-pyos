@@ -6,7 +6,7 @@ metadata: "@author" STRING ";"          -> author_meta
         | "@name" STRING ";"           -> name_meta
         | "@version" STRING ";"        -> version_meta
         | "@description" STRING ";"    -> desc_meta
-        | "@config" ID value ";"       -> config_meta
+        | "@config" ID expr ";"        -> config_meta
 
 // 语句
 statement: var_decl
@@ -20,11 +20,11 @@ comment: SINGLE_LINE_COMMENT | MULTILINE_COMMENT
 SINGLE_LINE_COMMENT: /#[^\n]*/
 MULTILINE_COMMENT: /\"\"\"[^\"]*\"\"\"/
 
-// 变量声明
-var_decl: "int" ID "=" value ";"     -> int_decl
-        | "float" ID "=" value ";"   -> float_decl
-        | "string" ID "=" value ";"  -> string_decl
-        | "bool" ID "=" value ";"    -> bool_decl
+// 变量声明 - 使用 expr 支持表达式
+var_decl: "int" ID "=" expr ";"     -> int_decl
+        | "float" ID "=" expr ";"   -> float_decl
+        | "string" ID "=" expr ";"  -> string_decl
+        | "bool" ID "=" expr ";"    -> bool_decl
         | "pytype" ID "=" py_block ";" -> pytype_decl
 
 // Python代码块
@@ -33,19 +33,25 @@ py_code: (PYCODE_TEXT | DICT_LIKE | STRING | BACKQUOTE_ID)*
 PYCODE_TEXT: /[^{}"'\/]+/
 DICT_LIKE: /\{[^{}]*\}/
 
-// 命令
-command: "/" cmd_name cmd_args? ";"
+// 命令 - 支持表达式作为参数
+command: "/" cmd_name cmd_args? ";" -> cmd
 cmd_name: ID
-cmd_args: (value | BACKQUOTE_ID)+
+cmd_args: (expr)+
 
 // 文件读取
 reader_stmt: "reader" ID "=" PATH ";"
 
-// 值定义 - 避免使用算术表达式作为值
-value: STRING       -> string_value
-     | INT          -> int_value
-     | FLOAT        -> float_value
-     | BOOL         -> bool_value
+// 表达式定义
+?expr: atom
+    | expr OP expr -> binary_expr
+    | "(" expr ")" -> paren_expr
+
+atom: STRING       -> string_value
+    | INT          -> int_value
+    | FLOAT        -> float_value
+    | BOOL         -> bool_value
+    | BACKQUOTE_ID -> backquote_value
+    | ID           -> variable_ref
 
 // 词法定义
 BACKQUOTE_ID: "`" ID
@@ -54,6 +60,7 @@ ID: /[a-zA-Z_][a-zA-Z0-9_]*/
 BOOL: "true" | "false"
 INT: /-?\d+/
 FLOAT: /-?\d+\.\d+/
+OP: "+" | "-" | "*" | "/"
 PATH: /\.?\/?[\w\/\.-]+/  // 路径定义
 
 // 忽略规则

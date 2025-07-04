@@ -12,12 +12,10 @@ def test():
     with open(script_path, "r", encoding="utf-8") as f:
         script = f.read()
     
-    try:
-        result = parser.parse(script)
-        print("执行成功！")
-        print("变量状态:", parser.parser.transformer.vars)
-    except Exception as e:
-        print(f"执行错误: {e}")
+    result = parser.parse(script)
+    print("执行成功！")
+    print("变量状态:", parser.parser.transformer.vars)
+
 
 if __name__ == "__main__":
     test()
