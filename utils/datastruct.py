@@ -2,7 +2,7 @@
 
 import re
 import operator
-from typing import List, Set, Tuple, Optional, Dict, Any
+from typing import List, Set, Tuple, Optional, Dict, Any, Union
 from .err import PYOScriptError
 
 class DataStruct:
@@ -92,6 +92,9 @@ class DataStruct:
     def expression_evaluator(self, variables: Dict[str, Any], expression: str, line_no: int = 0, path: str = '<module>'):
         ee = ExpressionEvaluator(variables)
         return ee.evaluate(expression, line_no, path)
+    
+    def parse_cmd(self, s):
+        return CommandParser().parse_command(s)
 
 class ExpressionEvaluator:
     def __init__(self, variables: Dict[str, Any]):
@@ -227,3 +230,53 @@ class ExpressionEvaluator:
             return int(value_str)
         except ValueError:
             raise PYOScriptError(f"Cannot parse value: {value_str}",0,'<module>','Value')
+
+class CommandParser:
+    def __init__(self):
+        # 快速判断的正则（仅检查基本结构）
+        self.command_check_pattern = re.compile(r'^/[a-zA-Z_]\w*(?:\s|;)')
+        
+        # 详细解析正则
+        self.full_command_pattern = re.compile(
+            r'^/(?P<command>[a-zA-Z_]\w*)'  # 命令部分
+            r'(?:\s+(?P<args>(?:[^;"\'\s]+|"(?:\\"|[^"])*"|\'(?:\\\'|[^\'])*\'|`[^`]+`)*))?'  # 参数部分
+            r';$'  # 结束分号
+        )
+        
+        # 参数分割正则
+        self.arg_split_pattern = re.compile(
+            r'([^"\'\s`]+|"[^"]*"|\'[^\']*\'|`[^`]+`)'
+        )
+
+    def is_command(self, s: str) -> bool:
+        """快速判断是否为命令格式"""
+        return bool(self.command_check_pattern.match(s.strip())) and s.strip().endswith(';')
+
+    def parse_command(self, command_str: str) -> Optional[Dict[str, Union[str, List]]]:
+        """详细解析命令"""
+        if not self.is_command(command_str):
+            return None
+        
+        match = self.full_command_pattern.match(command_str.strip())
+        if not match:
+            return None
+        
+        return {
+            'command': match.group('command'),
+            'args': self._parse_args(match.group('args')) if match.group('args') else []
+        }
+
+    def _parse_args(self, args_str: str) -> List[Union[str, Dict]]:
+        """解析参数部分"""
+        args = []
+        for arg_match in self.arg_split_pattern.finditer(args_str.strip()):
+            arg = arg_match.group(0)
+            
+            if arg.startswith(('"', "'")):
+                args.append(arg)  # 保留引号字符串
+            elif arg.startswith('`'):
+                args.append({'type': 'var', 'name': arg[1:-1]})  # 反引号变量
+            else:
+                args.append(arg)  # 普通参数
+        
+        return args

@@ -100,12 +100,14 @@ class PYOScriptInterpreter:
         for line,codes in enumerate(self.code.splitlines()):
             for code in self.ds.strict_split(codes,';'):
                 print(code)
-                stripped = code.strip()
+                stripped = code.strip()+';'
 
                 if not stripped:
                     continue
 
+                #pc = self.ds.parse_cmd(stripped)
                 pc = self.parse_command(stripped)
+                print(pc)
                 if pc:
                     args = []
                     for arg in pc['args']:
@@ -149,11 +151,10 @@ class PYOScriptInterpreter:
             return var_type, var_name, var_value
         return None
 
-    def parse_command(self,command_str:str):
+    def parse_command(self, command_str: str):
         # 主正则表达式（保持原有结构）
-        pattern = BasicTokens.CMD.value
 
-        match = pattern.fullmatch(command_str.strip())
+        match = BasicTokens.CMD.value.fullmatch(command_str)
         if not match:
             return None
         
@@ -193,7 +194,6 @@ class PYOScriptInterpreter:
                     result['args'].append(SpecialToken(BasicTokens.BASIC_VAR, var_name))
         
         return result
-    
     def format_var(self, _type, _name, _value):
         ftype = {
             'string':'str'
