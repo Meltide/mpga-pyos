@@ -20,14 +20,14 @@ using PyCode {
     print("hi")
 } #python单、多行代码运行基本用法
 using PyCode {
-    print(`a+`b)
+    print(`a`+`b`)
 } #python单、多行代码运行赋值用法
 pytype c = {
     def main():
-        return `a
+        return `a`
     main()
 } #python单、多行代码赋值用法
 
 reader d = ./a.py; #读取外部文件并返回给变量
-/echo `c; #命令运行赋值用法
-/runpy `d; 
+/echo `c`; #命令运行赋值用法（命令是不确定的，会提供一个接口来运行命令）
+/exec `d`; 

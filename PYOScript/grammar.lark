@@ -20,6 +20,11 @@ comment: SINGLE_LINE_COMMENT | MULTILINE_COMMENT
 SINGLE_LINE_COMMENT: /#[^\n]*/
 MULTILINE_COMMENT: /\"\"\"[^\"]*\"\"\"/
 
+// 命令 - 支持表达式作为参数
+command: "/" cmd_name cmd_args? ";" -> cmd
+cmd_name: ID
+cmd_args: (cmd_arg)*
+
 // 变量声明 - 使用 expr 支持表达式
 var_decl: "int" ID "=" expr ";"     -> int_decl
         | "float" ID "=" expr ";"   -> float_decl
@@ -33,10 +38,11 @@ py_code: (PYCODE_TEXT | DICT_LIKE | STRING | BACKQUOTE_ID)*
 PYCODE_TEXT: /[^{}"'\/]+/
 DICT_LIKE: /\{[^{}]*\}/
 
-// 命令 - 支持表达式作为参数
-command: "/" cmd_name cmd_args? ";" -> cmd
-cmd_name: ID
-cmd_args: (expr)+
+// 命令参数定义
+cmd_arg: STRING       -> string_value
+       | INT          -> int_value
+       | FLOAT        -> float_value
+       | BACKQUOTE_ID -> backquote_value
 
 // 文件读取
 reader_stmt: "reader" ID "=" PATH ";"
@@ -49,15 +55,12 @@ reader_stmt: "reader" ID "=" PATH ";"
 atom: STRING       -> string_value
     | INT          -> int_value
     | FLOAT        -> float_value
-    | BOOL         -> bool_value
     | BACKQUOTE_ID -> backquote_value
-    | ID           -> variable_ref
 
 // 词法定义
 BACKQUOTE_ID: "`" ID
 STRING: /"[^"]*"/ | /'[^']*'/
 ID: /[a-zA-Z_][a-zA-Z0-9_]*/
-BOOL: "true" | "false"
 INT: /-?\d+/
 FLOAT: /-?\d+\.\d+/
 OP: "+" | "-" | "*" | "/"

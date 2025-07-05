@@ -1,4 +1,4 @@
-from interpreter import create_parser,os
+from __interpreter import create_parser,os
 
 def my_cmd_executor(cmd: str, args: list):
     print(f"执行命令: {cmd}, 参数: {args}")
