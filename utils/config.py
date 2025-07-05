@@ -1,5 +1,5 @@
 import json, os, shutil, subprocess
-from .err import RunningError
+from .err import *
 
 # 导入配置文件
 with open(os.path.join("configs", "profiles.json"), "r", encoding="utf-8") as f:
@@ -93,5 +93,8 @@ EXCEPTION_RETURNS: dict = {
     subprocess.CalledProcessError: 177,
     subprocess.TimeoutExpired: 178,
     subprocess.SubprocessError: 179,
-    RunningError: 810,  # 自定义错误码
+
+    # 自定义错误码
+    RunningError: 810, 
+    PYOScriptError: 191,
 }

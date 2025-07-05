@@ -9,8 +9,8 @@
 """
 # 单行注释
 
-/yet "list"; #命令
-@config "system_commands" true; #临时调整config.json，指运行时修改文件，运行完成后恢复
+/yet list; #命令
+@config system_commands true; #临时调整config.json，指运行时修改文件，运行完成后恢复
 /python; #系统命令
 
 int a = 1;float b = 2.0;string c = "hello";bool d = true; #基本变量用法，计划支持整数、浮点数、字符串、布尔值
