@@ -10,6 +10,16 @@ from utils.datastruct import DataStruct
 with open('PYOScript/demo/t1.mcfunction', 'r', encoding='utf-8') as f:
     DEMO_CODE = f.read()
 
+def VAR(_types=('int','float','string','bool')):
+    return re.compile(
+        r'('+'|'.join(_types)+r')\s+([a-zA-Z_]\w*)\s*=\s*'
+        r'('
+        r'[^;"\']+|'  # 非字符串值
+        r'"[^"\\]*(?:\\.[^"\\]*)*"|'  # 双引号字符串
+        r"'[^'\\]*(?:\\.[^'\\]*)*'"  # 单引号字符串
+        r');?'
+    )
+
 class NestType(Enum):
     PYTYPE = 1 #赋值运行
     PYCODE = 2 #直接运行
@@ -24,14 +34,8 @@ class BasicTokens(Enum):
     )
     #COMPLEX = re.compile(r"(?<!\S)-?\d+\.?\d*[+-]\d+\.?\d*j(?!\S)")
     #NONE = re.compile(r"(?<!\S)None(?!\S)")
-    BASIC_VAR = re.compile(
-        r'(int|float|string|bool)\s+([a-zA-Z_]\w*)\s*=\s*'
-        r'('
-        r'[^;"\']+|'  # 非字符串值
-        r'"[^"\\]*(?:\\.[^"\\]*)*"|'  # 双引号字符串
-        r"'[^'\\]*(?:\\.[^'\\]*)*'"  # 单引号字符串
-        r');?'
-    )
+    BASIC_VAR = VAR()
+    SPCIAL_VAR = VAR(('reader','pytype'))
     SINGLE_COMMENT = re.compile(r'(?<![\\\'"])(#(?!\\).*?$)')
     #MULTI_COMMENT = re.compile(r'''(?<!\\)(?:'{3}|"{3})(?:(?!\1).|\n)*?\1''')
     COMMENT = re.compile(f'(?ms)({SINGLE_COMMENT.pattern})|({MULTI_COMMENT.pattern})')
@@ -97,16 +101,17 @@ class PYOScriptInterpreter:
 
     def parse(self):
         self.code = BasicTokens.COMMENT.value.sub('', self.code)  # 去掉注释
+        print(self.code)
         for line,codes in enumerate(self.code.splitlines()):
             for code in self.ds.strict_split(codes,';'):
-                print(code)
-                stripped = code.strip()+';'
+                print(code,self.vars)
+                stripped = code.strip()
 
                 if not stripped:
                     continue
 
                 #pc = self.ds.parse_cmd(stripped)
-                pc = self.parse_command(stripped)
+                pc = self.parse_command(stripped+';')
                 print(pc)
                 if pc:
                     args = []
@@ -152,6 +157,7 @@ class PYOScriptInterpreter:
         return None
 
     def parse_command(self, command_str: str):
+        '''与foxShell.parse_commands不同，添加了变量解析'''
         # 主正则表达式（保持原有结构）
 
         match = BasicTokens.CMD.value.fullmatch(command_str)

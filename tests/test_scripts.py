@@ -6,7 +6,7 @@ from pyos import PyOS
 
 class TestScripts:
     def test_code(self):
-        core = PyOS()
+        core = PyOS(debug=True)
         ip = PYOScriptInterpreter(core,DEMO_CODE)
         ip.parse()
         ip.parse_line('/echo hi')

@@ -232,6 +232,7 @@ class ExpressionEvaluator:
             raise PYOScriptError(f"Cannot parse value: {value_str}",0,'<module>','Value')
 
 class CommandParser:
+    '''与foxShell.parse_commands不同，添加了变量解析'''
     def __init__(self):
         # 快速判断的正则（仅检查基本结构）
         self.command_check_pattern = re.compile(r'^/[a-zA-Z_]\w*(?:\s|;)')
