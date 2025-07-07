@@ -1,5 +1,6 @@
 from collections import deque
 from enum import Enum
+from string import ascii_letters,digits
 import re
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -101,28 +102,33 @@ class PYOScriptInterpreter:
 
     def parse(self):
         self.code = BasicTokens.COMMENT.value.sub('', self.code)  # 去掉注释
-        print(self.code)
+        #print(self.code)
         for line,codes in enumerate(self.code.splitlines()):
+            self.line = line = line+1
             for code in self.ds.strict_split(codes,';'):
-                print(code,self.vars)
+                #print(code,self.vars)
                 stripped = code.strip()
 
                 if not stripped:
                     continue
 
-                #pc = self.ds.parse_cmd(stripped)
-                pc = self.parse_command(stripped+';')
+                pc = self.ds.parse_cmd(stripped+';',self.vars,line,self.path)
+                #pc = self.parse_command(stripped+';')
                 print(pc)
                 if pc:
                     args = []
                     for arg in pc['args']:
                         if isinstance(arg, SpecialToken):
                             if arg.type == BasicTokens.BASIC_VAR and self.vars.get(arg.name):
-                                args.append(self.vars[arg.name])
+                                if arg.name[0] not in ascii_letters+'_' or any(c not in ascii_letters+digits+'_' for c in arg.name):
+                                    raise PYOScriptError(f"Invalid variable name: {arg.name}", line, self.path, 'Syntax')
+                                else:
+                                    args.append(self.vars[arg.name])
                             else:
                                 raise PYOScriptError(f"Undefined variable: {arg.name}", line, self.path, 'Syntax')
                         else:
-                            args.append(eval(arg))
+                            print(arg,type(arg))
+                            args.append(arg)
                     self.core._register_and_execute(pc['command'], args)
                     continue
 
@@ -134,8 +140,8 @@ class PYOScriptInterpreter:
                             var_value = self.vars[var_value]
                         else:
                             raise PYOScriptError(f"Undefined variable: {var_value}", line, self.path, 'Syntax')'''
-                    val = self.ds.expression_evaluator(self.vars, var_value, line, self.path)
-                    #print('=====',val)
+                    val = self.ds.expression_evaluator(self.vars, var_value, self.line, self.path)
+                    print('=====',val)
                     
                     if isinstance(eval(var_type+'()'), type(val)):
                         self.vars[var_name] = val
@@ -184,7 +190,7 @@ class PYOScriptInterpreter:
             for arg_match in arg_pattern.finditer(match.group('args')):
                 # 普通参数（第1组）
                 if arg_match.group(1):
-                    result['args'].append(arg_match.group(1))
+                    result['args'].append(self.ds.expression_evaluator(self.vars, arg_match.group(1), 0, self.path))
                 
                 # 双引号参数（第2组）
                 elif arg_match.group(2):
@@ -200,6 +206,14 @@ class PYOScriptInterpreter:
                     result['args'].append(SpecialToken(BasicTokens.BASIC_VAR, var_name))
         
         return result
+    def format_type(self, arg, cmd=False):
+        if isinstance(arg, str):
+            if cmd:
+                return arg.strip('"\'')
+            else:
+                return '"'+arg+'"'
+        else:
+            return str(arg)
     def format_var(self, _type, _name, _value):
         ftype = {
             'string':'str'

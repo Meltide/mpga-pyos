@@ -4,3 +4,4 @@ psutil
 art
 #lark
 #ply
+rich

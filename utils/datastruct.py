@@ -1,7 +1,7 @@
 '''很实用的工具箱'''
 
 import re
-import operator
+import ast, operator
 from typing import List, Set, Tuple, Optional, Dict, Any, Union
 from .err import PYOScriptError
 
@@ -93,10 +93,10 @@ class DataStruct:
         ee = ExpressionEvaluator(variables)
         return ee.evaluate(expression, line_no, path)
     
-    def parse_cmd(self, s):
-        return CommandParser().parse_command(s)
+    def parse_cmd(self, s, variables: Dict[str, Any], line_no: int = 0, path: str = '<module>'):
+        return CommandParser(variables,path).parse_command(s)
 
-class ExpressionEvaluator:
+'''class ExpressionEvaluator:
     def __init__(self, variables: Dict[str, Any]):
         self.variables = variables
         self.operators = {
@@ -229,11 +229,15 @@ class ExpressionEvaluator:
                 return float(value_str)
             return int(value_str)
         except ValueError:
-            raise PYOScriptError(f"Cannot parse value: {value_str}",0,'<module>','Value')
-
+            raise PYOScriptError(f"Cannot parse value: {value_str}",0,'<module>','Value')'''
+"""
 class CommandParser:
     '''与foxShell.parse_commands不同，添加了变量解析'''
-    def __init__(self):
+    def __init__(self,variables: Dict[str, Any],line_no: int = 0, path: str = '<module>'):
+        self.variables = variables
+        self.line_no = line_no
+        self.path = path
+
         # 快速判断的正则（仅检查基本结构）
         self.command_check_pattern = re.compile(r'^/[a-zA-Z_]\w*(?:\s|;)')
         
@@ -250,11 +254,11 @@ class CommandParser:
         )
 
     def is_command(self, s: str) -> bool:
-        """快速判断是否为命令格式"""
+        '''快速判断是否为命令格式'''
         return bool(self.command_check_pattern.match(s.strip())) and s.strip().endswith(';')
 
     def parse_command(self, command_str: str) -> Optional[Dict[str, Union[str, List]]]:
-        """详细解析命令"""
+        '''详细解析命令'''
         if not self.is_command(command_str):
             return None
         
@@ -268,7 +272,7 @@ class CommandParser:
         }
 
     def _parse_args(self, args_str: str) -> List[Union[str, Dict]]:
-        """解析参数部分"""
+        '''解析参数部分'''
         args = []
         for arg_match in self.arg_split_pattern.finditer(args_str.strip()):
             arg = arg_match.group(0)
@@ -278,6 +282,217 @@ class CommandParser:
             elif arg.startswith('`'):
                 args.append({'type': 'var', 'name': arg[1:-1]})  # 反引号变量
             else:
-                args.append(arg)  # 普通参数
+                args.append(ExpressionEvaluator(self.variables).evaluate(arg,self.line_no,self.path))  # 普通参数
         
         return args
+"""
+class ExpressionEvaluator:
+    def __init__(self, variables: Dict[str, Any]):
+        self.variables = variables
+        self.operators = {
+            ast.Add: operator.add,
+            ast.Sub: operator.sub,
+            ast.Mult: operator.mul,
+            ast.Div: operator.truediv,
+            ast.Pow: operator.pow,
+            ast.BitAnd: operator.and_,
+            ast.BitOr: operator.or_,
+            ast.USub: operator.neg,
+            ast.Not: operator.not_
+        }
+        self.comparison_operators = {
+            ast.Eq: operator.eq,
+            ast.NotEq: operator.ne,
+            ast.Lt: operator.lt,
+            ast.LtE: operator.le,
+            ast.Gt: operator.gt,
+            ast.GtE: operator.ge,
+            ast.Is: lambda a, b: a is b,
+            ast.IsNot: lambda a, b: a is not b,
+            ast.In: lambda a, b: a in b,
+            ast.NotIn: lambda a, b: a not in b
+        }
+    
+    def evaluate(self, expression: str, line_no: int = 0, path: str = '<module>'):
+        """安全地计算表达式值"""
+        try:
+            # 预处理表达式，替换变量引用
+            expr = self._preprocess_expression(expression)
+            # 解析并计算表达式
+            return self._evaluate_ast(expr)
+        except Exception as e:
+            raise PYOScriptError(f"Expression evaluation failed: {expression} -> {str(e)}", line_no, path, 'Value')
+    
+    def _preprocess_expression(self, expr: str) -> str:
+        """预处理表达式：替换变量引用为它们的值"""
+        # 标准化布尔值和None
+        expr = expr.replace('True', 'true').replace('False', 'false').replace('None', 'null')
+        
+        # 使用正则匹配所有可能的变量名
+        var_pattern = re.compile(r'\b([a-zA-Z_]\w*)\b')
+        
+        def replace_var(match):
+            var_name = match.group(1)
+            if var_name in {'true', 'false', 'null'}:  # 已经标准化的值
+                return var_name
+            if var_name in self.variables:
+                value = self.variables[var_name]
+                return self._format_value(value)
+            return match.group(0)  # 不是变量则保持不变
+        
+        return var_pattern.sub(replace_var, expr)
+    
+    def _format_value(self, value: Any) -> str:
+        """将值转换为可在表达式中使用的字符串表示"""
+        if isinstance(value, str):
+            return f'"{value}"'  # 字符串加引号
+        elif isinstance(value, bool):
+            return 'true' if value else 'false'
+        elif value is None:
+            return 'null'
+        return str(value)
+    
+    def _evaluate_ast(self, expr: str) -> Any:
+        """使用AST安全地评估表达式"""
+        try:
+            node = ast.parse(expr, mode='eval')
+            return self._eval_node(node.body)
+        except (SyntaxError, ValueError, TypeError) as e:
+            raise ValueError(f"Invalid expression: {expr}") from e
+    
+    def _eval_node(self, node):
+        """递归评估AST节点"""
+        if isinstance(node, ast.Num):  # 数字
+            return node.n
+        elif isinstance(node, ast.Str):  # 字符串
+            return node.s
+        elif isinstance(node, ast.Name):  # 名称 (true/false/null)
+            if node.id == 'true':
+                return True
+            elif node.id == 'false':
+                return False
+            elif node.id == 'null':
+                return None
+            raise ValueError(f"Unexpected identifier: {node.id}")
+        elif isinstance(node, ast.BinOp):  # 二元运算
+            left = self._eval_node(node.left)
+            right = self._eval_node(node.right)
+            op_type = type(node.op)
+            if op_type in self.operators:
+                return self.operators[op_type](left, right)
+            raise ValueError(f"Unsupported operator: {op_type.__name__}")
+        elif isinstance(node, ast.UnaryOp):  # 一元运算
+            operand = self._eval_node(node.operand)
+            op_type = type(node.op)
+            if op_type in self.operators:
+                return self.operators[op_type](operand)
+            raise ValueError(f"Unsupported unary operator: {op_type.__name__}")
+        elif isinstance(node, ast.Compare):  # 比较运算
+            left = self._eval_node(node.left)
+            results = []
+            for op, right_node in zip(node.ops, node.comparators):
+                right = self._eval_node(right_node)
+                op_type = type(op)
+                if op_type in self.comparison_operators:
+                    results.append(self.comparison_operators[op_type](left, right))
+                else:
+                    raise ValueError(f"Unsupported comparison operator: {op_type.__name__}")
+                left = right
+            return all(results)
+        elif isinstance(node, ast.BoolOp):  # 布尔运算 (and/or)
+            values = [self._eval_node(v) for v in node.values]
+            if isinstance(node.op, ast.And):
+                return all(values)
+            elif isinstance(node.op, ast.Or):
+                return any(values)
+            else:
+                raise ValueError("Unsupported boolean operator")
+        else:
+            raise ValueError(f"Unsupported expression type: {type(node).__name__}")
+
+class CommandParser:
+    def __init__(self, variables: Dict[str, Any], path: str = '<module>'):
+        self.vars = variables
+        self.path = path
+        # 预编译命令解析正则表达式
+        self.CMD_REGEX = re.compile(r'''
+            ^/
+            (?P<command>[a-zA-Z_]\w*)
+            (?:
+                \s+
+                (?P<args>
+                    (?:
+                        [^;\s"']+
+                        |
+                        "(?:\\.|[^"\\])*"
+                        |
+                        '(?:\\.|[^'\\])*'
+                    )+
+                )
+            )?
+            ;$
+        ''', re.VERBOSE)
+        
+        # 预编译参数分割正则表达式
+        self.ARG_REGEX = re.compile(r'''
+            ([^"\'\s]+)      # 未引用的参数(可能包含变量)
+            |
+            "((?:\\.|[^"\\])*)"  # 双引号字符串
+            |
+            '((?:\\.|[^'\\])*)'  # 单引号字符串
+        ''', re.VERBOSE)
+        
+        # 构建变量名正则模式(按长度降序确保最长匹配)
+        self.VAR_REGEX = re.compile(
+            r'(?<!\w)(' + '|'.join(
+                sorted(
+                    (re.escape(k) for k in self.vars.keys()),
+                    key=len,
+                    reverse=True
+                )
+            ) + r')(?!\w)'
+        )
+
+    def parse_command(self, command_str: str):
+        """解析命令字符串，自动识别变量(不需要反引号)"""
+        match = self.CMD_REGEX.fullmatch(command_str)
+        if not match:
+            return None
+        
+        result = {
+            'command': match.group('command'),
+            'args': []
+        }
+        
+        if match.group('args'):
+            for arg_match in self.ARG_REGEX.finditer(match.group('args')):
+                # 处理未引用的参数(可能包含变量)
+                if arg_match.group(1):
+                    arg = arg_match.group(1)
+                    # 替换变量引用
+                    arg = self._replace_variables(arg)
+                    result['args'].append(arg)
+                
+                # 处理双引号字符串(保留引号，不替换变量)
+                elif arg_match.group(2):
+                    result['args'].append(f'"{arg_match.group(2)}"')
+                
+                # 处理单引号字符串(保留引号，不替换变量)
+                elif arg_match.group(3):
+                    result['args'].append(f"'{arg_match.group(3)}'")
+        
+        return result
+
+    def _replace_variables(self, arg: str) -> Any:
+        """替换参数中的变量引用"""
+        # 检查整个参数是否是单个变量
+        if arg in self.vars:
+            return self.vars[arg]
+        
+        # 检查参数中是否包含变量
+        def replace_match(match):
+            var_name = match.group(1)
+            return str(self.vars.get(var_name, match.group(0)))
+        
+        # 替换参数中的变量引用
+        return self.VAR_REGEX.sub(replace_match, arg)
