@@ -92,6 +92,7 @@ class PYOScriptInterpreter:
         self.nest_type = None
         self.code = code
         self.vars = dict()
+        self.var_types = dict()
         self.path = path
         self.ds = DataStruct()
 
@@ -123,7 +124,7 @@ class PYOScriptInterpreter:
                                 if arg.name[0] not in ascii_letters+'_' or any(c not in ascii_letters+digits+'_' for c in arg.name):
                                     raise PYOScriptError(f"Invalid variable name: {arg.name}", line, self.path, 'Syntax')
                                 else:
-                                    args.append(self.vars[arg.name])
+                                    args.append(self.format_type(eval(self.vars[arg.name])))
                             else:
                                 raise PYOScriptError(f"Undefined variable: {arg.name}", line, self.path, 'Syntax')
                         else:
@@ -135,6 +136,7 @@ class PYOScriptInterpreter:
                 pv = self.parse_var_decl(stripped)
                 if pv:
                     var_type, var_name, var_value = self.format_var(*pv)
+                    print(var_type, var_name, var_value)
                     '''if not BasicTokens.ALL.value.fullmatch(var_value):
                         if self.vars.get(var_value):
                             var_value = self.vars[var_value]
@@ -144,7 +146,9 @@ class PYOScriptInterpreter:
                     print('=====',val)
                     
                     if isinstance(eval(var_type+'()'), type(val)):
-                        self.vars[var_name] = val
+                        print(val,type(val))
+                        self.vars[var_name] = self.format_type(val)
+                        self.var_types[var_name] = var_type
                     else:
                         raise PYOScriptError(f"Type mismatch: {var_type} and {type(val)}", line, self.path, 'Syntax')
                     continue
@@ -213,7 +217,7 @@ class PYOScriptInterpreter:
             else:
                 return '"'+arg+'"'
         else:
-            return str(arg)
+            return arg
     def format_var(self, _type, _name, _value):
         ftype = {
             'string':'str'
