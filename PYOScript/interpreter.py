@@ -115,7 +115,7 @@ class PYOScriptInterpreter:
 
                 pc = self.ds.parse_cmd(stripped+';',self.vars,line,self.path)
                 #pc = self.parse_command(stripped+';')
-                print(pc)
+                #print(pc)
                 if pc:
                     args = []
                     for arg in pc['args']:
@@ -128,7 +128,7 @@ class PYOScriptInterpreter:
                             else:
                                 raise PYOScriptError(f"Undefined variable: {arg.name}", line, self.path, 'Syntax')
                         else:
-                            print(arg,type(arg))
+                            #print(arg,type(arg))
                             args.append(arg)
                     self.core._register_and_execute(pc['command'], args)
                     continue
@@ -136,17 +136,17 @@ class PYOScriptInterpreter:
                 pv = self.parse_var_decl(stripped)
                 if pv:
                     var_type, var_name, var_value = self.format_var(*pv)
-                    print(var_type, var_name, var_value)
+                    #print(var_type, var_name, var_value)
                     '''if not BasicTokens.ALL.value.fullmatch(var_value):
                         if self.vars.get(var_value):
                             var_value = self.vars[var_value]
                         else:
                             raise PYOScriptError(f"Undefined variable: {var_value}", line, self.path, 'Syntax')'''
                     val = self.ds.expression_evaluator(self.vars, var_value, self.line, self.path)
-                    print('=====',val)
+                    #print('=====',val)
                     
                     if isinstance(eval(var_type+'()'), type(val)):
-                        print(val,type(val))
+                        #print(val,type(val))
                         self.vars[var_name] = self.format_type(val)
                         self.var_types[var_name] = var_type
                     else:
