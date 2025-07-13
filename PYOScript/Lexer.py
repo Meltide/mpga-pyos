@@ -1,12 +1,5 @@
 from enum import Enum, auto
-import re
-
-class LexerError(Exception):
-    def __init__(self, message, line=None, column=None):
-        self.message = message
-        self.line = line
-        self.column = column
-        super().__init__(f"Line {line}:{column} - {message}" if line else message)
+from collections import deque
 
 class TokenType(Enum):
     # 特殊标记
@@ -17,6 +10,15 @@ class TokenType(Enum):
     LBRACE = auto()       # {
     RBRACE = auto()       # }
     BACKTICK = auto()     # `
+    LPAREN = auto()       # (
+    RPAREN = auto()       # )
+    PLUS = auto()         # +
+    MINUS = auto()        # -
+    STAR = auto()         # *
+    DOT = auto()          # .
+    PERCENT = auto()      # %
+    CARET = auto()        # ^
+    EXP = auto()          # 幂运算 (**)
     
     # 关键字
     USING = auto()        # using
@@ -26,22 +28,25 @@ class TokenType(Enum):
     INT = auto()          # int
     FLOAT = auto()        # float
     STRING = auto()       # string
-    BOOL = auto()        # bool
+    BOOL = auto()         # bool
     
     # 字面量
-    IDENTIFIER = auto()  # 变量名/命令名等
+    IDENTIFIER = auto()   # 变量名
     STRING_LITERAL = auto()  # 字符串值
-    NUMBER = auto()      # 数字值
-    BOOLEAN = auto()     # true/false
+    NUMBER = auto()       # 数字值
+    BOOLEAN = auto()      # true/false
     
     # 注释
-    COMMENT = auto()     # 单行注释
+    COMMENT = auto()      # 单行注释
     MULTILINE_COMMENT = auto()  # 多行注释
     
+    # 代码块
+    CODE_BLOCK = auto()   # Python代码块内容
+    
     # 其他
-    NEWLINE = auto()     # 换行
-    EOF = auto()         # 文件结束
-    ERROR = auto()  # 用于错误token
+    NEWLINE = auto()      # 换行
+    EOF = auto()          # 文件结束
+    ERROR = auto()        # 错误标记
 
 class Token:
     def __init__(self, type_: TokenType, value: str, line: int, column: int):
@@ -51,7 +56,7 @@ class Token:
         self.column = column
     
     def __repr__(self):
-        return f"Token({self.type}, '{self.value}', {self.line}, {self.column})"
+        return f"Token({self.type}, {self.value!r}, {self.line}, {self.column})"
 
 class Lexer:
     def __init__(self, source: str):
@@ -60,8 +65,9 @@ class Lexer:
         self.line = 1
         self.column = 1
         self.tokens = []
+        self.errors = []
+        self.block_stack = deque()
         
-        # 关键字映射
         self.keywords = {
             'using': TokenType.USING,
             'PyCode': TokenType.PYCODE,
@@ -74,298 +80,347 @@ class Lexer:
             'true': TokenType.BOOLEAN,
             'false': TokenType.BOOLEAN,
         }
+        
+        self.escape_map = {
+            'n': '\n', 't': '\t', 'r': '\r', 'b': '\b', 'f': '\f',
+            '"': '"', "'": "'", '\\': '\\'
+        }
+
+        self.operators = {
+            '+': TokenType.PLUS,
+            '-': TokenType.MINUS,
+            '*': TokenType.STAR,
+            '/': TokenType.SLASH,
+            '^': TokenType.CARET,
+            '%': TokenType.PERCENT,
+            '(': TokenType.LPAREN,
+            ')': TokenType.RPAREN,
+            '**': TokenType.EXP
+        }
     
     def tokenize(self):
-        self.errors = []
-        while self.position < len(self.source):
-            try:
-                current_char = self.source[self.position]
-                
-                # 跳过空白字符
-                if current_char in ' \t':
-                    self.advance()
-                    continue
-                    
-                # 处理换行
-                if current_char == '\n':
-                    self.add_token(TokenType.NEWLINE, '\n')
-                    self.advance()
-                    self.line += 1
-                    self.column = 1
-                    continue
-                    
-                # 处理单行注释
-                if current_char == '#':
-                    comment = self.extract_until('\n')
-                    self.add_token(TokenType.COMMENT, comment)
-                    continue
-                    
-                # 处理多行注释/字符串
-                if current_char == '"':
-                    if self.source[self.position:self.position+3] == '"""':
-                        # 多行注释/字符串
-                        content = self.extract_multiline_string()
-                        self.add_token(TokenType.MULTILINE_COMMENT, content)
-                    else:
-                        # 单行字符串
-                        content = self.extract_string()
-                        self.add_token(TokenType.STRING_LITERAL, content)
-                    continue
-                    
-                # 处理@符号开头的指令
-                if current_char == '@':
-                    self.process_at_command()
-                    continue
-                    
-                # 处理/开头的命令
-                if current_char == '/':
-                    self.process_slash_command()
-                    continue
-                    
-                # 处理变量声明和赋值
-                if current_char.isalpha() or current_char == '_':
-                    identifier = self.extract_identifier()
-                    token_type = self.keywords.get(identifier, TokenType.IDENTIFIER)
-                    self.add_token(token_type, identifier)
-                    continue
-                    
-                # 处理数字
-                if current_char.isdigit() or (current_char == '.' and self.position + 1 < len(self.source) and self.source[self.position+1].isdigit()):
-                    number = self.extract_number()
-                    self.add_token(TokenType.NUMBER, number)
-                    continue
-                    
-                # 处理符号
-                if current_char == ';':
-                    self.add_token(TokenType.SEMICOLON, ';')
-                    self.advance()
-                    continue
-                    
-                if current_char == '=':
-                    self.add_token(TokenType.EQUAL, '=')
-                    self.advance()
-                    continue
-                    
-                if current_char == '{':
-                    self.add_token(TokenType.LBRACE, '{')
-                    self.advance()
-                    continue
-                    
-                if current_char == '}':
-                    self.add_token(TokenType.RBRACE, '}')
-                    self.advance()
-                    continue
-                    
-                if current_char == '`':
-                    self.add_token(TokenType.BACKTICK, '`')
-                    self.advance()
-                    continue
-                    
-                # 未知字符
-                self.advance()
-            except LexerError as e:
-                self.errors.apprnd(str(e))
-                # 尝试从错误中恢复（例如跳到下一行）
-                self.recover_from_error()
-        if self.errors:
-            print("\nLEXER ERRORS:")
-            for error in self.errors:
-                print(f"- {error}")
-            
-        self.add_token(TokenType.EOF, '')
-        return self.tokens
-    def recover_from_error(self):
-        """尝试跳到下一个安全点继续解析"""
-        while self.position < len(self.source):
-            char = self.source[self.position]
-            if char in {'\n', ';'}:
-                self.advance()
-                return
-            self.advance()
-    def advance(self):
-        self.position += 1
-        self.column += 1
-    
-    def add_token(self, type_: TokenType, value: str):
-        self.tokens.append(Token(type_, value, self.line, self.column))
-    
-    def extract_until(self, delimiter: str) -> str:
-        start = self.position
-        while self.position < len(self.source) and self.source[self.position] != delimiter:
-            self.advance()
-        result = self.source[start:self.position]
-        if self.position < len(self.source) and self.source[self.position] == delimiter:
-            self.advance()
-        return result
-    
-    def extract_string(self) -> str:
-        self.advance()  # 跳过开始的"
-        start = self.position
-        result = []
-        
+        """主词法分析函数"""
         while self.position < len(self.source):
             current_char = self.source[self.position]
             
-            # 处理转义字符
-            if current_char == '\\':
-                self.advance()
-                if self.position >= len(self.source):
-                    self.add_token(TokenType.ERROR, "Unterminated escape sequence")
-                    return ""
-                    
-                escape_char = self.source[self.position]
-                # 支持常见转义序列
-                if escape_char == 'n':
-                    result.append('\n')
-                elif escape_char == 't':
-                    result.append('\t')
-                elif escape_char in ('"', '\\'):
-                    result.append(escape_char)
-                else:
-                    result.append('\\' + escape_char)
+            if self.in_code_block():
+                self.process_block_content()
+                continue
+                
+            if current_char in ' \t':
                 self.advance()
                 continue
                 
-            # 结束引号
-            elif current_char == '"':
+            if current_char == '\n':
+                self.add_token(TokenType.NEWLINE, '\n')
                 self.advance()
-                return ''.join(result)
+                self.line += 1
+                self.column = 1
+                continue
                 
-            # 普通字符
-            else:
-                result.append(current_char)
+            if current_char == '#':
+                self.process_comment()
+                continue
+                
+            if current_char in ('"', "'"):
+                self.process_string()
+                continue
+                
+            if current_char == '@':
+                self.process_at_command()
+                continue
+                
+            if current_char == '/':
+                self.process_slash_command()
+                continue
+                
+            if current_char in '+-*/%^()=':
+                self.process_operator(current_char)
+                continue
+                
+            if current_char == '{':
+                self.process_block_start()
+                continue
+                
+            if current_char == '}':
+                self.process_block_end()
+                continue
+                
+            if current_char.isalpha() or current_char == '_':
+                self.process_identifier()
+                continue
+                
+            if current_char.isdigit() or (current_char == '.' and self.peek().isdigit()):
+                self.process_number()
+                continue
+                
+            if current_char == ';':
+                self.add_token(TokenType.SEMICOLON, ';')
                 self.advance()
+                continue
+                
+            if current_char == '`':
+                self.add_token(TokenType.BACKTICK, '`')
+                self.advance()
+                continue
+                
+            self.add_error(f"Unexpected character: {current_char!r}")
+            self.advance()
         
-        # 如果执行到这里说明没有遇到闭合引号
-        self.add_token(TokenType.ERROR, f"Unclosed string literal starting at line {self.line}")
-        return ''.join(result)
+        self.check_unclosed_blocks()
+        self.add_token(TokenType.EOF, '')
+        return self.tokens
+
+    def add_token(self, type_: TokenType, value: str, line: int = None, column: int = None):
+        """添加token到结果列表（增强版）"""
+        line = line if line is not None else self.line
+        column = column if column is not None else self.column
+        self.tokens.append(Token(type_, value, line, column))
+
+    def advance(self, n=1):
+        """移动到下一个字符"""
+        self.position += n
+        self.column += n
     
-    def extract_multiline_string(self) -> str:
-        self.position += 3  # 跳过开始的"""
+    def peek(self, n=1):
+        """查看前面n个字符而不移动位置"""
+        return self.source[self.position:self.position+n]
+    
+    def add_error(self, message):
+        """记录错误"""
+        error_msg = f"LexerError at {self.line}:{self.column} - {message}"
+        self.errors.append(error_msg)
+        self.add_token(TokenType.ERROR, error_msg)
+    
+    def has_error(self):
+        """检查是否有错误"""
+        return bool(self.errors)
+    
+    def in_code_block(self):
+        """是否在代码块中"""
+        return bool(self.block_stack)
+    
+    def check_unclosed_blocks(self):
+        """检查未闭合的代码块"""
+        while self.block_stack:
+            line, col, _ = self.block_stack.pop()
+            self.add_error(f"Unclosed block starting at {line}:{col}")
+
+    def process_comment(self):
+        """处理单行注释"""
         start_pos = self.position
+        while self.position < len(self.source) and self.source[self.position] != '\n':
+            self.advance()
+        comment = self.source[start_pos:self.position]
+        self.add_token(TokenType.COMMENT, comment)
+
+    def process_string(self):
+        """处理字符串字面量"""
+        quote_char = self.source[self.position]
         start_line = self.line
-        result = []
+        start_column = self.column
+        self.advance()  # 跳过引号
         
-        while self.position + 2 < len(self.source):
+        result = []
+        escape = False
+        
+        while self.position < len(self.source):
             current_char = self.source[self.position]
             
-            # 处理转义字符（与单行字符串相同）
-            if current_char == '\\':
-                self.advance()
-                if self.position >= len(self.source):
-                    self.add_token(TokenType.ERROR, "Unterminated escape sequence")
-                    return ""
-                # ... (与单行字符串相同的转义处理逻辑)
-            
-            # 检查结束标记
-            if (current_char == '"' and 
-                self.position + 2 < len(self.source) and
-                self.source[self.position+1] == '"' and 
-                self.source[self.position+2] == '"'):
-                self.position += 3
-                return ''.join(result)
+            if current_char == '\n' and not escape:
+                self.add_error(f"Unterminated string at {start_line}:{start_column}")
+                return
                 
-            # 处理换行
+            if current_char == '\\' and not escape:
+                escape = True
+                self.advance()
+                continue
+                
+            if escape:
+                result.append(self.escape_map.get(current_char, f'\\{current_char}'))
+                escape = False
+            elif current_char == quote_char:
+                self.advance()
+                self.add_token(TokenType.STRING_LITERAL, ''.join(result), start_line, start_column)
+                return
+            else:
+                result.append(current_char)
+            
+            self.advance()
+        
+        self.add_error(f"Unclosed string at {start_line}:{start_column}")
+
+    def process_multiline_string(self):
+        """处理多行字符串"""
+        start_line = self.line
+        start_column = self.column
+        self.advance(3)  # 跳过"""
+        
+        result = []
+        while self.position + 2 < len(self.source):
+            if self.peek(3) == '"""':
+                self.advance(3)
+                self.add_token(TokenType.MULTILINE_COMMENT, ''.join(result), start_line, start_column)
+                return
+                
+            current_char = self.source[self.position]
             if current_char == '\n':
+                result.append('\n')
                 self.line += 1
                 self.column = 1
             else:
+                result.append(current_char)
                 self.column += 1
-                
-            result.append(current_char)
-            self.position += 1
-        
-        # 未闭合错误
-        self.add_token(TokenType.ERROR, 
-                    f"Unclosed multi-line string starting at line {start_line}")
-        return ''.join(result)
-    
-    def extract_identifier(self) -> str:
-        start = self.position
-        while self.position < len(self.source) and (self.source[self.position].isalnum() or self.source[self.position] == '_'):
             self.advance()
-        return self.source[start:self.position]
-    
-    def extract_number(self) -> str:
-        start = self.position
-        has_decimal = False
         
-        while self.position < len(self.source):
-            if self.source[self.position].isdigit():
-                self.advance()
-            elif self.source[self.position] == '.' and not has_decimal:
-                has_decimal = True
-                self.advance()
-            else:
-                break
-        
-        return self.source[start:self.position]
-    
+        self.add_error(f"Unclosed multiline string at {start_line}:{start_column}")
+
     def process_at_command(self):
+        """处理@指令"""
         self.advance()  # 跳过@
         command = self.extract_identifier()
-        self.add_token(TokenType.AT, '@' + command)
+        self.add_token(TokenType.AT, f'@{command}')
         
-        # 读取后面的字符串值
-        while self.position < len(self.source) and self.source[self.position] in ' \t':
-            self.advance()
-            
-        if self.position < len(self.source) and self.source[self.position] == '"':
-            value = self.extract_string()
-            self.add_token(TokenType.STRING_LITERAL, value)
-        
-        # 确保分号
-        while self.position < len(self.source) and self.source[self.position] in ' \t':
-            self.advance()
-            
-        if self.position < len(self.source) and self.source[self.position] == ';':
-            self.add_token(TokenType.SEMICOLON, ';')
-            self.advance()
-    
-    def process_slash_command(self):
-        self.advance()  # 跳过/
-        command = self.extract_identifier()
-        self.add_token(TokenType.SLASH, '/' + command)
-        
-        # 处理命令参数
-        while self.position < len(self.source) and self.source[self.position] != '\n':
+        # 处理参数
+        while self.position < len(self.source) and self.source[self.position] not in ';\n':
             current_char = self.source[self.position]
             
             if current_char in ' \t':
                 self.advance()
                 continue
                 
-            if current_char == '#':  # 命令后的注释
-                comment = self.extract_until('\n')
-                self.add_token(TokenType.COMMENT, comment)
-                break
+            if current_char in ('"', "'"):
+                self.process_string()
+                continue
                 
-            # 其他参数处理
+            if current_char.isalpha():
+                word = self.extract_identifier().lower()
+                if word in ('true', 'false'):
+                    self.add_token(TokenType.BOOLEAN, word)
+                    continue
+                    
+            if current_char.isdigit() or current_char == '.':
+                self.process_number()
+                continue
+                
+            self.add_error(f"Unexpected character '{current_char}' in @{command}")
+            break
+
+        # 处理结束符
+        if self.position < len(self.source) and self.source[self.position] == ';':
+            self.add_token(TokenType.SEMICOLON, ';')
             self.advance()
 
-def test_lexer():
-    source = '''
-    @name "demo\\n1.0";
-    str = "unclosed
-    str2 = "with escape\\"";
-    """
-    multi
-    line\\n
-    """
-    '''
-    lexer = Lexer(source)
-    tokens = lexer.tokenize()
+    def process_operator(self, op: str):
+        """处理运算符"""
+        if op == '*' and self.peek() == '*':
+            self.add_token(TokenType.EXP, '**')
+            self.advance(2)
+            return
+            
+        if op in self.operators:
+            self.add_token(self.operators[op], op)
+            self.advance()
+        else:
+            self.add_error(f"Unknown operator: {op}")
 
-    # 输出token流
-    for token in tokens:
-        if token.type != TokenType.ERROR:
-            print(f"{token.line}:{token.column} {token.type.name:15} {token.value!r}")
+    def process_block_start(self):
+        """处理代码块开始"""
+        self.block_stack.append((self.line, self.column, self.position))
+        self.add_token(TokenType.LBRACE, '{')
+        self.advance()
 
-    # 输出错误
-    if lexer.errors:
-        print("\nERRORS:")
-        for error in lexer.errors:
-            print(error)
+    def process_block_end(self):
+        """处理代码块结束"""
+        if not self.block_stack:
+            self.add_error("Unexpected '}' without matching '{'")
+            self.advance()
+            return
+            
+        line, col, start_pos = self.block_stack.pop()
+        content = self.source[start_pos+1:self.position].strip()
+        
+        if content:
+            # 规范化缩进
+            lines = content.split('\n')
+            base_indent = len(lines[0]) - len(lines[0].lstrip()) if lines else 0
+            normalized = '\n'.join(line[base_indent:] if len(line) > base_indent else line.lstrip() 
+                         for line in lines)
+            self.add_token(TokenType.CODE_BLOCK, normalized, line, col + base_indent)
+        
+        self.add_token(TokenType.RBRACE, '}')
+        self.advance()
 
-if __name__ == '__main__':
-    test_lexer()
+    def process_block_content(self):
+        """处理代码块内容"""
+        self.process_block_end()  # 复用代码块结束逻辑
+
+    def process_identifier(self):
+        """处理标识符"""
+        start = self.position
+        while self.position < len(self.source) and (self.source[self.position].isalnum() or self.source[self.position] == '_'):
+            self.advance()
+        
+        ident = self.source[start:self.position]
+        token_type = self.keywords.get(ident, TokenType.IDENTIFIER)
+        self.add_token(token_type, ident)
+
+    def process_number(self):
+        """处理数字字面量"""
+        start = self.position
+        has_decimal = False
+        
+        while self.position < len(self.source):
+            current_char = self.source[self.position]
+            if current_char.isdigit():
+                self.advance()
+            elif current_char == '.' and not has_decimal:
+                has_decimal = True
+                self.advance()
+            else:
+                break
+        
+        num_str = self.source[start:self.position]
+        if has_decimal and (num_str.startswith('.') or num_str.endswith('.')):
+            self.add_error(f"Invalid number format: {num_str}")
+        else:
+            self.add_token(TokenType.NUMBER, num_str)
+
+    def process_slash_command(self):
+        """处理/命令"""
+        self.advance()  # 跳过/
+        command = self.extract_identifier()
+        self.add_token(TokenType.SLASH, f'/{command}')
+        
+        # 处理参数
+        while self.position < len(self.source) and self.source[self.position] not in '\n#;':
+            current_char = self.source[self.position]
+            
+            if current_char in ' \t':
+                self.advance()
+                continue
+                
+            if current_char in ('"', "'"):
+                self.process_string()
+                continue
+                
+            if current_char in '+-*/%^()=':
+                self.process_operator(current_char)
+                continue
+                
+            if current_char.isalpha() or current_char == '_':
+                self.process_identifier()
+                continue
+                
+            if current_char.isdigit() or current_char == '.':
+                self.process_number()
+                continue
+                
+            self.advance()
+
+    def extract_identifier(self):
+        """提取标识符"""
+        start = self.position
+        while self.position < len(self.source) and (self.source[self.position].isalnum() or self.source[self.position] == '_'):
+            self.advance()
+        return self.source[start:self.position]

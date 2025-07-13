@@ -8,8 +8,8 @@
 注释（字符串）
 """
 # 单行注释
-/help script;
-/yet list; #命令
+/help "script";
+/yet "list"; #命令
 @config "system_commands" true; #临时调整config.json，指运行时修改文件，运行完成后恢复
 /python; #系统命令
 
@@ -29,6 +29,6 @@ pytype c = {
     main()
 } #python单、多行代码赋值用法
 
-reader d = ./a.py; #读取外部文件并返回给变量
+reader d = './a.py'; #读取外部文件并返回给变量
 /echo c; #命令运行赋值用法（命令是不确定的，会提供一个接口来运行命令）
 /exec d; 
