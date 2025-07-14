@@ -17,6 +17,8 @@ class Login(Init):
         super().__init__()
         self.current_time = datetime.datetime.now()
         self.max_attempts = 3
+    def init_cli(self):
+        super().init_cli()
         while self.command_count < self.max_attempts:
             if AUTO_LOGIN:
                 self.username = AUTO_LOGIN

@@ -1,23 +1,32 @@
 __doc__ = "Run PYOScript files(.pyos)"
 
 __usage__ = {
-    "[path]": "Run PYOScript files from the path"
+    "": "Start PYOScript shell",
+    "[code]": "Run PYOScript code",
+    "-r [path]": "Run PYOScript files from the path"
 }
 
 import os
 from colorama import Fore
 from utils.config import *
 from utils.man import ErrorCodeManager
-from PYOScript.compiler import PSC
+from PYOScript.interpreter import PYOScriptInterpreter as PSI
 
 
 def execute(self, args):
     if not args:
-        print(f"Error: {Fore.RED}No file selected. Please input a file path.")
-        self.error_code = ErrorCodeManager().get_code(SyntaxError)
+        quit_ = False
+        while not quit_:
+            code = input(f"{Fore.GREEN}PYOScript{Fore.RESET}> ")
+            if code.strip() == "exit":
+                quit_ = True
+            else:
+                script = PSI(code)
+                script.parse()
+                script.run()
         return
-
-    script = PSC(args[0])
+    
+    script = PSI(args[0])
     if os.path.isfile(args[0]):
-        script.read()
+        script.parse()
     script.run()

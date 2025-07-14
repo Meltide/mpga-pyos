@@ -26,12 +26,11 @@ def start_exec_shell(self):
         
 def exec_cmd(self, cmd):
     try:
-        result = eval(cmd)
+        result = eval(str(cmd))
         if result is not None:
             print(result)
-    except:
-        try:
-            result = exec(cmd)
-        except Exception as e:
-            print(f"Error: {Fore.RED}{e if str(e) else type(e).__name__}")
-            self.error_code = ErrorCodeManager().get_code(e)
+            return
+        result = exec(str(cmd))
+    except Exception as e:
+        print(f"Error: {Fore.RED}{e if str(e) else type(e).__name__}")
+        self.error_code = ErrorCodeManager().get_code(e)

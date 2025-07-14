@@ -3,13 +3,13 @@ import os
 import subprocess
 import shutil
 from typing import Optional, Dict
-from colorama import Fore, Back, Style
+from colorama import Fore, Back, Style,init
 from .basic import *
 
 from .config import *
 from .err import *
 
-
+init(autoreset=True)
 class CommandManager:
     def __init__(self, core, _cmd=""):
         self.cmd = _cmd
@@ -258,14 +258,15 @@ class HelpManager:
         """显示指定命令的详细信息"""
         try:
             pkg = self.cmdman.getpkg()
-            print(f"{Back.BLUE} Help for: {self.cmd_name} {Style.RESET_ALL}")
+            print(f"{Fore.LIGHTWHITE_EX}{Style.BRIGHT}{Back.GREEN} Help for: {self.cmd_name} {Style.RESET_ALL}")
     
             # 显示描述
             if self.cmdman.is_package():
                 description = self.get_package_doc(self.cmd_name) or "No description"
             else:
                 description = getattr(pkg, "__doc__", "No description available")
-            print(f"Description: \n{description}")
+            print(f"{Back.BLUE} Description: {self.cmd_name} {Style.RESET_ALL}")
+            print('  '+description.strip())
     
             # 显示用法
             if self.cmdman.is_package():

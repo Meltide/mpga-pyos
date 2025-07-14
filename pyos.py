@@ -9,13 +9,15 @@ from utils.config import SHOW_BASE_ERROR_DETAILS
 
 
 class PyOS(Login):
-    def __init__(self):
+    def __init__(self,debug=False):
         super().__init__()
         # 初始化命令管理器
         if not hasattr(self, "command_manager"):
             raise AttributeError(
                 "CommandManager (command_manager) is not initialized in Login or PyOS."
             )
+        if not debug: #为方便调试pyoscript，可以设置debug参数，不启动登录界面
+            self.init_cli()
 
     def run(self, commands: str):
         """运行命令"""

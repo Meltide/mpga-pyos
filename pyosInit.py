@@ -18,10 +18,11 @@ class Init:  # 初始化
         self.error_code = 0  # 错误代码
         self.hostname = HOSTNAME
         
+        self.username = "root"  # 默认用户名
         self.version = "3.2 Corgi"  # 系统版本
         self.shell_version = "1.0"  # Shell 版本
         self.core_version = "20250517"  # 核心版本
-        
+    def init_cli(self):  
         self.tips_list = [  # 提示列表
             "You can find the default password in the passwd file.",
             "Maybe the coverter is useless :)",
