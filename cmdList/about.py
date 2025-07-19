@@ -1,5 +1,5 @@
 from art import text2art
-from colorama import Fore, Style
+from rich import print
 
 __doc__ = "Show the about of PyOS"
 
@@ -14,19 +14,19 @@ def print_contributors():
     }
 
     for name, value in sorted(contributors.items()):
-        print(f"{Fore.BLUE}{name}{Fore.RESET}: {value}")
+        print(f"[blue]{name}[/]: {value}")
 
 
 def execute(self, args):
     print(f"MPGA PyOS Open Source System {self.version}")
-    print(Fore.BLUE + text2art("MPGA", font="small"))
-    print(f"Visit this project in github: {Fore.BLUE}github.com/Meltide/mpga-pyos\n")
+    print('[blue]' + text2art("MPGA", font="small")+'[/]')
+    print("Visit this project in github: [blue]github.com/Meltide/mpga-pyos[/]\n")
     print("[Contributors]".center(20, "="))
-    print(Style.DIM + "Arranged by the first letter, in no particular order.")
+    print("Arranged by the first letter, in no particular order.")
     print_contributors()
     print()
     print("[Contact us]".center(20, "="))
     print(
-        f"MPGA Team Telegram Group: {Fore.MAGENTA}@MPGATeam\n"
-        + f"{Fore.RESET}MPGA Team Matrix Group: {Fore.MAGENTA}#MPGATeam:mozilla.org"
+        f"MPGA Team Telegram Group: [magenta]@MPGATeam[/]\n"
+        + f"MPGA Team Matrix Group: [magenta]#MPGATeam:mozilla.org[/]"
     )

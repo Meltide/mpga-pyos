@@ -1,5 +1,5 @@
 import base64  # 加解密库
-from colorama import Fore  # 彩色文字库
+from rich import print  # 彩色文字库
 import json  # 解析和保存json配置文件
 import pwinput  # 密码输入库
 import os, shutil
@@ -21,9 +21,7 @@ __usage__ = {
 
 def execute(self, args):
     if not args:  # 检查是否提供了参数
-        print(
-            f"Error: {Fore.RED}No arguments provided. Please specify a valid command."
-        )
+        print("Error: [red]No arguments provided. Please specify a valid command.[/]")
         print("Usage:")
         for command, description in __usage__.items():
             print(f"  {command}: {description}")
@@ -32,7 +30,7 @@ def execute(self, args):
 
     match args[0]:
         case "log":
-            print(f"Now login: {Fore.GREEN}{self.username}")
+            print(f"Now login: [green]{self.username}[/]")
         case "list":
             show_all_users(self)
         case "create":
@@ -46,7 +44,7 @@ def execute(self, args):
         case "auto":
             set_auto_login(args)
         case _:
-            print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
+            print(f"Error: [red]Unknown command '{args[0]}'[/].")
             print("Usage:")
             for command, description in __usage__.items():
                 print(f"  {command}: {description}")
@@ -57,9 +55,9 @@ def show_all_users(self):
     print("All users:")
     for user in ACCOUNTS:
         if user == self.username:
-            print(f"- {Fore.BLUE}{user} {Fore.RESET}(Current user)")
+            print(f"- [blue]{user} [/](Current user)")
             continue
-        print(f"- {Fore.BLUE}{user}")
+        print(f"- [blue]{user}[/]")
 
 
 def create_user():
@@ -73,7 +71,7 @@ def create_user():
         raise SyntaxError("The two passwords do not match!")
         return
     if newname in ACCOUNTS:
-        print(f"{Fore.YELLOW}WARNING: The name was created!")
+        print(f"[yellow]WARNING: The name was created![/]")
         return
     ACCOUNTS[newname] = {}
     ACCOUNTS[newname]["passwd"] = base64.b64encode(newpwd.encode("utf-8")).decode("utf-8")
@@ -87,7 +85,7 @@ def create_user():
                 shutil.copytree(os.path.join("configs", "Users", "Template", item), os.path.join("configs", "Users", newname, item))
             else:
                 shutil.copy(os.path.join("configs", "Users", "Template", item), os.path.join("configs", "Users", newname, item))
-    print(f"• {Fore.GREEN}Created successfully.")
+    print(f"• [green]Created successfully.[/]")
 
 
 def delete_user(username):
@@ -106,7 +104,7 @@ def delete_user(username):
     
     with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
         json.dump(profiles, f, ensure_ascii=False, indent=4)
-    print(f"• {Fore.GREEN}User '{username}' deleted successfully.")
+    print(f"• [green]User '{username}' deleted successfully.[/]")
 
 
 def change_passwd(self):
@@ -117,7 +115,6 @@ def change_passwd(self):
     reoldpwd = pwinput.pwinput("Re-enter Old Password: ")
     if oldpwd != reoldpwd:
         raise SyntaxError("The two passwords do not match!")
-        return
     if oldpwd == stpasswd:
         newpwd = pwinput.pwinput("New Password: ")
         ACCOUNTS[self.username]["passwd"] = base64.b64encode(newpwd.encode("utf-8")).decode(
@@ -125,26 +122,26 @@ def change_passwd(self):
         )
         with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
             json.dump(profiles, f, ensure_ascii=False, indent=4)
-        print(f"• {Fore.GREEN}Resetted successfully.")
+        print(f"• [green]Resetted successfully.[/]")
     else:
-        print(f"Error: {Fore.RED}Invalid username or password!")
+        print(f"Error: [red]Invalid username or password![/]")
 
 
 def set_auto_login(args):
     if len(args) < 2:
-        print(f"Error: {Fore.RED}Please input a username.")
+        print(f"Error: [red]Please input a username.[/]")
         return
 
     if args[1] == "disable":
         profiles["auto_login"] = None
         with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
             json.dump(profiles, f, ensure_ascii=False, indent=4)
-        print(f"• {Fore.GREEN}Auto login disabled.")
+        print(f"• [green]Auto login disabled.[/]")
         return
     elif args[1] not in ACCOUNTS:
-        print(f"Error: {Fore.RED}Unknown user '{args[1]}'.")
+        print(f"Error: [red]Unknown user '{args[1]}'.[/]")
         return
     profiles["auto_login"] = args[1]
     with open(os.path.join("configs", "profiles.json"), "w", encoding="utf-8") as f:
         json.dump(profiles, f, ensure_ascii=False, indent=4)
-    print(f"• {Fore.GREEN}Auto login set to '{args[1]}'.")
+    print(f"• [green]Auto login set to '{args[1]}'.[/]")

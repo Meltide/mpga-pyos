@@ -1,7 +1,8 @@
-colorama
 pwinput
 psutil
 art
 #lark
 #ply
 rich
+pygments
+textual

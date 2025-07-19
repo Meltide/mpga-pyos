@@ -1,4 +1,4 @@
-from colorama import Fore  # 彩色文字库
+from rich import print  # 彩色文字库
 from utils.man import ErrorCodeManager
 from utils.err import *
 
@@ -13,7 +13,7 @@ def execute(self, args):
         elif not all(
             char in "0123456789+-*/.eE" for char in formula
         ):  # 防止恶意运行Python其他代码
-            raise NameError(f"{Fore.RED}Input error.")
+            raise NameError("Input error.")
         else:
-            print(f"Result: {Fore.BLUE}{str(eval(formula))}")
+            print(f"Result: [blue]{str(eval(formula))}[/]")
             self.error_code = 0

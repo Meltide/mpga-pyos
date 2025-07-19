@@ -1,7 +1,7 @@
 import os, sys  # 系统库
 from pyosInit import Init
 import base64  # 加解密库
-from colorama import Fore, Back, Style  # 彩色文字库
+from rich import print  # 彩色文字库
 import time, datetime  # 时间日期库
 import json  # 解析和保存json配置文件
 import pwinput  # 密码隐藏库
@@ -129,7 +129,7 @@ class Login(Init):
             try:
                 self.run(command)
             except Exception as e:
-                print(f"Error: {Fore.RED}{type(e).__name__ if not str(e) else e}")
+                print(f"Error: [red]{type(e).__name__ if not str(e) else e}[/]")
                 self.error_code = ErrorCodeManager().get_code(e)
                 if self.SHOW_ERROR_DETAILS:
                     print(f"Details: \n{traceback.format_exc()}")
@@ -145,20 +145,20 @@ class Login(Init):
     def _invalid_user_message(self):
         """打印无效用户提示"""
         self.fprint("Invalid user! Please retry", 3)
-        print(Style.DIM + "Tip: 'root' is the default user.")
+        print("Tip: 'root' is the default user.")
 
     def _invalid_password_message(self):
         """打印无效密码提示"""
         self.fprint("Error password! Please retry", 3)
-        print(f"{Style.DIM}Tip: You can find the default password in the passwd file.")
+        print(f"Tip: You can find the default password in the passwd file.")
 
     def _successful_login_message(self):
         """打印成功登录提示"""
         print(
-            "Last login: " + Fore.CYAN + self.current_time.strftime("%y/%m/%d %H:%M:%S")
+            "Last login: [cyan]" + self.current_time.strftime("%y/%m/%d %H:%M:%S") + "[/]"
         )
         if AUTO_LOGIN:
-            print(f"• Auto logined as {Fore.YELLOW}{self.username}")
+            print(f"• Auto logined as [yellow]{self.username}[/]")
         print()
         if self.ALLOW_SYSTEM_COMMANDS:
             self.fprint("WARNING: Running system commands is enabled!", 2)

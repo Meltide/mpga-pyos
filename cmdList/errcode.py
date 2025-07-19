@@ -1,5 +1,5 @@
 from utils.man import ErrorCodeManager
-from colorama import Fore
+from rich import print
 
 __doc__ = "Return the name of error code"
 
@@ -9,11 +9,9 @@ __usage__ = {
 
 def execute(self, args):
     if not args:
-        print(f"Error: {Fore.RED}No errcode inputed. Please input an errcode.")
-        self.error_code = ErrorCodeManager().get_code(SyntaxError)
-        return
+        raise SyntaxError("No errcode inputed. Please input an errcode.")
 
     if len(args) >= 1:
         for code in args:
-            print(Fore.GREEN + str(code), end=": ")
-            print(Fore.BLUE + str(ErrorCodeManager().get_type(int(code))))
+            print("[green]" + str(code), end=": [/]")
+            print("[blue]" + str(ErrorCodeManager().get_type(int(code)))+'[/]')
