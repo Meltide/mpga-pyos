@@ -2,7 +2,7 @@ import json  # 解析和保存json配置文件
 import random  # 随机库
 import time  # 时间库
 import sys  # 系统库
-from colorama import init, Fore, Style  # 彩色文字库
+from rich import print  # 彩色文字库
 from art import text2art  # 艺术字库
 
 from cmdList.clear import execute as clear
@@ -12,8 +12,6 @@ from utils.config import *
 
 class Init:  # 初始化
     def __init__(self):
-        init(autoreset=True)
-        
         self.command_manager = CommandManager(self, "")  # 命令管理器
         self.error_code = 0  # 错误代码
         self.hostname = HOSTNAME
@@ -33,10 +31,10 @@ class Init:  # 初始化
         self.selected_tip = random.choice(self.tips_list)  # 随机选择提示
         
         self.color_modes = [
-            Fore.WHITE,
-            Fore.GREEN,
-            Fore.YELLOW,
-            Fore.RED,
+            '[white]',
+            '[green]',
+            '[yellow]',
+            '[red]',
         ]  # 颜色模式列表
 
         clear(self, [])
@@ -50,12 +48,12 @@ class Init:  # 初始化
     def _print_startup_messages(self):
         """打印启动信息"""
         startup_messages = [
-            f"{Style.DIM}\nMPGA PyOS Open Source System {self.version}",
-            Fore.BLUE + text2art("MPGA", font="small"),
-            f"{Fore.YELLOW}Make PyOS Great Again!\n",
+            f"\nMPGA PyOS Open Source System {self.version}",
+            '[blue]' + text2art("MPGA", font="small")+'[/]',
+            f"[yellow]Make PyOS Great Again![/]\n",
             f"Tip: {self.selected_tip}",
             (
-                f"{Fore.CYAN}\nAlso try PyOS's improved version by minqwq and bibimingming!\n"
+                f"[cyan]\nAlso try PyOS's improved version by minqwq and bibimingming![/]\n"
                 if SHOW_AD
                 else ""
             ),
@@ -70,7 +68,7 @@ class Init:  # 初始化
                 ) as f:
                     startup_messages = f.readlines()
             except FileNotFoundError:
-                print(f"Error: {Fore.RED}Can't find startup_msg.txt")
+                print(f"Error: [red]Can't find startup_msg.txt[/]")
                 return
 
         for message in startup_messages:
@@ -83,7 +81,7 @@ class Init:  # 初始化
         """打印消息
         mode: 0白色，1绿色，2黄色，3红色
         """
-        print(self.color_modes[mode] + message)
+        print(self.color_modes[mode] + message+'[/]')
         if mode == 3:
             random.seed(time.time_ns())  # 避免错误代码一致
             self.errcode = random.randint(100, 999)

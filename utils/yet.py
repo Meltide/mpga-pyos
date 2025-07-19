@@ -8,7 +8,7 @@ import base64
 from utils.config import *
 from utils.man import ErrorCodeManager, CommandManager
 from utils.err import RunningError
-from colorama import Fore, Back, Style
+from rich import print
 
 # 全局命令缓存字典
 _command_cache = {}
@@ -56,9 +56,7 @@ def auto_reload_commands(self):
                             package_info = json.load(f)
                             category = package_info.get("category", "Other")
                     except (json.JSONDecodeError, IOError):
-                        print(
-                            f"{Fore.YELLOW}Warning: Invalid package.json for '{cmd_name}'{Style.RESET_ALL}"
-                        )
+                        print(f"[yellow]Warning: Invalid package.json for '{cmd_name}'[/]")
 
                 # 确保分类存在于 commands
                 if category not in commands["commands"]:
@@ -70,7 +68,7 @@ def auto_reload_commands(self):
 
             except Exception as e:
                 print(
-                    f"{Fore.YELLOW}Warning: Failed to reload command '{cmd_name}': {e}{Style.RESET_ALL}"
+                    f"[yellow]Warning: Failed to reload command '{cmd_name}': {e}[/]"
                 )
 
     # 更新 SIGNED_COMMANDS 和 CommandManager
@@ -85,7 +83,7 @@ def auto_reload_commands(self):
         with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
             json.dump(commands, f, indent=4, ensure_ascii=False)
     except Exception as e:
-        print(f"{Fore.YELLOW}Warning: Failed to update config: {e}{Style.RESET_ALL}")
+        print(f"[yellow]Warning: Failed to update config: {e}[/]")
 
 
 def get_command_module(self, cmd_name):
@@ -104,9 +102,7 @@ def get_command_module(self, cmd_name):
         _command_cache[cmd_name] = module  # 更新缓存
         return module
     except Exception as e:
-        print(
-            f"{Fore.YELLOW}Warning: Failed to load command '{cmd_name}': {e}{Style.RESET_ALL}"
-        )
+        print(f"[yellow]Warning: Failed to load command '{cmd_name}': {e}[/]")
         return None
 
 
@@ -118,7 +114,7 @@ def install(self, args):
         auth_passwd(self)
 
     if len(args) < 2:
-        print(f"Error: {Fore.RED}No source file specified.{Style.RESET_ALL}")
+        print(f"Error: [red]No source file specified.[/]")
         print(f"Usage: install <source_path> [command_name]")
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
@@ -143,7 +139,7 @@ def install(self, args):
     for cmd_type in CommandManager(self).allcmds.values():
         all_commands.extend(cmd_type)
     if cmd_name in all_commands:
-        print(f"Error: {Fore.RED}Command '{cmd_name}' already exists!{Style.RESET_ALL}")
+        print(f"Error: [red]Command '{cmd_name}' already exists![/]")
         return
 
     # 验证Python文件有效性
@@ -153,7 +149,7 @@ def install(self, args):
         spec.loader.exec_module(module)
     except Exception as e:
         print(
-            f"Error: {Fore.RED}Invalid Python file: {type(e).__name__}: {e}{Style.RESET_ALL}"
+            f"Error: [red]Invalid Python file: {type(e).__name__}: {e}[/]"
         )
         return
 
@@ -164,10 +160,10 @@ def install(self, args):
 
     try:
         shutil.copy2(source_path, target_path)
-        print(f"• {Fore.GREEN}Copied to: {target_path}{Style.RESET_ALL}")
+        print(f"• [green]Copied to: {target_path}[/]")
     except Exception as e:
         print(
-            f"Error: {Fore.RED}File copy failed: {type(e).__name__}: {e}{Style.RESET_ALL}"
+            f"Error: [red]File copy failed: {type(e).__name__}: {e}[/]"
         )
         return
 
@@ -178,11 +174,11 @@ def install(self, args):
         if cmd_name not in commands["commands"]["Third-party"]:
             commands["commands"]["Third-party"].append(cmd_name)
         print(
-            f"• {Fore.GREEN}Command '{cmd_name}' installed and loaded successfully!{Style.RESET_ALL}"
+            f"• [green]Command '{cmd_name}' installed and loaded successfully![/]"
         )
     except Exception as e:
         print(
-            f"Error: {Fore.RED}Failed to load command '{cmd_name}': {e}{Style.RESET_ALL}"
+            f"Error: [red]Failed to load command '{cmd_name}': {e}[/]"
         )
         return
 
@@ -191,7 +187,7 @@ def install(self, args):
         with open(os.path.join("configs", "commands.json"), "w", encoding="utf-8") as f:
             json.dump(commands, f, indent=4, ensure_ascii=False)
     except Exception as e:
-        print(f"Warning: {Fore.YELLOW}Failed to update config: {e}{Style.RESET_ALL}")
+        print(f"Warning: [yellow]Failed to update config: {e}[/]")
 
 
 def install_from_package(self, package_path, cmd_name=None):
@@ -204,7 +200,7 @@ def install_from_package(self, package_path, cmd_name=None):
         # 解压包文件
         with zipfile.ZipFile(package_path, "r") as zip_ref:
             zip_ref.extractall(temp_dir)
-            print(f"• {Fore.GREEN}Extracted package to: {temp_dir}{Style.RESET_ALL}")
+            print(f"• [green]Extracted package to: {temp_dir}[/]")
 
         # 检查是否有package.json
         package_info = read_package_info(temp_dir)  # 调用函数，确保 version_code 存在
@@ -236,12 +232,12 @@ def install_from_package(self, package_path, cmd_name=None):
                 case "ask":
                     if new_version_code < old_version_code:
                         print(
-                            f"Warning: {Fore.YELLOW}You are executing a downgrade operation (installed: {old_version_code}, new: {new_version_code})"
+                            f"Warning: [yellow]You are executing a downgrade operation (installed: {old_version_code}, new: {new_version_code})[/]"
                         )
                         choice = input("Do you want to continue? [y/n]: ")
                         match choice:
                             case "n" | "N":
-                                print(Fore.YELLOW + "Installition canceled.")
+                                print("[yellow]Installition canceled.[/]")
                                 return
                             case "Y" | "y" | "":
                                 pass
@@ -249,12 +245,12 @@ def install_from_package(self, package_path, cmd_name=None):
                                 raise NameError("Unknown command.")
                     elif new_version_code == old_version_code:
                         print(
-                            f"{Fore.YELLOW}Same version detected ({new_version_code}), reinstalling...{Style.RESET_ALL}"
+                            f"[yellow]Same version detected ({new_version_code}), reinstalling...[/]"
                         )
                 case "deny":
                     raise RunningError(f"Downgrade is not allowed (installed: {old_version_code}, new: {new_version_code})")
                 case "allow":
-                    print(f"Warning: {Fore.YELLOW}Downgrade is executing (installed: {old_version_code}, new: {new_version_code})")
+                    print(f"Warning: [yellow]Downgrade is executing (installed: {old_version_code}, new: {new_version_code})[/]")
                 case _:
                     raise SyntaxError(f"Unknown setting: '{self.ASK_DOWNGRADE}'")
 
@@ -269,7 +265,7 @@ def install_from_package(self, package_path, cmd_name=None):
         try:
             install_dependencies(self, cmd_name, main_module_path, package_info)
         except Exception as e:
-            print(f"Error: {Fore.RED}{e}")
+            print(f"Error: [red]{e}[/]")
             shutil.rmtree(target_dir)
             self.error_code = ErrorCodeManager().get_code(e)
             return
@@ -297,7 +293,7 @@ def install_from_package(self, package_path, cmd_name=None):
                 json.dump(commands, f, indent=4, ensure_ascii=False)
 
         print(
-            f"• {Fore.GREEN}Package '{cmd_name}' installed successfully!{Style.RESET_ALL}"
+            f"• [green]Package '{cmd_name}' installed successfully![/]"
         )
 
     except Exception as e:
@@ -359,14 +355,14 @@ def install_dependencies(self, cmd_name, module_path, package_info=None):
         deps = package_info["dependencies"]
         if isinstance(deps, (list, tuple)) and deps:
             print(
-                f"• {Fore.YELLOW}Found dependencies in package.json, installing...{Style.RESET_ALL}"
+                f"• [yellow]Found dependencies in package.json, installing...[/]"
             )
             try:
                 subprocess.check_call(
                     [sys.executable, "-m", "pip", "install"] + list(deps)
                 )
                 print(
-                    f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}"
+                    f"• [green]Dependencies installed successfully![/]"
                 )
                 return  # 如果package.json有依赖，就不再检查其他来源
             except subprocess.CalledProcessError as e:
@@ -376,14 +372,14 @@ def install_dependencies(self, cmd_name, module_path, package_info=None):
     req_file = os.path.join(os.path.dirname(module_path), "requirements.txt")
     if os.path.exists(req_file):
         print(
-            f"• {Fore.YELLOW}Found requirements.txt, installing dependencies...{Style.RESET_ALL}"
+            f"• [yellow]Found requirements.txt, installing dependencies...[/]"
         )
         try:
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "-r", req_file]
             )
             print(
-                f"• {Fore.GREEN}Dependencies installed successfully!{Style.RESET_ALL}"
+                f"• [green]Dependencies installed successfully![/]"
             )
         except subprocess.CalledProcessError as e:
             raise RunningError(f"Failed to install some dependencies: {e}")
@@ -392,7 +388,7 @@ def install_dependencies(self, cmd_name, module_path, package_info=None):
 def show_package_info(self, args):
     """显示包信息"""
     if len(args) < 2:
-        print(f"Error: {Fore.RED}No package specified.{Style.RESET_ALL}")
+        print(f"Error: [red]No package specified.[/]")
         print(f"Usage: info <package_name>")
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
@@ -405,45 +401,45 @@ def show_package_info(self, args):
         # 可能是单文件应用
         pkg_file = os.path.join("cmdList", "third_party", f"{pkg_name}.py")
         if not os.path.exists(pkg_file):
-            print(f"Error: {Fore.RED}Package '{pkg_name}' not found.{Style.RESET_ALL}")
+            print(f"Error: [red]Package '{pkg_name}' not found.[/]")
             self.error_code = ErrorCodeManager().get_code(FileNotFoundError)
             return
 
-        print(f"Package: {Fore.CYAN}{pkg_name}{Style.RESET_ALL}")
-        print(f"Type: {Fore.YELLOW}Single file{Style.RESET_ALL}")
+        print(f"Package: [cyan]{pkg_name}[/]")
+        print(f"Type: [yellow]Single file[/]")
         return
 
     # 读取package.json
     package_info = read_package_info(pkg_dir)
     if not package_info:
-        print(f"Package: {Fore.CYAN}{pkg_name}{Style.RESET_ALL}")
-        print(f"Type: {Fore.YELLOW}Directory (no package.json){Style.RESET_ALL}")
+        print(f"Package: [cyan]{pkg_name}[/]")
+        print(f"Type: [yellow]Directory (no package.json)[/]")
         return
 
     # 显示包信息
     print(
-        f"Package: {Fore.CYAN}{package_info.get('command', pkg_name)}{Style.RESET_ALL}"
+        f"Package: [cyan]{package_info.get('command', pkg_name)}[/]"
     )
     print(
-        f"Version: {Fore.GREEN}{package_info.get('version', 'unknown')}{Style.RESET_ALL}"
+        f"Version: [green]{package_info.get('version', 'unknown')}[/]"
     )
     print(
-        f"Version Code: {Fore.GREEN}{package_info.get('version_code', 'unknown')}{Style.RESET_ALL}"
+        f"Version Code: [green]{package_info.get('version_code', 'unknown')}[/]"
     )
     print(
-        f"Category: {Fore.BLUE}{package_info.get('category', 'Other')}{Style.RESET_ALL}"
+        f"Category: [blue]{package_info.get('category', 'Other')}[/]"
     )
 
     if "description" in package_info:
         print(f"Description: {package_info['description']}")
 
     if "author" in package_info:
-        print(f"Author: {Fore.BLUE}{package_info['author']}{Style.RESET_ALL}")
+        print(f"Author: [blue]{package_info['author']}[/]")
 
     if "dependencies" in package_info:
         print("Dependencies:")
         for dependence in sorted(package_info["dependencies"]):
-            print(f"- {Fore.YELLOW}{dependence}{Fore.RESET}")
+            print(f"- [yellow]{dependence}[/]")
 
 
 def remove_app(self, args):
@@ -452,7 +448,7 @@ def remove_app(self, args):
         auth_passwd(self)
     
     if len(args) < 2:
-        print(f"Error: {Fore.RED}No app name specified for removal.{Style.RESET_ALL}")
+        print(f"Error: [red]No app name specified for removal.[/]")
         print(f"Usage: remove <app_name>")
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
@@ -471,14 +467,14 @@ def remove_app(self, args):
     # 读取package.json
     package_info = read_package_info(pkg_dir)
     if not package_info:
-        print(f"Package: {Fore.CYAN}{app_name}{Style.RESET_ALL}")
-        print(f"Type: {Fore.YELLOW}Directory (no package.json){Style.RESET_ALL}")
+        print(f"Package: [cyan]{app_name}[/]")
+        print(f"Type: [yellow]Directory (no package.json)[/]")
         return
 
     category = package_info.get("category", "Other")
 
     if app_name not in commands["commands"][category]:
-        print(f"Error: {Fore.RED}App '{app_name}' is not installed.{Style.RESET_ALL}")
+        print(f"Error: [red]App '{app_name}' is not installed.[/]")
         return
 
     only_app = False
@@ -502,16 +498,16 @@ def remove_app(self, args):
         if os.path.exists(py_file):
             os.remove(py_file)
             print(
-                f"• {Fore.GREEN}App '{app_name}' removed successfully!{Style.RESET_ALL}"
+                f"• [green]App '{app_name}' removed successfully![/]"
             )
         elif os.path.exists(app_dir):
             shutil.rmtree(app_dir)
             print(
-                f"• {Fore.GREEN}App '{app_name}' removed successfully!{Style.RESET_ALL}"
+                f"• [green]App '{app_name}' removed successfully![/]"
             )
         else:
             print(
-                f"Warning: {Fore.YELLOW}Could not find app files, but removed from configuration.{Style.RESET_ALL}"
+                f"Warning: [yellow]Could not find app files, but removed from configuration.[/]"
             )
 
         # 保存配置
@@ -524,13 +520,13 @@ def remove_app(self, args):
 
 def list_apps(self, args):
     """列出所有已安装的第三方应用"""
-    print(Back.BLUE + " Installed Apps " + Style.RESET_ALL)
+    print("[on blue] Installed Apps [/]")
     categorized_apps = {}
 
     # 遍历所有第三方命令目录
     third_party_dir = os.path.join("cmdList", "third_party")
     if not os.path.exists(third_party_dir):
-        print(f"{Fore.YELLOW}No third-party apps installed.{Style.RESET_ALL}")
+        print(f"[yellow]No third-party apps installed.[/]")
         return
 
     for item in os.listdir(third_party_dir):
@@ -547,7 +543,7 @@ def list_apps(self, args):
                         category = package_info.get("category", "Other")
                 except (json.JSONDecodeError, IOError):
                     print(
-                        f"{Fore.YELLOW}Warning: Invalid package.json for '{cmd_name}'{Style.RESET_ALL}"
+                        f"[yellow]Warning: Invalid package.json for '{cmd_name}'[/]"
                     )
 
             # 将命令归类
@@ -557,7 +553,7 @@ def list_apps(self, args):
 
     # 打印分类和命令
     if not categorized_apps:
-        print(Fore.YELLOW + "No third-party app installed.")
+        print("[yellow]No third-party apps installed.[/]")
         return
 
     for category, apps in categorized_apps.items():
@@ -565,6 +561,6 @@ def list_apps(self, args):
         for app in sorted(apps):
             app_path = os.path.join(third_party_dir, f"{app}.py")
             if os.path.exists(app_path):
-                print(f"- {Fore.BLUE}{app}{Style.RESET_ALL} (single file)")
+                print(f"- [blue]{app}[/] (single file)")
             else:
-                print(f"- {Fore.BLUE}{app}{Style.RESET_ALL} (package)")
+                print(f"- [blue]{app}[/] (package)")

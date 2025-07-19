@@ -1,6 +1,6 @@
 __doc__ = "init vm/home/<username> directory"
 import os
-from colorama import Fore
+from safety import rich_input
 from utils.config import BASEPATH
 from utils.man import PathManager
 
@@ -18,13 +18,7 @@ print("Welcome to PyOS.Start your journey by typing 'help'.")
     }
     user = args[0] if args else "root"
     if user == "root":
-        if (
-            input(
-                Fore.RED
-                + "Do you really want to initialize the root directory? (y/n): "
-            ).lower()
-            != "y"
-        ):
+        if rich_input("[red]Do you really want to initialize the root directory? (y/n): [/]").lower() != "y":
             return
     for dir in init_dirs:
         path = os.path.join(BASEPATH, "vm/home", user, dir)

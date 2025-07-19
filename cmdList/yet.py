@@ -7,7 +7,7 @@ from utils.config import *
 from utils.yet import *
 from utils.man import ErrorCodeManager, CommandManager
 from utils.err import RunningError
-from colorama import Fore, Back, Style
+from rich import print
 
 __doc__ = "YET Package manager"  # 第三方命令注册模块
 
@@ -22,7 +22,7 @@ def execute(self, args):
     """主执行函数"""
     if not args:
         print(
-            f"Error: {Fore.RED}No arguments provided. Please specify a valid command."
+            f"Error: [red]No arguments provided. Please specify a valid command.[/]"
         )
         print("Usage:")
         for command, description in __usage__.items():
@@ -42,7 +42,7 @@ def execute(self, args):
         case "info":
             show_package_info(self, args)
         case _:
-            print(f"Error: {Fore.RED}Unknown command '{args[0]}'.")
+            print(f"Error: [red]Unknown command '{args[0]}'.[/]")
             print("Usage:")
             for command, description in __usage__.items():
                 print(f"  {command}: {description}")

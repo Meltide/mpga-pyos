@@ -1,5 +1,5 @@
 import os  # 系统底层库
-from colorama import Fore, Style  # 颜色库
+from rich import print  # 颜色库
 
 __doc__ = "View the path"
 
@@ -24,7 +24,7 @@ def execute(self, args):
     )
 
     for folder in folders:
-        print(Fore.BLUE + folder, end="/\n")
+        print("[blue]" + folder, end="/[/]\n")
 
     for file in files:
         print(file)

@@ -7,7 +7,7 @@ __usage__ = {
 }
 
 import os
-from colorama import Fore
+from safety import rich_input
 from utils.config import *
 from utils.man import ErrorCodeManager
 from PYOScript.interpreter import PYOScriptInterpreter as PSI
@@ -17,7 +17,7 @@ def execute(self, args):
     if not args:
         quit_ = False
         while not quit_:
-            code = input(f"{Fore.GREEN}PYOScript{Fore.RESET}> ")
+            code = rich_input(f"[green]PYOScript[/]> ")
             if code.strip() == "exit":
                 quit_ = True
             else:

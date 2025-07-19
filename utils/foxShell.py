@@ -1,6 +1,6 @@
 import os, json
 import datetime
-from colorama import Fore, Back
+from rich import print
 
 from pyosInit import Init
 from utils.man import ErrorCodeManager
@@ -33,10 +33,10 @@ class FoxShell(Init):
             self.THEME = fox["theme"]
             self.SHOW_GREETING = fox["show_greeting"]
             if not su:
-                print(f"• {Fore.GREEN}Reload successfully.")
+                print(f"• [green]Reload successfully.[/]")
         except Exception as e:
             raise RunningError(
-                f"Can't reload FoxShell: {Fore.RED}{e if str(e) else type(e).__name__}"
+                f"Can't reload FoxShell: [red]{e if str(e) else type(e).__name__}[/]"
             )
 
     def generate_prompt(self):
@@ -44,11 +44,11 @@ class FoxShell(Init):
         timestamp = datetime.datetime.now().strftime("%m/%d %H:%M:%S")
         match self.THEME:
             case "modern":
-                return f"{f'{Back.RED}{Fore.WHITE} ✘ {self.error_code} ' if self.error_code else ''}{Back.WHITE}{Fore.BLACK} {timestamp} {Back.YELLOW} {self.username}@{self.hostname} {Back.BLUE}{Fore.WHITE} {self.current_directory} {Back.RESET}▶ "
+                return f"{f'[white on red] ✘ {self.error_code} ' if self.error_code else ''}[black on white] {timestamp} [yellow] {self.username}@{self.hostname} [white on blue] {self.current_directory} [/]▶ "
             case "classic":
-                return f"[{timestamp}] {Fore.GREEN}{self.username}{Fore.RESET}@{self.hostname} {Fore.BLUE}{self.current_directory}{Fore.RESET} {f'[{Fore.RED}{self.error_code}{Fore.RESET}]' if self.error_code else ''}> "
+                return f"[{timestamp}] [green]{self.username}[/]@{self.hostname} [blue]{self.current_directory}[/] {f'[[red]{self.error_code}[/]]' if self.error_code else ''}> "
             case "bash":
-                return f"{self.username}@{self.hostname}: {Fore.GREEN}{self.current_directory}{Fore.RESET} {f'[{Fore.RED}{self.error_code}{Fore.RESET}]' if self.error_code else ''}$ "
+                return f"{self.username}@{self.hostname}: [green]{self.current_directory}[/] {f'[[[red]{self.error_code}[/]]' if self.error_code else ''}$ "
             case _:
                 raise SyntaxError("Unknown theme.")
 

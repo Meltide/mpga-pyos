@@ -1,5 +1,5 @@
 import datetime, calendar  # 时间日期库
-from colorama import Fore
+from rich import print
 
 __doc__ = "Show a calendar"
 
@@ -9,7 +9,7 @@ def execute(self, args):
     yy = str(today.year)  # int(input("Year: "))
     mm = str(today.month)  # int(input("Month: "))
     dd = str(today.day)
-    print(f"Now: {Fore.BLUE}{yy}-{mm}-{dd}")
+    print(f"Now: [blue]{yy}-{mm}-{dd}[/]")
     c1 = 0
     c2 = 0
     while c1 == 0:

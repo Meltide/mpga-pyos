@@ -1,6 +1,6 @@
 import pwinput
 import base64
-from colorama import Fore
+from rich import print
 
 from utils.config import *
 from utils.man import ErrorCodeManager
@@ -14,9 +14,7 @@ __usage__ = {
 
 def execute(self, args):
     if not args:  # 检查是否提供了参数
-        print(
-            f"Error: {Fore.RED}No arguments provided. Please specify a valid command."
-        )
+        print("Error: [red]No arguments provided. Please specify a valid command.[/]")
         print("Usage:")
         for command, description in __usage__.items():
             print(f"  {command}: {description}")

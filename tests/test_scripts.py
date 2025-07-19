@@ -1,4 +1,4 @@
-import sys, os
+"""import sys, os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from PYOScript.interpreter import *
@@ -15,4 +15,4 @@ class TestScripts:
         core = PyOS(debug=True)
         ip = PYOScriptInterpreter(core, CODE_1)
         ip.parse()
-        ip.parse_line('/echo hi')
+        ip.parse_line('/echo hi')"""

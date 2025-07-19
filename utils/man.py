@@ -3,13 +3,12 @@ import os
 import subprocess
 import shutil
 from typing import Optional, Dict
-from colorama import Fore, Back, Style,init
+from rich import print
 from .basic import *
 
 from .config import *
 from .err import *
 
-init(autoreset=True)
 class CommandManager:
     def __init__(self, core, _cmd=""):
         self.cmd = _cmd
@@ -228,22 +227,22 @@ class HelpManager:
     def show_all(self):
         """显示所有命令"""
         print("Available Commands:")
-        print(Style.DIM + "* Third-party apps will be highlighted")
+        print("* Third-party apps will be highlighted")
         for category, cmds in self.cmdman.allcmds.items():
-            print(f"{Back.BLUE} {category} {Style.RESET_ALL}")
+            print(f"[blue] {category} [/]")
             for cmd in sorted(cmds):
                 self.cmdman.reg(cmd)
                 try:
                     if self.cmdman.is_package():
                         # 如果是包，从 package.json 获取描述
                         doc = self.get_package_doc(cmd) or "No description"
-                        print(f"{Fore.YELLOW}{cmd:<15}{Style.RESET_ALL} {doc}")
+                        print(f"[yellow]{cmd:<15}[/] {doc}")
                     else:
                         # 内置命令
                         doc = self.cmdman.getpkg().__doc__ or "No description"
-                        print(f"{cmd:<15}{Style.RESET_ALL} {doc}")
+                        print(f"{cmd:<15}[/] {doc}")
                 except ImportError:
-                    print(f"{cmd:<15}{Style.RESET_ALL} (Not loadable)")
+                    print(f"{cmd:<15}[/] (Not loadable)")
         return
 
     def show_cmd(self):
@@ -258,14 +257,14 @@ class HelpManager:
         """显示指定命令的详细信息"""
         try:
             pkg = self.cmdman.getpkg()
-            print(f"{Fore.LIGHTWHITE_EX}{Style.BRIGHT}{Back.GREEN} Help for: {self.cmd_name} {Style.RESET_ALL}")
+            print(f"[white on green] Help for: {self.cmd_name} [/]")
     
             # 显示描述
             if self.cmdman.is_package():
                 description = self.get_package_doc(self.cmd_name) or "No description"
             else:
                 description = getattr(pkg, "__doc__", "No description available")
-            print(f"{Back.BLUE} Description: {self.cmd_name} {Style.RESET_ALL}")
+            print(f"[blue] Description: {self.cmd_name} [/]")
             print('  '+description.strip())
     
             # 显示用法
@@ -274,14 +273,14 @@ class HelpManager:
             else:
                 usage = getattr(pkg, "__usage__", "No usage available")
     
-            print(f"{Back.BLUE} Usage: {Style.RESET_ALL}")
+            print(f"[blue] Usage: [/]")
             if isinstance(usage, dict):  # 如果是字典，按键值对显示
                 for example, desc in usage.items():
-                    print(f"  {self.cmd_name} {Fore.GREEN}{example:<15}{Style.RESET_ALL} {desc}")
+                    print(f"  {self.cmd_name} [green]{example:<15}[/] {desc}")
             elif isinstance(usage, str):  # 如果是字符串，直接显示
                 print(f"  {usage}")
             else:
-                print(f"{Fore.YELLOW}No usage examples available{Style.RESET_ALL}")
+                print(f"[yellow]No usage examples available[/]")
     
         except Exception as e:
             raise RunningError(f"Error loading command help: {str(e)}")

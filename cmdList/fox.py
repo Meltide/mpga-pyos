@@ -1,5 +1,5 @@
 import os
-from colorama import Fore
+from rich import print
 
 from utils.man import ErrorCodeManager
 from utils.config import *
@@ -41,7 +41,7 @@ def execute(self, args):
                 os.path.join("configs", "Users", self.username, "Fox", "fox_config.json"), "w", encoding="utf-8"
             ) as f:
                 json.dump(self.fox, f, ensure_ascii=False, indent=4)
-                print(f"• {Fore.GREEN}Theme set successfully.")
+                print(f"• [green]Theme set successfully.[/]")
         case "reload":
             FoxShell.reload(self)
         case _:
@@ -56,6 +56,6 @@ def show_available_themes(self):
     print("Avaliable themes:")
     for theme in theme_list:
         if self.fox["theme"] == theme:
-            print(f"- {Fore.BLUE}{theme} {Fore.RESET}(Current theme)")
+            print(f"- [blue]{theme} [/] (Current theme)")
             continue
-        print(f"- {Fore.BLUE}{theme}")
+        print(f"- [blue]{theme}[/]")
