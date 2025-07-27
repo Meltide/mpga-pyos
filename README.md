@@ -54,3 +54,118 @@
 注意：  
 - 2.0版本开始 **不再提供** 已编译exe文件，请直接下载源码！   
 - 请确保 **您的 Python 版本 >= 3.10** ！
+
+```
+pyos_core
+├─ cmdList
+│  ├─ about.py
+│  ├─ asciier.py
+│  ├─ calc.py
+│  ├─ calendar.py
+│  ├─ cat.py
+│  ├─ clear.py
+│  ├─ echo.py
+│  ├─ egg
+│  │  └─ ciallo.mpk
+│  ├─ errcode.py
+│  ├─ exec.py
+│  ├─ exit.py
+│  ├─ fileman.py
+│  ├─ fox.py
+│  ├─ help.py
+│  ├─ hostman.py
+│  ├─ init.py
+│  ├─ ls.py
+│  ├─ neofetch.py
+│  ├─ restart.py
+│  ├─ script.py
+│  ├─ shutdown.py
+│  ├─ su.py
+│  ├─ sysname.py
+│  ├─ systemctl.py
+│  ├─ time.py
+│  ├─ userman.py
+│  └─ yet.py
+├─ configs
+│  ├─ commands.json
+│  ├─ permissions.json
+│  ├─ profiles.json
+│  ├─ PyOS
+│  │  └─ startup_msg.txt
+│  ├─ system_policys.json
+│  └─ Users
+│     ├─ root
+│     │  ├─ Fox
+│     │  │  ├─ fox_config.json
+│     │  │  └─ fox_greeting.txt
+│     │  ├─ user_policys.json
+│     │  └─ yet_config.json
+│     └─ Template
+│        ├─ Fox
+│        │  ├─ fox_config.json
+│        │  └─ fox_greeting.txt
+│        ├─ user_policys.json
+│        └─ yet_config.json
+├─ LICENSE
+├─ PYOScript
+│  ├─ demo
+│  │  └─ t1.mcfunction
+│  ├─ highlight_cli.py
+│  ├─ interpreter.py
+│  ├─ lexer.py
+│  ├─ README.md
+│  ├─ __compiler.py
+│  ├─ __interpreter.py
+│  └─ __lexer.py
+├─ README.md
+├─ requirements.txt
+├─ res
+│  ├─ logo.png
+│  ├─ ui1.jpg
+│  └─ ui2.jpg
+├─ safety.py
+├─ scripts
+│  ├─ install.sh
+│  └─ update.sh
+├─ shell.nix
+├─ src
+│  └─ pyos
+│     ├─ core
+│     │  ├─ init.py
+│     │  ├─ login.py
+│     │  └─ pyos.py
+│     ├─ utils
+│     │  ├─ basic.py
+│     │  ├─ config.py
+│     │  ├─ datastruct.py
+│     │  ├─ err.py
+│     │  ├─ foxShell.py
+│     │  ├─ man.py
+│     │  ├─ yet.py
+│     │  └─ __init__.py
+│     └─ vm
+│        ├─ home
+│        │  ├─ path.py
+│        │  └─ root
+│        │     ├─ .about
+│        │     ├─ document
+│        │     │  └─ test
+│        │     ├─ download
+│        │     │  └─ test
+│        │     ├─ game
+│        │     │  └─ test
+│        │     ├─ music
+│        │     │  └─ test
+│        │     ├─ others
+│        │     │  └─ test
+│        │     ├─ picture
+│        │     │  └─ test
+│        │     └─ video
+│        │        └─ test
+│        └─ public
+└─ tests
+   ├─ t1.mcfunction
+   ├─ test_exceptions.py
+   └─ test_scripts.py
+
+```

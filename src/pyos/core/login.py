@@ -1,5 +1,8 @@
 import os, sys  # 系统库
-from pyosInit import Init
+from .init import Init
+'''for path in PathEnum:
+    print(path.name,path.value)
+    sys.path.append(path.value)'''
 import base64  # 加解密库
 from rich import print  # 彩色文字库
 import time, datetime  # 时间日期库
@@ -7,9 +10,9 @@ import json  # 解析和保存json配置文件
 import pwinput  # 密码隐藏库
 import traceback
 
-from utils.man import ErrorCodeManager
-from utils.config import *
-from utils.foxShell import FoxShell
+from ..utils.man import ErrorCodeManager
+from ..utils.config import *
+from ..utils.foxShell import FoxShell
 
 
 class Login(Init):

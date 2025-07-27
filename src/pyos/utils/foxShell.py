@@ -2,10 +2,10 @@ import os, json
 import datetime
 from rich import print
 
-from pyosInit import Init
-from utils.man import ErrorCodeManager
-from utils.config import *
-from utils.err import *
+from ..core.init import Init
+from .man import ErrorCodeManager
+from .config import *
+from .err import *
 
 
 class FoxShell(Init):
