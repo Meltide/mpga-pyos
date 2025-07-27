@@ -13,6 +13,7 @@ import traceback
 from ..utils.man import ErrorCodeManager
 from ..utils.config import *
 from ..utils.foxShell import FoxShell
+from safety import input as rinput
 
 
 class Login(Init):
@@ -128,7 +129,8 @@ class Login(Init):
         FoxShell.show_greeting(self)
         while self.command_count < self.max_attempts:
             prompt = FoxShell.generate_prompt(self)
-            command = input(prompt)
+            __show = print(prompt, end="")
+            command = rinput("")
             try:
                 self.run(command)
             except Exception as e:

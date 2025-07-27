@@ -1,7 +1,7 @@
 from rich import print
 from rich.syntax import Syntax
 from pygments.lexers import get_lexer_for_filename
-from utils.man import ErrorCodeManager
+from ..src.pyos.utils.man import ErrorCodeManager
 
 __doc__ = "Catch file's content"
 

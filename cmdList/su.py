@@ -2,9 +2,9 @@ import pwinput
 import base64
 from rich import print
 
-from utils.config import *
-from utils.man import ErrorCodeManager
-from utils.foxShell import FoxShell
+from ..src.pyos.utils.config import *
+from ..src.pyos.utils.man import ErrorCodeManager
+from ..src.pyos.utils.foxShell import FoxShell
 
 __doc__ = "Switch user"
 

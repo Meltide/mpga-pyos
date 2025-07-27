@@ -44,7 +44,11 @@ class FoxShell(Init):
         timestamp = datetime.datetime.now().strftime("%m/%d %H:%M:%S")
         match self.THEME:
             case "modern":
-                return f"{f'[white on red] ✘ {self.error_code} ' if self.error_code else ''}[black on white] {timestamp} [yellow] {self.username}@{self.hostname} [white on blue] {self.current_directory} [/]▶ "
+                return f"[white on red]{f' ✘ {self.error_code} ' if self.error_code else ''}[/]" \
+                    f"[black on white] {timestamp} [/black on white]" \
+                    f"[on yellow] {self.username}@{self.hostname} [/on yellow]" \
+                    f"[white on blue] {self.current_directory} [/white on blue]" \
+                    f"[#green]→ [/]" #白色在vscode终端中容易变形 ——EricDing618
             case "classic":
                 return f"[{timestamp}] [green]{self.username}[/]@{self.hostname} [blue]{self.current_directory}[/] {f'[[red]{self.error_code}[/]]' if self.error_code else ''}> "
             case "bash":

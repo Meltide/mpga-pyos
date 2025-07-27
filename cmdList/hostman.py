@@ -2,8 +2,8 @@ import json
 import os
 from rich import print  # 彩色文字库
 
-from utils.man import ErrorCodeManager
-from utils.config import profiles  # 直接导入 profiles
+from ..src.pyos.utils.man import ErrorCodeManager
+from ..src.pyos.utils.config import profiles  # 直接导入 profiles
 
 __doc__ = "PyOS Host Manager"
 

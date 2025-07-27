@@ -3,10 +3,10 @@ import zipfile
 import subprocess
 import sys
 
-from utils.config import *
-from utils.yet import *
-from utils.man import ErrorCodeManager, CommandManager
-from utils.err import RunningError
+from ..src.pyos.utils.config import *
+from ..src.pyos.utils.yet import *
+from ..src.pyos.utils.man import ErrorCodeManager, CommandManager
+from ..src.pyos.utils.err import RunningError
 from rich import print
 
 __doc__ = "YET Package manager"  # 第三方命令注册模块

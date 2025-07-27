@@ -1,7 +1,7 @@
 import json
 from rich import print
-from utils.config import *
-from utils.man import ErrorCodeManager
+from ..src.pyos.utils.config import *
+from ..src.pyos.utils.man import ErrorCodeManager
 
 __doc__ = "Set system policy"
 

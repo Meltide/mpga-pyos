@@ -8,8 +8,8 @@ __usage__ = {
 
 import os
 from safety import rich_input
-from utils.config import *
-from utils.man import ErrorCodeManager
+from ..src.pyos.utils.config import *
+from ..src.pyos.utils.man import ErrorCodeManager
 from PYOScript.interpreter import PYOScriptInterpreter as PSI
 
 

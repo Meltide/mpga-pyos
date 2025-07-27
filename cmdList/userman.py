@@ -4,8 +4,8 @@ import json  # 解析和保存json配置文件
 import pwinput  # 密码输入库
 import os, shutil
 from textwrap import dedent  # 格式化输出库
-from utils.man import ErrorCodeManager
-from utils.config import *
+from ..src.pyos.utils.man import ErrorCodeManager
+from ..src.pyos.utils.config import *
 
 __doc__ = "PyOS User Manager"
 

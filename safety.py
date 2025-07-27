@@ -3,7 +3,9 @@ from rich.console import Console
 
 def input(prompt):
     '''禁用rich的输入，返回纯文本'''
-    return Text.from_markup(input(prompt), markup=False)
+    console = Console()
+    user_input = console.input(Text(prompt) ,markup=False)
+    return user_input
 
 def rich_input(prompt: str, prompt_style="", input_style="", markup=False, **kwargs) -> str:
     '''prompt_style: 输入提示的样式
