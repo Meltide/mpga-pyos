@@ -1,7 +1,8 @@
 from src.pyos.core.pyos import *
+from rich.markup import escape
 
 if __name__ == "__main__":
-    '''try:
+    try:
         PyOS()
     except (KeyboardInterrupt, EOFError) as e:
         if isinstance(e, EOFError):
@@ -10,8 +11,8 @@ if __name__ == "__main__":
     except SystemExit:
         pass
     except (Exception, BaseException) as e:
-        print(f"\nError: [red]{type(e).__name__ if not str(e) else e}[/]")
+        print(f"\nError: [red]{escape(type(e).__name__ if not str(e) else e)}[/]")
         print(f"Error code: [red]{ErrorCodeManager().get_code(e)}[/]")
         if SHOW_BASE_ERROR_DETAILS:
-            print(f"Details: \n{traceback.format_exc()}")'''
-    PyOS()
+            print(f"Details: \n{traceback.format_exc()}")
+    #PyOS()

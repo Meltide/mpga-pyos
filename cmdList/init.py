@@ -1,6 +1,6 @@
 __doc__ = "init vm/home/<username> directory"
 import os
-from safety import rich_input
+from ..src.pyos.utils.safety import rich_input
 from ..src.pyos.utils.config import BASEPATH
 from ..src.pyos.utils.man import PathManager
 

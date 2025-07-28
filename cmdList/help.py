@@ -1,4 +1,4 @@
-from ..src.pyos.utils.man import HelpManager
+from src.pyos.utils.man import HelpManager
 
 __doc__ = "Display help information for commands"
 

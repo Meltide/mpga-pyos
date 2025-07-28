@@ -4,16 +4,16 @@ from .init import Init
     print(path.name,path.value)
     sys.path.append(path.value)'''
 import base64  # 加解密库
-from rich import print  # 彩色文字库
+from rich import print as rprint # 彩色文字库
 import time, datetime  # 时间日期库
 import json  # 解析和保存json配置文件
 import pwinput  # 密码隐藏库
 import traceback
 
-from ..utils.man import ErrorCodeManager
+from src.pyos.utils.man import ErrorCodeManager
 from ..utils.config import *
 from ..utils.foxShell import FoxShell
-from safety import input as rinput
+from ..utils.safety import input as rinput
 
 
 class Login(Init):
@@ -62,7 +62,7 @@ class Login(Init):
 
     def create_account(self):
         """创建新账户"""
-        new_username = input("Name: ")
+        new_username = rinput("Name: ")
         new_password = pwinput.pwinput()
         if new_username in ACCOUNT_NAMES:
             self.fprint("WARNING: The name already exists!", 2)
@@ -75,9 +75,9 @@ class Login(Init):
 
     def reset_username(self):
         """重置用户名"""
-        old_username = input("OldName: ")
+        old_username = rinput("OldName: ")
         if self._validate_user(old_username):
-            new_username = input("NewName: ")
+            new_username = rinput("NewName: ")
             profiles["accounts"][new_username] = profiles["accounts"].pop(old_username)
             self.save_config()
             self.fprint("Username reset successfully.", 1)
@@ -86,7 +86,7 @@ class Login(Init):
 
     def reset_password(self):
         """重置密码"""
-        username = input("Name: ")
+        username = rinput("Name: ")
         if self._validate_user(username):
             new_password = pwinput.pwinput("NewPassword: ")
             profiles["accounts"][username] = self.encode_password(new_password)
@@ -128,16 +128,17 @@ class Login(Init):
         """启动命令行交互"""
         FoxShell.show_greeting(self)
         while self.command_count < self.max_attempts:
-            prompt = FoxShell.generate_prompt(self)
-            __show = print(prompt, end="")
+            prompt, cursor = FoxShell.generate_prompt(self)
+            rprint(prompt, end="")
+            print(cursor, end="")
             command = rinput("")
             try:
                 self.run(command)
             except Exception as e:
-                print(f"Error: [red]{type(e).__name__ if not str(e) else e}[/]")
+                rprint(f"Error: [red]{type(e).__name__ if not str(e) else e}[/]")
                 self.error_code = ErrorCodeManager().get_code(e)
                 if self.SHOW_ERROR_DETAILS:
-                    print(f"Details: \n{traceback.format_exc()}")
+                    rprint(f"Details: \n{traceback.format_exc()}")
 
     def _validate_user(self, username):
         """验证用户名和密码"""
@@ -150,20 +151,20 @@ class Login(Init):
     def _invalid_user_message(self):
         """打印无效用户提示"""
         self.fprint("Invalid user! Please retry", 3)
-        print("Tip: 'root' is the default user.")
+        rprint("Tip: 'root' is the default user.")
 
     def _invalid_password_message(self):
         """打印无效密码提示"""
         self.fprint("Error password! Please retry", 3)
-        print(f"Tip: You can find the default password in the passwd file.")
+        rprint(f"Tip: You can find the default password in the passwd file.")
 
     def _successful_login_message(self):
         """打印成功登录提示"""
-        print(
+        rprint(
             "Last login: [cyan]" + self.current_time.strftime("%y/%m/%d %H:%M:%S") + "[/]"
         )
         if AUTO_LOGIN:
-            print(f"• Auto logined as [yellow]{self.username}[/]")
-        print()
+            rprint(f"• Auto logined as [yellow]{self.username}[/]")
+        rprint()
         if self.ALLOW_SYSTEM_COMMANDS:
             self.fprint("WARNING: Running system commands is enabled!", 2)

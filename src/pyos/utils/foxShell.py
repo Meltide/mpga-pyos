@@ -44,15 +44,18 @@ class FoxShell(Init):
         timestamp = datetime.datetime.now().strftime("%m/%d %H:%M:%S")
         match self.THEME:
             case "modern":
-                return f"[white on red]{f' ✘ {self.error_code} ' if self.error_code else ''}[/]" \
+                return (f"[white on red]{f' ✘ {self.error_code} ' if self.error_code else ''}[/]" \
                     f"[black on white] {timestamp} [/black on white]" \
                     f"[on yellow] {self.username}@{self.hostname} [/on yellow]" \
-                    f"[white on blue] {self.current_directory} [/white on blue]" \
-                    f"[#green]→ [/]" #白色在vscode终端中容易变形 ——EricDing618
+                    f"[white on blue] {self.current_directory} [/white on blue]",
+                    "▶ ")
+                    
             case "classic":
-                return f"[{timestamp}] [green]{self.username}[/]@{self.hostname} [blue]{self.current_directory}[/] {f'[[red]{self.error_code}[/]]' if self.error_code else ''}> "
+                return (f"[{timestamp}] [green]{self.username}[/]@{self.hostname} [blue]{self.current_directory}[/] {f'[[red]{self.error_code}[/]]' if self.error_code else ''}",
+                        "> ")
             case "bash":
-                return f"{self.username}@{self.hostname}: [green]{self.current_directory}[/] {f'[[[red]{self.error_code}[/]]' if self.error_code else ''}$ "
+                return (f"{self.username}@{self.hostname}: [green]{self.current_directory}[/] {f'[[[red]{self.error_code}[/]]' if self.error_code else ''}",
+                        "$ ")
             case _:
                 raise SyntaxError("Unknown theme.")
 
