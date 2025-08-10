@@ -11,8 +11,9 @@ if __name__ == "__main__":
     except SystemExit:
         pass
     except (Exception, BaseException) as e:
-        print(f"\nError: [red]{escape(type(e).__name__ if not str(e) else e)}[/]")
-        print(f"Error code: [red]{ErrorCodeManager().get_code(e)}[/]")
+        err_msg = type(e).__name__ if not str(e) else str(e)
+        print(f"\nError: [red]{escape(err_msg)}[/]")
+        print(f"Error code: [red]{escape(str(ErrorCodeManager().get_code(e)))}[/]")
         if SHOW_BASE_ERROR_DETAILS:
-            print(f"Details: \n{traceback.format_exc()}")
+            print(f"Details: \n{escape(traceback.format_exc())}")
     #PyOS()

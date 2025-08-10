@@ -1,5 +1,5 @@
 {
-    "show_base_error_details": false,
+    "show_base_error_details": true,
     "show_ad": true,
     "use_custom_startupmsg": false
 }
