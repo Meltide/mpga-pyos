@@ -9,6 +9,7 @@ import time, datetime  # 时间日期库
 import json  # 解析和保存json配置文件
 import pwinput  # 密码隐藏库
 import traceback
+from rich.markup import escape
 
 from src.pyos.utils.man import ErrorCodeManager
 from ..utils.config import *
@@ -135,7 +136,7 @@ class Login(Init):
             try:
                 self.run(command)
             except Exception as e:
-                rprint(f"Error: [red]{type(e).__name__ if not str(e) else e}[/]")
+                rprint(f"Error: [red]{escape(type(e).__name__ if not str(e) else str(e))}[/]")
                 self.error_code = ErrorCodeManager().get_code(e)
                 if self.SHOW_ERROR_DETAILS:
                     rprint(f"Details: \n{traceback.format_exc()}")
