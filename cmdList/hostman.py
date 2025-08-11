@@ -2,8 +2,9 @@ import json
 import os
 from rich import print  # 彩色文字库
 
-from utils.man import ErrorCodeManager
-from utils.config import profiles  # 直接导入 profiles
+from src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.config import profiles  # 直接导入 profiles
+from .help import execute as help_execute
 
 __doc__ = "PyOS Host Manager"
 
@@ -18,11 +19,9 @@ def execute(self, args):
         print(
             f"Error: [red]No arguments provided. Please specify a valid command.[/]"
         )
-        print("Usage:")
-        for command, description in __usage__.items():
-            print(f"  {command}: {description}")
+        help_execute(self, ["hostman"])
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
-        return
+        return        
 
     match args[0]:
         case "hostname":

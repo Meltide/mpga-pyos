@@ -2,7 +2,7 @@ from rich import print  # 彩色文字库
 import time  # 时间库
 import psutil
 from cmdList.sysname import execute as sysname
-from utils.config import *
+from src.pyos.utils.config import *
 from art import text2art
 
 __doc__ = "List all hardware and system version"

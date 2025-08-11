@@ -5,9 +5,9 @@ import sys
 import pwinput
 import base64
 
-from utils.config import *
-from utils.man import ErrorCodeManager, CommandManager
-from utils.err import RunningError
+from .config import *
+from .man import ErrorCodeManager, CommandManager
+from .err import RunningError
 from rich import print
 
 # 全局命令缓存字典

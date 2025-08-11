@@ -12,7 +12,7 @@ __usage__ = {
     "search": "Search for a file",
 }
 
-from utils.err import RunningError
+from src.pyos.utils.err import RunningError
 
 
 def execute(self, args):

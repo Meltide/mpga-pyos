@@ -1,7 +1,8 @@
 import json
 from rich import print
-from utils.config import *
-from utils.man import ErrorCodeManager
+from src.pyos.utils.config import *
+from src.pyos.utils.man import ErrorCodeManager
+from .help import execute as help_execute
 
 __doc__ = "Set system policy"
 
@@ -17,9 +18,7 @@ def execute(self, args):
         print(
             f"Error: [red]No arguments provided. Please specify a valid command.[/]"
         )
-        print("Usage:")
-        for command, description in __usage__.items():
-            print(f"  {command}: {description}")
+        help_execute(self, ["hostman"])
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
 

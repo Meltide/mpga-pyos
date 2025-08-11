@@ -2,9 +2,10 @@ import pwinput
 import base64
 from rich import print
 
-from utils.config import *
-from utils.man import ErrorCodeManager
-from utils.foxShell import FoxShell
+from src.pyos.utils.config import *
+from src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.foxShell import FoxShell
+from .help import execute as help_execute
 
 __doc__ = "Switch user"
 
@@ -15,9 +16,7 @@ __usage__ = {
 def execute(self, args):
     if not args:  # 检查是否提供了参数
         print("Error: [red]No arguments provided. Please specify a valid command.[/]")
-        print("Usage:")
-        for command, description in __usage__.items():
-            print(f"  {command}: {description}")
+        help_execute(self, ["hostman"])
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
     

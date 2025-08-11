@@ -1,7 +1,7 @@
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from lexer import Lexer
+from PYOScript.lexer import Lexer
 
 with open('PYOScript/demo/t1.mcfunction', 'r', encoding='utf-8') as f:
     DEMO_CODE = f.read()
