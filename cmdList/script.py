@@ -7,9 +7,9 @@ __usage__ = {
 }
 
 import os
-from ..src.pyos.utils.safety import rich_input
-from ..src.pyos.utils.config import *
-from ..src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.safety import rich_input
+from src.pyos.utils.config import *
+from src.pyos.utils.man import ErrorCodeManager
 from PYOScript.interpreter import PYOScriptInterpreter as PSI
 
 

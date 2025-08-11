@@ -1,6 +1,6 @@
 import sys
 from rich import print
-from ..src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.man import ErrorCodeManager
 
 __doc__ = "Execute python commands"
 

@@ -1,9 +1,9 @@
 import os
 from rich import print
 
-from ..src.pyos.utils.man import ErrorCodeManager
-from ..src.pyos.utils.config import *
-from ..src.pyos.utils.foxShell import FoxShell
+from src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.config import *
+from src.pyos.utils.foxShell import FoxShell
 
 __doc__ = "FoxShell config"
 

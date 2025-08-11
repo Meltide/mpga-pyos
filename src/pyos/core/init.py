@@ -3,6 +3,7 @@ import random  # 随机库
 import time  # 时间库
 import sys  # 系统库
 from rich import print  # 彩色文字库
+from rich.markup import escape
 from art import text2art  # 艺术字库
 from enum import Enum
 from pathlib import Path  # 路径处理库
@@ -59,7 +60,7 @@ class Init:  # 初始化
     def _print_startup_messages(self):
         """打印启动信息"""
         startup_messages = [
-            f"\nMPGA PyOS Open Source System {self.version}",
+            f"\nMPGA PyOS Open Source System [default not bold]{self.version}[/]",
             '[blue]' + text2art("MPGA", font="small")+'[/]',
             f"[yellow]Make PyOS Great Again![/]\n",
             f"Tip: {self.selected_tip}",

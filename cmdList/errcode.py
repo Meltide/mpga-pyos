@@ -1,4 +1,4 @@
-from ..src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.man import ErrorCodeManager
 from rich import print
 
 __doc__ = "Return the name of error code"

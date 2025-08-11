@@ -24,7 +24,7 @@ def execute(self, args):
     )
 
     for folder in folders:
-        print("[blue]" + folder, end="/[/]\n")
+        print("[blue]" + folder + "/[/]", end="\n")
 
     for file in files:
         print(file)

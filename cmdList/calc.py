@@ -1,6 +1,6 @@
 from rich import print  # 彩色文字库
-from ..src.pyos.utils.man import ErrorCodeManager
-from ..src.pyos.utils.err import *
+from src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.err import *
 
 __doc__ = "A simple calculator"
 

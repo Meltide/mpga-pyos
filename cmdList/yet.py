@@ -3,10 +3,12 @@ import zipfile
 import subprocess
 import sys
 
-from ..src.pyos.utils.config import *
-from ..src.pyos.utils.yet import *
-from ..src.pyos.utils.man import ErrorCodeManager, CommandManager
-from ..src.pyos.utils.err import RunningError
+from src.pyos.utils.config import *
+from src.pyos.utils.yet import *
+from src.pyos.utils.man import ErrorCodeManager, CommandManager
+from src.pyos.utils.err import RunningError
+from .help import execute as help_execute
+
 from rich import print
 
 __doc__ = "YET Package manager"  # 第三方命令注册模块
@@ -24,9 +26,7 @@ def execute(self, args):
         print(
             f"Error: [red]No arguments provided. Please specify a valid command.[/]"
         )
-        print("Usage:")
-        for command, description in __usage__.items():
-            print(f"  {command}: {description}")
+        help_execute(self, ["hostman"])
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
 

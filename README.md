@@ -23,7 +23,7 @@
 
 0. 确保已经安装了 Python 3
 1. （可选，使用步骤3更佳）输入命令`pip install -r requirements.txt`来安装依赖
-2. 转到 PyOS 所在的目录
+2. 转到项目根目录
 3. 输入 `python start.py` 来启动
 
 ### 方法2
@@ -31,7 +31,7 @@
 > [!TIP]
 > 此方案需要 Nix
 
-0. 转到 PyOS 所在的目录
+0. 转到项目根目录
 1. 输入 `nix-shell` 进入 Nix Shell 环境
 2. 输入 `python3 start.py` 来启动
 

@@ -1,5 +1,6 @@
 from art import text2art
 from rich import print
+from rich.markup import escape
 
 __doc__ = "Show the about of PyOS"
 
@@ -18,7 +19,7 @@ def print_contributors():
 
 
 def execute(self, args):
-    print(f"MPGA PyOS Open Source System {self.version}")
+    print(f"MPGA PyOS Open Source System [default not bold]{self.version}[/]")
     print('[blue]' + text2art("MPGA", font="small")+'[/]')
     print("Visit this project in github: [blue]github.com/Meltide/mpga-pyos[/]\n")
     print("[Contributors]".center(20, "="))

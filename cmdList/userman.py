@@ -4,8 +4,9 @@ import json  # 解析和保存json配置文件
 import pwinput  # 密码输入库
 import os, shutil
 from textwrap import dedent  # 格式化输出库
-from ..src.pyos.utils.man import ErrorCodeManager
-from ..src.pyos.utils.config import *
+from src.pyos.utils.man import ErrorCodeManager
+from src.pyos.utils.config import *
+from .help import execute as help_execute
 
 __doc__ = "PyOS User Manager"
 
@@ -22,9 +23,7 @@ __usage__ = {
 def execute(self, args):
     if not args:  # 检查是否提供了参数
         print("Error: [red]No arguments provided. Please specify a valid command.[/]")
-        print("Usage:")
-        for command, description in __usage__.items():
-            print(f"  {command}: {description}")
+        help_execute(self, ["hostman"])
         self.error_code = ErrorCodeManager().get_code(SyntaxError)
         return
 

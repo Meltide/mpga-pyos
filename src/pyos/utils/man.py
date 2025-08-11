@@ -5,6 +5,7 @@ import shutil
 
 from typing import Optional, Dict
 from rich import print
+from rich.markup import escape
 from .basic import *
 
 from .config import *
@@ -228,22 +229,22 @@ class HelpManager:
     def show_all(self):
         """显示所有命令"""
         print("Available Commands:")
-        print("* Third-party apps will be highlighted")
+        print("[dim]* Third-party apps will be highlighted[/]")
         for category, cmds in self.cmdman.allcmds.items():
-            print(f"[blue] {category} [/]")
+            print(f"[white on blue] {category} [/]")
             for cmd in sorted(cmds):
                 self.cmdman.reg(cmd)
                 try:
                     if self.cmdman.is_package():
                         # 如果是包，从 package.json 获取描述
                         doc = self.get_package_doc(cmd) or "No description"
-                        print(f"[yellow]{cmd:<15}[/] {doc}")
+                        print(f"[yellow]{cmd:<15}[/] [default not bold]{doc}[/]")
                     else:
                         # 内置命令
                         doc = self.cmdman.getpkg().__doc__ or "No description"
-                        print(f"{cmd:<15}[/] {doc}")
+                        print(f"{cmd:<15} [default not bold]{doc}[/]")
                 except ImportError:
-                    print(f"{cmd:<15}[/] (Not loadable)")
+                    print(f"{cmd:<15} [yellow](Not loadable)[/]")
         return
 
     def show_cmd(self):
@@ -258,14 +259,14 @@ class HelpManager:
         """显示指定命令的详细信息"""
         try:
             pkg = self.cmdman.getpkg()
-            print(f"[white on green] Help for: {self.cmd_name} [/]")
+            print(f"[green] Help for: {self.cmd_name} [/]")
     
             # 显示描述
             if self.cmdman.is_package():
                 description = self.get_package_doc(self.cmd_name) or "No description"
             else:
                 description = getattr(pkg, "__doc__", "No description available")
-            print(f"[blue] Description: {self.cmd_name} [/]")
+            print(f"[on blue] Description: {self.cmd_name} [/]")
             print('  '+description.strip())
     
             # 显示用法
@@ -274,12 +275,13 @@ class HelpManager:
             else:
                 usage = getattr(pkg, "__usage__", "No usage available")
     
-            print(f"[blue] Usage: [/]")
+            print(f"[on blue] Usage: [/]")
             if isinstance(usage, dict):  # 如果是字典，按键值对显示
                 for example, desc in usage.items():
-                    print(f"  {self.cmd_name} [green]{example:<15}[/] {desc}")
+                    aligned_example = f"{example:<15}"
+                    print(f"  [blue]{self.cmd_name}[/] [green]{escape(aligned_example)}[/] {desc}")
             elif isinstance(usage, str):  # 如果是字符串，直接显示
-                print(f"  {usage}")
+                print(f"  [blue]{escape(usage)}[/]")
             else:
                 print(f"[yellow]No usage examples available[/]")
     

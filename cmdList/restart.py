@@ -1,4 +1,4 @@
-from ..src.pyos.core.pyos import PyOS
+from src.pyos.core.pyos import PyOS
 from cmdList.clear import execute as clear
 
 __doc__ = "Restart PyOS"

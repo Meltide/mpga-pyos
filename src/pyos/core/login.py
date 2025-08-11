@@ -139,7 +139,7 @@ class Login(Init):
                 rprint(f"Error: [red]{escape(type(e).__name__ if not str(e) else str(e))}[/]")
                 self.error_code = ErrorCodeManager().get_code(e)
                 if self.SHOW_ERROR_DETAILS:
-                    rprint(f"Details: \n{traceback.format_exc()}")
+                    rprint(f"Details: \n{escape(traceback.format_exc())}")
 
     def _validate_user(self, username):
         """验证用户名和密码"""
