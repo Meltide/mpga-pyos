@@ -3,15 +3,9 @@ import sys
 
 from pathlib import Path  # 路径处理库
 from rich import print  # 彩色文字库
-'''for i in range(3):
-    sys.path.append(Path(__file__).parents[i])
-print(Path(__file__).parents[1])'''
 
 from .login import Login
-'''for path in PathEnum:
-    print(path.name,path.value)
-    sys.path.append(path.value)
-'''
+
 from ..utils.foxShell import FoxShell
 from ..utils.man import ErrorCodeManager
 from ..utils.config import SHOW_BASE_ERROR_DETAILS
