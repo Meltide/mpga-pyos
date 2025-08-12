@@ -1,8 +1,6 @@
 import os, sys  # 系统库
 from .init import Init
-'''for path in PathEnum:
-    print(path.name,path.value)
-    sys.path.append(path.value)'''
+
 import base64  # 加解密库
 from rich import print as rprint # 彩色文字库
 import time, datetime  # 时间日期库

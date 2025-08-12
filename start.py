@@ -16,4 +16,3 @@ if __name__ == "__main__":
         print(f"Error code: [red]{escape(str(ErrorCodeManager().get_code(e)))}[/]")
         if SHOW_BASE_ERROR_DETAILS:
             print(f"Details: \n{escape(traceback.format_exc())}")
-    #PyOS()

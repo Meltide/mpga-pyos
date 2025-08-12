@@ -7,15 +7,6 @@ from rich.markup import escape
 from art import text2art  # 艺术字库
 from enum import Enum
 from pathlib import Path  # 路径处理库
-'''class PathEnum(Enum):
-    """路径枚举类"""
-    BASEPATH = Path(__file__).parents[3]
-    CMD = BASEPATH / "cmdList"
-    CONFIG = BASEPATH / "configs"
-    PYOSCRIPT_CORE = BASEPATH / "PYOScript"
-for path in PathEnum:
-    print(path.name,path.value)
-    sys.path.append(path.value)'''
 
 from cmdList.clear import execute as clear
 from ..utils.man import CommandManager
