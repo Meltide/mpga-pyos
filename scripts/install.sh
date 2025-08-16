@@ -1,5 +1,5 @@
 #!/bin/bash
-#第一次下载源代码时，执行该脚本
+#第一次下载源代码时，若没有子模块和所有依赖模块，执行该脚本
 
 echo "Downloading submodules..."
 git submodule init
