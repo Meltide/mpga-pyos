@@ -9,23 +9,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: Checkout code with submodules
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        fetch-depth: 0
 
-    - name: Set up Python environment
-      uses: actions/setup-python@v2
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
     - name: Run update script
       run: |
         chmod +x scripts/update.sh
-        ./scripts/update.sh
+        
+        # 执行脚本并捕获可能的错误
+        if ! ./scripts/update.sh; then
+          echo "##[error] Update script failed with exit code $?"
+          echo "::group::Debug information"
+          echo "Current directory: $(pwd)"
+          ls -l scripts/
+          echo "::endgroup::"
+          exit 1
+        fi
 
-    - name: Commit and push changes
+    - name: Commit and push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git commit -m "chore: update by GitHub Actions" || echo "No changes to commit"
-        git push
+        
+        # 使用更可靠的检查是否有变更的方法
+        if git diff-index --quiet HEAD; then
+          echo "No changes to commit"
+        else
+          git commit -m "chore: auto-update"
+          git push origin HEAD:main
+        fi
