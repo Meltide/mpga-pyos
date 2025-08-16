@@ -7,4 +7,4 @@ git submodule update --recursive
 
 echo "Downloading dependencies..."
 pip install -r requirements.txt
-read -p "Done."
+read -p "Press enter to exit..."

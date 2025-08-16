@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="res/logo.png" height="114px">
+<img src="assets/logo.png" height="114px">
 
 # MPGA PyOS
 ![GitHub repo size](https://img.shields.io/github/repo-size/Meltide/mpga-pyos)
