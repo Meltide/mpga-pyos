@@ -22,16 +22,17 @@ jobs:
 
     - name: Run update script
       run: |
-        # 修复行结尾和权限
-        dos2unix scripts/update.sh || true
         chmod +x scripts/update.sh
         
-        # 带调试执行
-        set -x
-        ./scripts/update.sh || {
-          echo "##[error] Update script failed (exit $?)"
+        # 执行脚本并捕获可能的错误
+        if ! ./scripts/update.sh; then
+          echo "##[error] Update script failed with exit code $?"
+          echo "::group::Debug information"
+          echo "Current directory: $(pwd)"
+          ls -l scripts/
+          echo "::endgroup::"
           exit 1
-        }
+        fi
 
     - name: Commit and push
       env:
@@ -40,5 +41,11 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git diff-index --quiet HEAD || git commit -m "chore: auto-update"
-        git push origin HEAD:main
+        
+        # 使用更可靠的检查是否有变更的方法
+        if git diff-index --quiet HEAD; then
+          echo "No changes to commit"
+        else
+          git commit -m "chore: auto-update"
+          git push origin HEAD:main
+        fi
