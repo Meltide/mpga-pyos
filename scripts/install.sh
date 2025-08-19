@@ -7,4 +7,8 @@ git submodule update --recursive
 
 echo "Downloading dependencies..."
 pip install -r requirements.txt
-read -p "Press enter to exit..."
+
+# 仅在交互式终端中暂停
+if [ -t 0 ]; then
+    read -p "Press enter to exit..."
+fi
