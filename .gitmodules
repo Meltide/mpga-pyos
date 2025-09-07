@@ -2,7 +2,7 @@
 path = cmdList/third_party
 url = https://github.com/Meltide/mpga-apps.git
 branch = main
-[submodule "OilScript"]
-	path = OilScript
-	url = https://github.com/EricDing618/OilScript.git
-	branch = main
+[submodule "IndigoScript"]
+path = IndigoScript
+url = https://github.com/EricDing618/IndigoScript.git
+branch = main
