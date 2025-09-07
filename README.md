@@ -46,8 +46,8 @@
 输入 `help` 以获取帮助
 
 ## 界面截图
-![ui1](res/ui1.jpg)
-![ui2](res/ui2.jpg)
+![ui1](assets/ui1.jpg)
+![ui2](assets/ui2.jpg)
 
 > [!WARNING]  
 >- 2.0版本开始 **不再提供** 已编译exe文件，请直接下载源码！
