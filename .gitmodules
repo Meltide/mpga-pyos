@@ -3,6 +3,6 @@ path = cmdList/third_party
 url = https://github.com/Meltide/mpga-apps.git
 branch = main
 [submodule "IndigoScript"]
-path = IndigoScript
-url = https://github.com/EricDing618/IndigoScript.git
+	path = IndigoScript
+	url = https://github.com/EricDing618/IndigoScript.git
 branch = main
